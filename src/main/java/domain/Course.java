@@ -1,8 +1,6 @@
 package domain;
 
 public class Course {
-
-
     private String courseCode;   //comp
     private String courseNumber; //302
     private Boolean hasLab;
@@ -45,6 +43,4 @@ public class Course {
     public void setCourseNumber(String courseNumber) {
         this.courseNumber = courseNumber;
     }
-
-
 }
