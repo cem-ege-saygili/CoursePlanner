@@ -1,15 +1,45 @@
 package domain;
 
-public class Course {
+public class Course implements Comparable<Course> {
     private String courseCode;   //comp
     private String courseNumber; //302
     private Boolean hasLab;
     private Boolean hasPS_DS;
+    private int startTimeStamp;
+    private int endTimeStamp;
+    private int priority;
 
+    public Course(String courseCode, int startTimeStamp, int endTimeStamp, int priority) {
+        this.courseCode = courseCode;
+        this.startTimeStamp = startTimeStamp;
+        this.endTimeStamp = endTimeStamp;
+        this.priority = priority;
+    }
 
     public Course(String courseCode,String courseNumber) {
         this.courseCode = courseCode;
         this.courseNumber = courseNumber;
+    }
+
+    public int getPriority(){
+        return priority;
+    }
+
+    public int getStartTimeStamp(){
+        return startTimeStamp;
+    }
+
+    public boolean isOverlappingWith(Course c2){
+        return (this.getEndTimeStamp() == c2.getEndTimeStamp()) || (c2.getStartTimeStamp() <= this.getEndTimeStamp());
+    }
+
+    public int getEndTimeStamp(){
+        return endTimeStamp;
+    }
+
+    public int compareTo(Course c2){
+        return (this.getEndTimeStamp() < c2.getEndTimeStamp() ? -1 :
+                (this.getEndTimeStamp() == c2.getEndTimeStamp() ? 0 : 1));
     }
 
     public String getCourseCode() {
