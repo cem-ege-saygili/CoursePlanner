@@ -27,7 +27,7 @@ public class Plan {
         int count = 0;
         String str = "";
         for(Course c:courseList){
-            str += ++count + ". course starts @t" + c.getStartTimeStamp() + ", ends @t" + c.getEndTimeStamp()
+            str += "\t" + ++count + ". course starts @t" + c.getStartTimeStamp() + ", ends @t" + c.getEndTimeStamp()
                     + ", has the priority: " + c.getPriority() + "\n";
         }
         return str;

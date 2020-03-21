@@ -55,9 +55,9 @@ public class Scheduler {
                         buckets.set(i, newBucket);
                     }else if(prioritySum == b2.getCumulativeBucketPriority()){
                         b2.getPlans().addAll(newPlanList);
-                        ArrayList<Plan> mergedPlanList = b2.getPlans();
-                        Bucket mergedBucket = new Bucket(prioritySum, mergedPlanList);
-                        buckets.set(i, mergedBucket);
+//                        ArrayList<Plan> mergedPlanList = b2.getPlans();
+//                        Bucket mergedBucket = new Bucket(prioritySum, mergedPlanList);
+//                        buckets.set(i, mergedBucket);
                     }
                 }
             }
@@ -75,7 +75,16 @@ public class Scheduler {
         }
 
         Bucket winnerBucket = buckets.get(index);
-        System.out.println(winnerBucket);
+        System.out.println("WINNER IS: bucket #" + (index+1) + "/" + buckets.size() + "\n\n");
+        System.out.println(winnerBucket+"\n\n");
+
+        System.out.println("OTHER BUCKETS are as follows: \n\n");
+
+        for(Bucket b:buckets){
+            int currentIndex = buckets.indexOf(b);
+            if(currentIndex != index)
+                System.out.println("Bucket #" + (currentIndex+1) + "\n\n" + b + "\n");
+        }
 
         //System.out.println(winnerBucket);
 
