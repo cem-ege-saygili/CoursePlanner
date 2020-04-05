@@ -8,6 +8,7 @@ public class Scheduler {
     private int numCourse;
     private ArrayList<Course> sortedCourseList;
     private ArrayList<Bucket> buckets;
+    private TreeMap<Integer, Integer> sortedCumPriorityMap;
     private String output;
     private int numPlans;
 
@@ -86,17 +87,40 @@ public class Scheduler {
 
         output += "WINNER IS: bucket #" + (index+1) + "/" + buckets.size() + "\n\n\n";
         output += winnerBucket+"\n\n\n";
+        numPlans += winnerBucket.getPlans().size();
         output += "OTHER BUCKETS are as follows: \n\n\n";
+
+        Map<Integer, Integer> unSortedCumPriorityMap = new HashMap<Integer, Integer>();
 
         for(Bucket b:buckets){
             int currentIndex = buckets.indexOf(b);
             if(currentIndex != index){
-                System.out.println("Bucket #" + (currentIndex+1) + "\n\n" + b + "\n");
-                output += "Bucket #" + (currentIndex+1) + "\n\n" + b + "\n\n";
+                unSortedCumPriorityMap.put(currentIndex, b.getCumulativeBucketPriority());
             }
-            numPlans += b.getPlans().size();
-
         }
+
+        DescSortComparator descSortComparator = new DescSortComparator(unSortedCumPriorityMap);
+
+        sortedCumPriorityMap = new TreeMap(descSortComparator);
+
+        sortedCumPriorityMap.putAll(unSortedCumPriorityMap);
+
+        for(Integer ind:sortedCumPriorityMap.keySet()){
+            Bucket curMaxBucket = buckets.get(ind);
+            System.out.println("Bucket #" + (ind+1) + "\n\n" + curMaxBucket + "\n");
+            output += "Bucket #" + (ind+1) + "\n\n" + curMaxBucket + "\n\n";
+            numPlans += curMaxBucket.getPlans().size();
+        }
+
+//        for(Bucket b:buckets){
+//            int currentIndex = buckets.indexOf(b);
+//            if(currentIndex != index){
+//                System.out.println("Bucket #" + (currentIndex+1) + "\n\n" + b + "\n");
+//                output += "Bucket #" + (currentIndex+1) + "\n\n" + b + "\n\n";
+//            }
+//            numPlans += b.getPlans().size();
+//
+//        }
 
         //System.out.println(winnerBucket);
 
@@ -116,5 +140,27 @@ public class Scheduler {
 
         ValidCoursePlan coursePlan= new ValidCoursePlan();
         return  coursePlan;
+    }
+}
+
+class DescSortComparator implements Comparator {
+
+    Map map;
+
+    public DescSortComparator(Map map) {
+        this.map = map;
+    }
+
+    public int compare(Object o1, Object o2) {
+
+        int int1 = (int) map.get(o2);
+        int int2 = (int) map.get(o1);
+
+        if(int1>=int2){
+            return 1;
+        }
+
+        return -1;
+
     }
 }
