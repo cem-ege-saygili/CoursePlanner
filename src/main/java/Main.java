@@ -1,6 +1,9 @@
 import domain.*;
 
+import java.text.NumberFormat;
 import java.util.*;
+import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 
 public class Main {
 
@@ -20,6 +23,46 @@ public class Main {
         cList.add(c2);cList.add(c7);cList.add(c3);
         cList.add(c1);
         cList.add(c4); cList.add(c5);*/
+
+        String[] courseNames = new String[] {"A", "B",
+                "C", "D", "E", "F", "G"};
+        Integer[] priorityValues = new Integer[] {1,2,3,4,5};
+
+        JComboBox<String> courseNamesComboBox = new JComboBox<>(courseNames);
+        JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
+
+//        NumberFormat format = NumberFormat.getInstance();
+//        NumberFormatter formatter = new NumberFormatter(format);
+//        formatter.setValueClass(Integer.class);
+//        formatter.setMinimum(0);
+//        formatter.setMaximum(5);
+//        formatter.setAllowsInvalid(false);
+//        // If you want the value to be committed on each keystroke instead of focus lost
+//        formatter.setCommitsOnValidEdit(true);
+//        JFormattedTextField txtFieldPriority = new JFormattedTextField(formatter);
+
+
+
+
+        JFrame frame = new JFrame("CourseScheduler v.1");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600,600);
+        JButton btnGenerateSchedules = new JButton("Press to Find Out Non-Overlapping Schedule(s)");
+        courseNamesComboBox.setBounds(0,0,100,100);
+        priorityValuesComboBox.setBounds(100,0,100,100);
+        btnGenerateSchedules.setBounds(250,0,200,100);
+        frame.getContentPane().add(courseNamesComboBox);frame.getContentPane().add(priorityValuesComboBox);
+        frame.getContentPane().add(btnGenerateSchedules);
+        frame.setVisible(true);
+
+
+
+// add to the parent container (e.g. a JFrame):
+
+
+// get the selected item:
+        String selectedBook = (String) courseNamesComboBox.getSelectedItem();
+        System.out.println("You seleted the book: " + selectedBook);
 
         ArrayList<Course> cList = new ArrayList<Course>();
         Course c5 = new Course("E", 7, 8, 2);
