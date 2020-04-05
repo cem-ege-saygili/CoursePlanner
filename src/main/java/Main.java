@@ -44,7 +44,8 @@ public class Main {
         JComboBox<String> courseNamesComboBox = new JComboBox<>(courseNames);
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
 
-        JButton btnGenerateSchedules = new JButton("Add Course to the Planning List");
+        JButton btnAdd2PlanningList = new JButton("Add Course to the Planning List");
+        JButton btnRemoveFromPlanningList = new JButton("Remove the Selected Course from the Planning List");
 
         DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
         JList lstCourses2BePlanned = new JList(lstCourses2BePlannedModel);
@@ -76,13 +77,13 @@ public class Main {
             }
         });
 
-        Set<String> courseNames2BePlanned = new HashSet<String>();
+        List<String> courseNames2BePlannedList = new ArrayList<String>();
 
-        btnGenerateSchedules.addActionListener(new ActionListener() {
+        btnAdd2PlanningList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedCourseName = (String) courseNamesComboBox.getSelectedItem();
-                if(!courseNames2BePlanned.contains(selectedCourseName)){
+                if(!courseNames2BePlannedList.contains(selectedCourseName)){
                     String element2BeAdded = "";
                     Integer[] selectedCourseTimeTable = timeTables.get(selectedCourseName);
                     Integer selectedCourseStartTime = selectedCourseTimeTable[0];
@@ -91,9 +92,21 @@ public class Main {
                     element2BeAdded += selectedCourseName + " with priority: " + selectedCoursePriority + ", from: t" + selectedCourseStartTime
                             + ", to: t" + selectedCourseEndTime;
                     lstCourses2BePlannedModel.addElement(element2BeAdded);
-                    courseNames2BePlanned.add(selectedCourseName);
+                    courseNames2BePlannedList.add(selectedCourseName);
                 }else{
-                    JOptionPane.showMessageDialog(btnGenerateSchedules, selectedCourseName + " has already been added to the planning list!");
+                    JOptionPane.showMessageDialog(btnAdd2PlanningList, selectedCourseName + " has already been added to the planning list!");
+                }
+
+            }
+        });
+
+        btnRemoveFromPlanningList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedElementIndex = lstCourses2BePlanned.getSelectedIndex();
+                if(selectedElementIndex != -1){
+                    courseNames2BePlannedList.remove(selectedElementIndex);
+                    lstCourses2BePlannedModel.removeElementAt(selectedElementIndex);
                 }
 
             }
@@ -130,11 +143,12 @@ public class Main {
         lblStartTime.setBounds(10,250,100,100);
         lblEndTime.setBounds(150,250,100,100);
 
-        btnGenerateSchedules.setBounds(250,25,350,50);
+        btnAdd2PlanningList.setBounds(250,25,350,50);
+        btnRemoveFromPlanningList.setBounds(0,25,100,50);
 
         frame.add(lblCourseName);frame.add(courseNamesComboBox);frame.add(lblPriority);frame.add(priorityValuesComboBox);
         frame.add(lblStartTime);frame.add(lblEndTime);
-        frame.add(btnGenerateSchedules);frame.add(lstCourses2BePlanned);
+        frame.add(btnAdd2PlanningList);frame.add(btnRemoveFromPlanningList);frame.add(lstCourses2BePlanned);
         frame.setLayout(null);
         frame.setVisible(true);
 
