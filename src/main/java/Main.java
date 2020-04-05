@@ -26,10 +26,25 @@ public class Main {
 
         String[] courseNames = new String[] {"A", "B",
                 "C", "D", "E", "F", "G"};
+        Map<String, Integer[]> timeTables = new HashMap<String, Integer[]>();
+        timeTables.put("A", new Integer[]{1, 2} );
+        timeTables.put("B", new Integer[]{1, 4} );
+        timeTables.put("C", new Integer[]{3, 4} );
+        timeTables.put("D", new Integer[]{3, 7} );
+        timeTables.put("E", new Integer[]{7, 8} );
+        timeTables.put("F", new Integer[]{11, 14} );
+        timeTables.put("G", new Integer[]{13, 14} );
+
         Integer[] priorityValues = new Integer[] {1,2,3,4,5};
 
         JComboBox<String> courseNamesComboBox = new JComboBox<>(courseNames);
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
+        JLabel lblPriority = new JLabel();
+        lblPriority.setText("Priority: ");
+        JLabel lblStartTime = new JLabel();
+        lblStartTime.setText("Starts at: ");
+        JLabel lblEndTime = new JLabel();
+        lblEndTime.setText("Ends at: ");
 
 //        NumberFormat format = NumberFormat.getInstance();
 //        NumberFormatter formatter = new NumberFormatter(format);
@@ -43,16 +58,16 @@ public class Main {
 
 
 
-
         JFrame frame = new JFrame("CourseScheduler v.1");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600,600);
         JButton btnGenerateSchedules = new JButton("Press to Find Out Non-Overlapping Schedule(s)");
         courseNamesComboBox.setBounds(0,0,100,100);
         priorityValuesComboBox.setBounds(100,0,100,100);
-        btnGenerateSchedules.setBounds(250,0,200,100);
+        btnGenerateSchedules.setBounds(250,25,350,50);
+        frame.setSize(600,600);
         frame.getContentPane().add(courseNamesComboBox);frame.getContentPane().add(priorityValuesComboBox);
-        frame.getContentPane().add(btnGenerateSchedules);
+        frame.add(btnGenerateSchedules);
+        frame.setLayout(null);
         frame.setVisible(true);
 
 
