@@ -1,5 +1,7 @@
 import domain.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.NumberFormat;
@@ -42,6 +44,11 @@ public class Main {
         JComboBox<String> courseNamesComboBox = new JComboBox<>(courseNames);
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
 
+        JButton btnGenerateSchedules = new JButton("Add Course to the Planning List");
+
+        DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
+        JList lstCourses2BePlanned = new JList(lstCourses2BePlannedModel);
+        lstCourses2BePlanned.setBounds(260, 100,300,250);
 
         JLabel lblCourseName = new JLabel();
         lblCourseName.setText("Course Name: ");
@@ -69,10 +76,32 @@ public class Main {
             }
         });
 
-        JList lstCourses2BePlanned = new JList();
-        lstCourses2BePlanned.setBounds(260, 100,300,300);
+        Set<String> courseNames2BePlanned = new HashSet<String>();
 
-        JButton btnGenerateSchedules = new JButton("Press to Find Out Non-Overlapping Schedule(s)");
+        btnGenerateSchedules.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedCourseName = (String) courseNamesComboBox.getSelectedItem();
+                if(!courseNames2BePlanned.contains(selectedCourseName)){
+                    String element2BeAdded = "";
+                    Integer[] selectedCourseTimeTable = timeTables.get(selectedCourseName);
+                    Integer selectedCourseStartTime = selectedCourseTimeTable[0];
+                    Integer selectedCourseEndTime = selectedCourseTimeTable[1];
+                    Integer selectedCoursePriority = (Integer) priorityValuesComboBox.getSelectedItem();
+                    element2BeAdded += selectedCourseName + " with priority: " + selectedCoursePriority + ", from: t" + selectedCourseStartTime
+                            + ", to: t" + selectedCourseEndTime;
+                    lstCourses2BePlannedModel.addElement(element2BeAdded);
+                    courseNames2BePlanned.add(selectedCourseName);
+                }else{
+                    JOptionPane.showMessageDialog(btnGenerateSchedules, selectedCourseName + " has already been added to the planning list!");
+                }
+
+            }
+        });
+
+
+
+
 
 //        NumberFormat format = NumberFormat.getInstance();
 //        NumberFormatter formatter = new NumberFormatter(format);
