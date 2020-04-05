@@ -45,14 +45,14 @@ public class Main {
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
 
         JButton btnAdd2PlanningList = new JButton("Add Course to the Planning List");
-        JButton btnRemoveFromPlanningList = new JButton("Remove the Selected Course from the Planning List");
-        JButton btnGenerateOptimumSchedule = new JButton("Press to Generate non-overlapping Schedule(s)");
+        JButton btnRemoveFromPlanningList = new JButton("Remove Selected from the Planning List");
+        JButton btnGenerateOptimumSchedule = new JButton("Generate non-overlapping Schedule(s)");
         JButton btnClearPlanningList = new JButton("Clear the Planning List");
 
 
         DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
         JList lstCourses2BePlanned = new JList(lstCourses2BePlannedModel);
-        lstCourses2BePlanned.setBounds(260, 100,300,250);
+
 
         JLabel lblCourseName = new JLabel();
         lblCourseName.setText("Course Name: ");
@@ -150,23 +150,26 @@ public class Main {
 
         JFrame frame = new JFrame("CourseScheduler v.1");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600,600);
+        frame.setSize(500,720);
 
+        //int yInc = 25;
 
+        lblCourseName.setBounds(100, 50, 100,25);
+        courseNamesComboBox.setBounds(250,50,150,25);
 
-        lblCourseName.setBounds(10, 50, 100,100);
-        courseNamesComboBox.setBounds(150,50,100,100);
+        lblPriority.setBounds(100,100,100,25);
+        priorityValuesComboBox.setBounds(250,100,150,25);
 
-        lblPriority.setBounds(10,150,100,100);
-        priorityValuesComboBox.setBounds(150,150,100,100);
+        lblStartTime.setBounds(100,150,100,25);
+        lblEndTime.setBounds(250,150,100,25);
 
-        lblStartTime.setBounds(10,250,100,100);
-        lblEndTime.setBounds(150,250,100,100);
+        btnAdd2PlanningList.setBounds(100,200,300,25);
+        btnRemoveFromPlanningList.setBounds(100,250,300,25);
+        btnClearPlanningList.setBounds(100,300,300,25);
 
-        btnAdd2PlanningList.setBounds(250,25,350,25);
-        btnRemoveFromPlanningList.setBounds(0,25,100,25);
-        btnGenerateOptimumSchedule.setBounds(0,250,200,25);
-        btnClearPlanningList.setBounds(100,25,100,25);
+        lstCourses2BePlanned.setBounds(100, 350,300,250);
+
+        btnGenerateOptimumSchedule.setBounds(100,625,300,25);
 
         frame.add(lblCourseName);frame.add(courseNamesComboBox);frame.add(lblPriority);frame.add(priorityValuesComboBox);
         frame.add(lblStartTime);frame.add(lblEndTime);
