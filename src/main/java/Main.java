@@ -46,6 +46,7 @@ public class Main {
 
         JButton btnAdd2PlanningList = new JButton("Add Course to the Planning List");
         JButton btnRemoveFromPlanningList = new JButton("Remove the Selected Course from the Planning List");
+        JButton btnGenerateOptimumSchedule = new JButton("Press to Generate non-overlapping Schedule(s)");
 
         DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
         JList lstCourses2BePlanned = new JList(lstCourses2BePlannedModel);
@@ -77,13 +78,14 @@ public class Main {
             }
         });
 
-        List<String> courseNames2BePlannedList = new ArrayList<String>();
+        List<List<String>> coursesInPlanningList = new ArrayList<List<String>>();
+        List<String> courseNamesInPlanningList = new ArrayList<String>();
 
         btnAdd2PlanningList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedCourseName = (String) courseNamesComboBox.getSelectedItem();
-                if(!courseNames2BePlannedList.contains(selectedCourseName)){
+                if(!courseNamesInPlanningList.contains(selectedCourseName)){
                     String element2BeAdded = "";
                     Integer[] selectedCourseTimeTable = timeTables.get(selectedCourseName);
                     Integer selectedCourseStartTime = selectedCourseTimeTable[0];
@@ -92,7 +94,11 @@ public class Main {
                     element2BeAdded += selectedCourseName + " with priority: " + selectedCoursePriority + ", from: t" + selectedCourseStartTime
                             + ", to: t" + selectedCourseEndTime;
                     lstCourses2BePlannedModel.addElement(element2BeAdded);
-                    courseNames2BePlannedList.add(selectedCourseName);
+                    ArrayList<String> arrList2BeAdded = new ArrayList<String>();
+                    arrList2BeAdded.add(selectedCourseName);arrList2BeAdded.add(selectedCoursePriority.toString());
+                    arrList2BeAdded.add(selectedCourseStartTime.toString());arrList2BeAdded.add(selectedCourseEndTime.toString());
+                    coursesInPlanningList.add(arrList2BeAdded);
+                    courseNamesInPlanningList.add(selectedCourseName);
                 }else{
                     JOptionPane.showMessageDialog(btnAdd2PlanningList, selectedCourseName + " has already been added to the planning list!");
                 }
@@ -105,7 +111,8 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 int selectedElementIndex = lstCourses2BePlanned.getSelectedIndex();
                 if(selectedElementIndex != -1){
-                    courseNames2BePlannedList.remove(selectedElementIndex);
+                    coursesInPlanningList.remove(selectedElementIndex);
+                    courseNamesInPlanningList.remove(selectedElementIndex);
                     lstCourses2BePlannedModel.removeElementAt(selectedElementIndex);
                 }
 
@@ -143,23 +150,19 @@ public class Main {
         lblStartTime.setBounds(10,250,100,100);
         lblEndTime.setBounds(150,250,100,100);
 
-        btnAdd2PlanningList.setBounds(250,25,350,50);
-        btnRemoveFromPlanningList.setBounds(0,25,100,50);
+        btnAdd2PlanningList.setBounds(250,25,350,25);
+        btnRemoveFromPlanningList.setBounds(0,25,100,25);
+        btnGenerateOptimumSchedule.setBounds(0,250,200,25);
 
         frame.add(lblCourseName);frame.add(courseNamesComboBox);frame.add(lblPriority);frame.add(priorityValuesComboBox);
         frame.add(lblStartTime);frame.add(lblEndTime);
-        frame.add(btnAdd2PlanningList);frame.add(btnRemoveFromPlanningList);frame.add(lstCourses2BePlanned);
+        frame.add(btnAdd2PlanningList);frame.add(btnRemoveFromPlanningList);frame.add(btnGenerateOptimumSchedule);
+        frame.add(lstCourses2BePlanned);
         frame.setLayout(null);
         frame.setVisible(true);
 
 
-
-// add to the parent container (e.g. a JFrame):
-
-
-// get the selected item:
-        String selectedBook = (String) courseNamesComboBox.getSelectedItem();
-        System.out.println("You seleted the book: " + selectedBook);
+//      ALGORITHM:_______________________________________________________________________________________
 
         ArrayList<Course> cList = new ArrayList<Course>();
         Course c5 = new Course("E", 7, 8, 2);
@@ -170,13 +173,46 @@ public class Main {
         Course c1 = new Course("A", 1, 2, 1);
         Course c6 = new Course("F", 11, 14, 5);
 
-        cList.add(c6);
-        cList.add(c2);cList.add(c7);cList.add(c3);
-        cList.add(c1);
-        cList.add(c4); cList.add(c5);
+//        cList.add(c6);
+//        cList.add(c2);cList.add(c7);cList.add(c3);
+//        cList.add(c1);
+//        cList.add(c4); cList.add(c5);
 
-        Scheduler s1 = new Scheduler(cList);
-        s1.generateOptimumCoursePlan();
+//        Scheduler s1 = new Scheduler(cList);
+//        s1.generateOptimumCoursePlan();
+
+        btnGenerateOptimumSchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(courseNamesInPlanningList.size()!=0){
+                    for(List<String> course: coursesInPlanningList){
+                        String currentCourseName = course.get(0);
+                        Integer currentCoursePriority = Integer.valueOf(course.get(1));
+                        Integer currentCourseStartTime = Integer.valueOf(course.get(2));
+                        Integer currentCourseEndTime = Integer.valueOf(course.get(3));
+                        cList.add(new Course(currentCourseName, currentCourseStartTime,currentCourseEndTime,currentCoursePriority));
+                    }
+                    Scheduler s1 = new Scheduler(cList);
+                    s1.generateOptimumCoursePlan();
+                    cList.clear();
+                    //JOptionPane.showMessageDialog(null,s1.getOutput(),s1.getNumPlans() +" non-overlapping plans are found.", ModifiableJOptionPane.WARNING_MESSAGE);
+                    String message2BeDisplayed = s1.getOutput();
+                    JTextArea textArea = new JTextArea(25, 75);
+                    textArea.setText(message2BeDisplayed);
+                    textArea.setEditable(false);
+                    textArea.setCaretPosition(0);
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    JOptionPane.showMessageDialog(null,scrollPane,s1.getNumPlans() +" non-overlapping plans are found.",JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+
+
     }
 
+
+    private void showLongTextMessageInDialog(String longMessage, JFrame frame) {
+
+    }
 }

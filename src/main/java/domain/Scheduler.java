@@ -8,6 +8,8 @@ public class Scheduler {
     private int numCourse;
     private ArrayList<Course> sortedCourseList;
     private ArrayList<Bucket> buckets;
+    private String output;
+    private int numPlans;
 
     public Scheduler(ArrayList<Course> courseList){
         this.numCourse = courseList.size();
@@ -74,24 +76,40 @@ public class Scheduler {
             }
         }
 
+        output = "";
+
         Bucket winnerBucket = buckets.get(index);
         System.out.println("WINNER IS: bucket #" + (index+1) + "/" + buckets.size() + "\n\n");
         System.out.println(winnerBucket+"\n\n");
 
         System.out.println("OTHER BUCKETS are as follows: \n\n");
 
+        output += "WINNER IS: bucket #" + (index+1) + "/" + buckets.size() + "\n\n\n";
+        output += winnerBucket+"\n\n\n";
+        output += "OTHER BUCKETS are as follows: \n\n\n";
+
         for(Bucket b:buckets){
             int currentIndex = buckets.indexOf(b);
-            if(currentIndex != index)
+            if(currentIndex != index){
                 System.out.println("Bucket #" + (currentIndex+1) + "\n\n" + b + "\n");
+                output += "Bucket #" + (currentIndex+1) + "\n\n" + b + "\n\n";
+            }
+            numPlans += b.getPlans().size();
+
         }
 
         //System.out.println(winnerBucket);
 
-
-
     }
 
+
+    public String getOutput(){
+        return output;
+    }
+
+    public int getNumPlans(){
+        return numPlans;
+    }
 
     //gets a list of courses from user and returns a valid course plan
     public ValidCoursePlan PlanCourses(List<Course> courses){
