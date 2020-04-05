@@ -47,6 +47,8 @@ public class Main {
         JButton btnAdd2PlanningList = new JButton("Add Course to the Planning List");
         JButton btnRemoveFromPlanningList = new JButton("Remove the Selected Course from the Planning List");
         JButton btnGenerateOptimumSchedule = new JButton("Press to Generate non-overlapping Schedule(s)");
+        JButton btnClearPlanningList = new JButton("Clear the Planning List");
+
 
         DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
         JList lstCourses2BePlanned = new JList(lstCourses2BePlannedModel);
@@ -119,6 +121,17 @@ public class Main {
             }
         });
 
+        btnClearPlanningList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                coursesInPlanningList.clear();
+                courseNamesInPlanningList.clear();
+                lstCourses2BePlannedModel.clear();
+
+                System.out.println("Course Planning list has been cleared!");
+            }
+        });
+
 
 
 
@@ -153,10 +166,11 @@ public class Main {
         btnAdd2PlanningList.setBounds(250,25,350,25);
         btnRemoveFromPlanningList.setBounds(0,25,100,25);
         btnGenerateOptimumSchedule.setBounds(0,250,200,25);
+        btnClearPlanningList.setBounds(100,25,100,25);
 
         frame.add(lblCourseName);frame.add(courseNamesComboBox);frame.add(lblPriority);frame.add(priorityValuesComboBox);
         frame.add(lblStartTime);frame.add(lblEndTime);
-        frame.add(btnAdd2PlanningList);frame.add(btnRemoveFromPlanningList);frame.add(btnGenerateOptimumSchedule);
+        frame.add(btnAdd2PlanningList);frame.add(btnRemoveFromPlanningList);frame.add(btnGenerateOptimumSchedule);frame.add(btnClearPlanningList);
         frame.add(lstCourses2BePlanned);
         frame.setLayout(null);
         frame.setVisible(true);
@@ -208,11 +222,6 @@ public class Main {
         });
 
 
-
-    }
-
-
-    private void showLongTextMessageInDialog(String longMessage, JFrame frame) {
 
     }
 }
