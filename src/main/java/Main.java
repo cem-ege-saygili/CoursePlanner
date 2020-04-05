@@ -1,5 +1,7 @@
 import domain.*;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.NumberFormat;
 import java.util.*;
 import javax.swing.*;
@@ -39,12 +41,38 @@ public class Main {
 
         JComboBox<String> courseNamesComboBox = new JComboBox<>(courseNames);
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
+
+
+        JLabel lblCourseName = new JLabel();
+        lblCourseName.setText("Course Name: ");
         JLabel lblPriority = new JLabel();
         lblPriority.setText("Priority: ");
         JLabel lblStartTime = new JLabel();
-        lblStartTime.setText("Starts at: ");
+
+        Integer curTimeStart = timeTables.get((String)courseNamesComboBox.getSelectedItem())[0];
+        Integer curTimeEnd = timeTables.get((String)courseNamesComboBox.getSelectedItem())[1];
+
+        lblStartTime.setText("Starts at: " + curTimeStart);
         JLabel lblEndTime = new JLabel();
-        lblEndTime.setText("Ends at: ");
+        lblEndTime.setText("Ends at: " + curTimeEnd);
+
+        courseNamesComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED){
+                    String curCourseName = (String) e.getItem();
+                    Integer curTimeStart = timeTables.get((String)courseNamesComboBox.getSelectedItem())[0];
+                    Integer curTimeEnd = timeTables.get((String)courseNamesComboBox.getSelectedItem())[1];
+                    lblStartTime.setText("Starts at: " + curTimeStart);
+                    lblEndTime.setText("Ends at: " + curTimeEnd);
+                }
+            }
+        });
+
+        JList lstCourses2BePlanned = new JList();
+        lstCourses2BePlanned.setBounds(260, 100,300,300);
+
+        JButton btnGenerateSchedules = new JButton("Press to Find Out Non-Overlapping Schedule(s)");
 
 //        NumberFormat format = NumberFormat.getInstance();
 //        NumberFormatter formatter = new NumberFormatter(format);
@@ -60,13 +88,24 @@ public class Main {
 
         JFrame frame = new JFrame("CourseScheduler v.1");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JButton btnGenerateSchedules = new JButton("Press to Find Out Non-Overlapping Schedule(s)");
-        courseNamesComboBox.setBounds(0,0,100,100);
-        priorityValuesComboBox.setBounds(100,0,100,100);
-        btnGenerateSchedules.setBounds(250,25,350,50);
         frame.setSize(600,600);
-        frame.getContentPane().add(courseNamesComboBox);frame.getContentPane().add(priorityValuesComboBox);
-        frame.add(btnGenerateSchedules);
+
+
+
+        lblCourseName.setBounds(10, 50, 100,100);
+        courseNamesComboBox.setBounds(150,50,100,100);
+
+        lblPriority.setBounds(10,150,100,100);
+        priorityValuesComboBox.setBounds(150,150,100,100);
+
+        lblStartTime.setBounds(10,250,100,100);
+        lblEndTime.setBounds(150,250,100,100);
+
+        btnGenerateSchedules.setBounds(250,25,350,50);
+
+        frame.add(lblCourseName);frame.add(courseNamesComboBox);frame.add(lblPriority);frame.add(priorityValuesComboBox);
+        frame.add(lblStartTime);frame.add(lblEndTime);
+        frame.add(btnGenerateSchedules);frame.add(lstCourses2BePlanned);
         frame.setLayout(null);
         frame.setVisible(true);
 
