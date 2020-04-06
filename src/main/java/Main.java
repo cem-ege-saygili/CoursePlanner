@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.*;
 import javax.swing.*;
@@ -13,6 +14,19 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("\nRunnable\n\n");
+
+
+        //READ CSV FILE INTO an array of ClassInfo objects. (i.e. classInfoList)
+
+        List<ClassInfo> classInfoList = new ArrayList<>();
+
+        String fPath = System.getProperty("user.dir") + "/src/main/java/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
+
+        ReadCSVasList csvReader = new ReadCSVasList(fPath, classInfoList);
+
+        csvReader.FillArray();
+        System.out.println(classInfoList);
+
 
         /*ArrayList<Course> cList = new ArrayList<Course>();
         Course c5 = new Course("E", 7, 8, 2);
@@ -30,6 +44,8 @@ public class Main {
 
         String[] courseNames = new String[] {"A", "B",
                 "C", "D", "E", "F", "G"};
+
+
         Map<String, Integer[]> timeTables = new HashMap<String, Integer[]>();
         timeTables.put("A", new Integer[]{1, 2} );
         timeTables.put("B", new Integer[]{1, 4} );
