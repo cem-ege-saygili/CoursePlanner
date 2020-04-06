@@ -20,7 +20,10 @@ public class Main {
 
         List<ClassInfo> classInfoList = new ArrayList<>();
 
-        String fPath = System.getProperty("user.dir") + "/src/main/java/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
+//        String fPath = System.getProperty("user.dir") + "/src/main/java/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
+
+        String fPath = "KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
+
 
         ReadCSVasList csvReader = new ReadCSVasList(fPath, classInfoList);
 
