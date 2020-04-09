@@ -38,7 +38,7 @@ public class InsertIntoTableInDB {
         // SQL statement for creating a new table
         String sql = sqlQueryFile.export2String();
 
-        String url = "JDBC:sqlite:" + dbName + ".db";
+        String url = "JDBC:sqlite:outputs/" + dbName + ".db";
 
         try (Connection conn = DriverManager.getConnection(url);
 

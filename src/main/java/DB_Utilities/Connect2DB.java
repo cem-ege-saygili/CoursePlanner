@@ -16,7 +16,7 @@ public class Connect2DB {
         Connection conn = null;
         try {
             // db parameters
-            String url = "JDBC:sqlite:" + dbName + ".db";
+            String url = "JDBC:sqlite:outputs/" + dbName + ".db";
             // create a connection to the database
             conn = DriverManager.getConnection(url);
 

@@ -25,9 +25,9 @@ public class Main {
 
 //        String fPath = System.getProperty("user.dir") + "/src/main/java/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
 
-        String fPath = "KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
-        String sqlQuery_Create_Location = "sqlQuery_Create.txt";
-        String sqlQuery_Insert_Location = "sqlQuery_Insert.txt";
+        String fPath = "inputs/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
+        String sqlQuery_Create_Location = "inputs/sqlQuery_Create.txt";
+        String sqlQuery_Insert_Location = "inputs/sqlQuery_Insert.txt";
         String dbName = "CoursePlannerDB2";
 
         CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
@@ -253,7 +253,7 @@ public class Main {
         ReadCSV.FillIntoList(fPath, classInfoList);
         //System.out.println(classInfoList);
 
-        ExecuteDropDB.executeDropDB_ifExists(dbName + ".db");
+        ExecuteDropDB.executeDropDB_ifExists("outputs/"+ dbName + ".db");
 
         CreateDB.createNewDatabase(dbName);
 
