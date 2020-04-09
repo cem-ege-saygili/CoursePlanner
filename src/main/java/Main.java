@@ -28,7 +28,7 @@ public class Main {
         String sqlQuery_Insert_Location = "sqlQuery_Insert.txt";
         String dbName = "CoursePlannerDB2";
 
-        CreateAndFill_DB(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
+        CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
         /*ArrayList<Course> cList = new ArrayList<Course>();
         Course c5 = new Course("E", 7, 8, 2);
@@ -246,7 +246,7 @@ public class Main {
 
     }
 
-    private static void CreateAndFill_DB(List<ClassInfo> classInfoList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, String dbName) {
+    private static void CreateAndFill_DB_from_CSV(List<ClassInfo> classInfoList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, String dbName) {
 
         ReadCSV.FillIntoList(fPath, classInfoList);
         //System.out.println(classInfoList);
