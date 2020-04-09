@@ -247,11 +247,13 @@ public class ClassInfo {
         str += "PatNbr: " + this.PatNbr + "\n";
         str += "FacilID: " + this.FacilID + "\n";
         str += "Type: " + this.Type + "\n";
+        str += "Capacity: " + this.Capacity + "\n";
         str += "MtgStart: " + this.MtgStart + "\n";
         str += "MtgEnd: " + this.MtgEnd + "\n";
         str += "StartDate: " + this.StartDate + "\n";
         str += "EndDate: " + this.EndDate + "\n";
         str += "Pat: " + this.Pat + "\n";
+        str += "Role: " + this.Role + "\n";
         str += "Name: " + this.Name + "\n";
         str += "TopicID2: " + this.TopicID2 + "\n";
         str += "Term: " + this.Term + "\n";
