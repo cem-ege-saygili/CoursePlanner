@@ -12,7 +12,7 @@ public class CreateTableInDB {
          */
         public static void createNewTable(String dbName, String sqlQuery) {
             // SQLite connection string
-            String url = "JDBC:sqlite:" + dbName + ".db";
+            String url = "JDBC:sqlite:outputs/" + dbName + ".db";
 
             ReadFile sqlQueryFile = new ReadFile(sqlQuery);
 

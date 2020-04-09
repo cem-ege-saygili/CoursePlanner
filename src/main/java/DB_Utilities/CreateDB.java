@@ -13,7 +13,7 @@ public class CreateDB {
 
     public static void createNewDatabase(String dbName) {
 
-        String url = "JDBC:sqlite:" + dbName + ".db";
+        String url = "JDBC:sqlite:outputs/" + dbName + ".db";
 
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
