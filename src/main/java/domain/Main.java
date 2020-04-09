@@ -1,3 +1,5 @@
+package domain;
+
 import DB_Utilities.CreateDB;
 import DB_Utilities.CreateTableInDB;
 import DB_Utilities.ExecuteDropDB;
