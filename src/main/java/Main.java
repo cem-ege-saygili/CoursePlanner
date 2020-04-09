@@ -31,6 +31,8 @@ public class Main {
         System.out.println(classInfoList);
 
 
+        System.out.println("asdasd");
+
         /*ArrayList<Course> cList = new ArrayList<Course>();
         Course c5 = new Course("E", 7, 8, 2);
         Course c3 = new Course("C", 3, 4, 4);
