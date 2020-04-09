@@ -1,14 +1,15 @@
+import DB_Utilities.CreateDB;
+import DB_Utilities.CreateTableInDB;
+import DB_Utilities.ExecuteDropDB;
+import DB_Utilities.InsertIntoTableInDB;
 import domain.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.nio.file.Paths;
-import java.text.NumberFormat;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 
 public class Main {
 
@@ -23,15 +24,11 @@ public class Main {
 //        String fPath = System.getProperty("user.dir") + "/src/main/java/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
 
         String fPath = "KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
+        String sqlQuery_Create_Location = "sqlQuery_Create.txt";
+        String sqlQuery_Insert_Location = "sqlQuery_Insert.txt";
+        String dbName = "CoursePlannerDB2";
 
-
-        ReadCSVasList csvReader = new ReadCSVasList(fPath, classInfoList);
-
-        csvReader.FillArray();
-        System.out.println(classInfoList);
-
-
-        System.out.println("asdasd");
+        CreateAndFill_DB(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
         /*ArrayList<Course> cList = new ArrayList<Course>();
         Course c5 = new Course("E", 7, 8, 2);
@@ -247,5 +244,21 @@ public class Main {
 
 
 
+    }
+
+    private static void CreateAndFill_DB(List<ClassInfo> classInfoList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, String dbName) {
+
+        ReadCSV.FillIntoList(fPath, classInfoList);
+        //System.out.println(classInfoList);
+
+        ExecuteDropDB.executeDropDB_ifExists(dbName + ".db");
+
+        CreateDB.createNewDatabase(dbName);
+
+        CreateTableInDB.createNewTable(dbName, sqlQuery_Create_Location);
+
+        InsertIntoTableInDB.insertAll(dbName,sqlQuery_Insert_Location,classInfoList);
+
+        System.out.println("asdasd");
     }
 }
