@@ -41,6 +41,7 @@ public class CourseBundle {
 
                 if(isCurrTimeFramesOverlapping){
                     notOverlapping = false;
+                    return notOverlapping;
                 }
 
             }
