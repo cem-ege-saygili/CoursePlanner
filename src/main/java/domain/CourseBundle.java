@@ -21,8 +21,8 @@ public class CourseBundle {
     public boolean isCompatibleWith(CourseBundle b2){
         // A bundle of a course is incompatible with a bundle with the same course.
         if (b2.Subject.equals(this.Subject)) return false;
-        if (notOverlappingWith(b2)) return false;
-        return true;
+        if (notOverlappingWith(b2)) return true;
+        return false;
     }
 
     private boolean notOverlappingWith(CourseBundle b2){
