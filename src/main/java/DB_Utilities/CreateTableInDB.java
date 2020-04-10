@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class CreateTableInDB {
         /**
@@ -27,6 +28,26 @@ public class CreateTableInDB {
                 System.out.println(e.getMessage());
             }
         }
+
+    public static void createNewTablesFromList(String dbName, List<String> sqlQueryLocations) {
+        // SQLite connection string
+        String url = "JDBC:sqlite:outputs/" + dbName + ".db";
+
+        for(String curSqlQueryLocation:sqlQueryLocations){
+            ReadFile sqlQueryFile = new ReadFile(curSqlQueryLocation);
+
+            // SQL statement for creating a new table
+            String sql = sqlQueryFile.export2String();
+
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement()) {
+                // create a new table
+                stmt.execute(sql);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 
 //        /**
 //         * @param args the command line arguments
