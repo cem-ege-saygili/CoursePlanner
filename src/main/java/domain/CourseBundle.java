@@ -34,8 +34,10 @@ public class CourseBundle {
                 int b2CurrTimeFrameStart = b2CurrTimeFrame[0];
                 int b2CurrTimeFrameEnd = b2CurrTimeFrame[1];
 
-                boolean isCurrTimeFramesOverlapping = thisCurrTimeFrameEnd >= b2CurrTimeFrameStart &&  b2CurrTimeFrameEnd>=thisCurrTimeFrameEnd    ||
-                                                        thisCurrTimeFrameStart<=b2CurrTimeFrameEnd && b2CurrTimeFrameStart<=thisCurrTimeFrameStart;
+                boolean isCurrTimeFramesOverlapping =   thisCurrTimeFrameEnd >= b2CurrTimeFrameStart &&  b2CurrTimeFrameEnd>=thisCurrTimeFrameEnd    ||
+                                                        thisCurrTimeFrameStart<=b2CurrTimeFrameEnd && b2CurrTimeFrameStart<=thisCurrTimeFrameStart ||
+                        thisCurrTimeFrameStart>b2CurrTimeFrameStart && thisCurrTimeFrameEnd< b2CurrTimeFrameEnd ||
+                        thisCurrTimeFrameStart<b2CurrTimeFrameStart && b2CurrTimeFrameEnd<thisCurrTimeFrameEnd;
 
                 if(isCurrTimeFramesOverlapping){
                     notOverlapping = false;
