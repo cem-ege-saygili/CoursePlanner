@@ -8,11 +8,6 @@ public class CourseBundle {
     private int Catalog;
     private List<int[]> timeExtentList;
 
-//    public int compareTo(CourseBundle b2){
-//        return (this.getEndTimeStamp() < b2.getEndTimeStamp() ? -1 :
-//                (this.getEndTimeStamp() == c2.getEndTimeStamp() ? 0 : 1));
-//    }
-
     public CourseBundle(String Subject,
             int Catalog,
             List<int[]> timeExtentList){
@@ -21,6 +16,13 @@ public class CourseBundle {
         this.Subject = Subject;
         this.timeExtentList = timeExtentList;
 
+    }
+
+    public boolean isCompatibleWith(domain.CourseBundle b2){
+        // A bundle of a course is incompatible with a bundle with the same course.
+        if (b2.Subject == this.Subject) return false;
+        if (notOverlappingWith(b2)) return false;
+        return true;
     }
 
     private boolean notOverlappingWith(CourseBundle b2){
