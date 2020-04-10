@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS SessionTime(
+
+  SessionId INTEGER(4)	PRIMARY KEY
+  					    NOT NULL,
+  SessionStartTime VARCHAR(32),
+  SessionFinishTime VARCHAR(32),
+  SessionDuration INTEGER(3),
+  FOREIGN KEY (
+  				SessionId
+  			  )
+  REFERENCES Session(SessionId) ON DELETE NO ACTION
+  								ON UPDATE NO ACTION
+  
+);

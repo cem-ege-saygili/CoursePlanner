@@ -1,0 +1,24 @@
+CREATE TABLE IF NOT EXISTS CourseTaken_StudentCourseInfo(
+
+	CourseTakenId INTEGER(5)	PRIMARY KEY
+  								NOT NULL,
+    StudentId INTEGER(5),
+    CourseId INTEGER(5),
+    FOREIGN KEY (
+  				CourseTakenId
+  	    	  )
+    REFERENCES CourseTaken_Info(CourseTakenId)	ON DELETE NO ACTION
+  												ON UPDATE NO ACTION,
+    FOREIGN KEY (
+  				StudentId
+  			  )
+    REFERENCES Student(StudentId)	ON DELETE NO ACTION
+  							        ON UPDATE NO ACTION,
+    FOREIGN KEY (
+  				CourseId
+  		        )
+    REFERENCES CourseInfo(StudentId)	ON DELETE NO ACTION
+  									    ON UPDATE NO ACTION
+  
+);
+

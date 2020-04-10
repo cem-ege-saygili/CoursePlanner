@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS Session(
+
+  SessionId INTEGER(4)	PRIMARY KEY
+  						NOT NULL,
+  CourseId INTEGER(5),
+  SessionCapacity INTEGER(3),
+  SessionWaitlistFlag INTEGER(1),
+  SessionDay VARCHAR(32),
+  SessionLocation VARCHAR(32),
+  SessionSemester VARCHAR(32),
+  SessionType VARCHAR(32),
+  FOREIGN KEY (
+  				CourseId
+  			  )
+  REFERENCES CourseInfo(CourseId) ON DELETE NO ACTION
+  								  ON UPDATE NO ACTION
+  
+);
