@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS Student_Department_Registration_NoInfo(
+
+	DepartmentId INTEGER(5),
+	StudentId INTEGER(5),
+    RegistrationNo VARCHAR(32),
+    PRIMARY KEY(DepartmentId,StudentId),
+    FOREIGN KEY (
+  					DepartmentId
+  			    )
+  REFERENCES Department(DepartmentId)	ON DELETE NO ACTION
+  										ON UPDATE NO ACTION,
+  FOREIGN KEY (
+  				StudentId
+  		      )
+  REFERENCES Student(StudentId)	ON DELETE NO ACTION
+  						    	ON UPDATE NO ACTION
+  
+);

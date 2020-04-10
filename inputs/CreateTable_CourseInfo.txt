@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS CourseInfo(
+
+  CourseId INTEGER(5) PRIMARY KEY,
+  DepartmentId INTEGER(2),
+  PSDSFlag INTEGER(1),
+  LabFlag INTEGER(1),
+  FOREIGN KEY (
+  			   DepartmentId
+  			  )
+  REFERENCES Department(DepartmentId) ON DELETE NO ACTION
+  									  ON UPDATE NO ACTION
+  
+);
