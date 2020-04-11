@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS Courses(
+
+	CourseId INTEGER(4)         NOT NULL,
+    CourseSubject NVARCHAR(4),
+    CourseCatalog INTEGER(3),
+    CourseCareer NVARCHAR(4),
+    CourseAcadOrg NVARCHAR(7),
+    CourseDescr NVARCHAR(100),
+    CourseDescr2 NVARCHAR(100),
+
+    PRIMARY KEY(CourseId)
+
+);
+

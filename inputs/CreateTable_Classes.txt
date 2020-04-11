@@ -1,0 +1,28 @@
+CREATE TABLE IF NOT EXISTS Classes(
+
+    ClassId INTEGER             NOT NULL
+                                PRIMARY KEY
+                                AUTOINCREMENT,
+	ClassNbr INTEGER(4)	        NOT NULL,
+    ClassPatNbr INTEGER(2)      NOT NULL,
+    ClassCourseId INTEGER(4),
+    ClassComponent NVARCHAR(3),
+    ClassSection NVARCHAR(4),
+    --ClassInstructorRole NVARCHAR(2),
+    --ClassInstructorName NVARCHAR(100),
+    ClassMtgStart NVARCHAR(11),
+    ClassMtgEnd NVARCHAR(11),
+    ClassMon NVARCHAR(1),
+    ClassTues NVARCHAR(1),
+    ClassThurs NVARCHAR(1),
+    ClassFri NVARCHAR(1),
+    ClassTotEnrl INTEGER(3),
+    ClassCapEnrl INTEGER(3),
+
+    FOREIGN KEY (
+  				ClassCourseId
+  	    	  )
+    REFERENCES Courses(CourseId)	            ON DELETE NO ACTION
+  												ON UPDATE NO ACTION
+);
+

@@ -1,0 +1,20 @@
+insert into Classes (ClassNbr,
+    ClassPatNbr,
+    ClassCourseId,
+    ClassComponent,
+    ClassSection,
+    ClassMtgStart,
+    ClassMtgEnd,
+    ClassMon,
+    ClassTues,
+    ClassThurs,
+    ClassFri,
+    ClassTotEnrl,
+    ClassCapEnrl)
+select ClassNbr, PatNbr, CourseID, Component, Section,
+       MtgStart, MtgEnd,
+       Mon, Tues, Thurs, Fri,
+       TotEnrl, CapEnrl
+from CoursePlannerBIGGEST
+group by ClassNbr, PatNbr
+order by ClassNbr, PatNbr;
