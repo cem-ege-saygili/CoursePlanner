@@ -28,23 +28,33 @@ public class Main {
         String fPath = "inputs/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
         String sqlQuery_Create_Location = "inputs/sqlQuery_Create.txt";
         String sqlQuery_Insert_Location = "inputs/sqlQuery_Insert.txt";
+//        String sqlQuery_Insert2Table_Classes_Location = "inputs/Insert2Table_Classes.txt";
+//        String sqlQuery_Insert2Table_Instructors_Location = "inputs/Insert2Table_Instructors.txt";
+//        String sqlQuery_Insert2Table_Class_Instructor_Infos_Location = "inputs/Insert2Table_Class_Instructor_Infos.txt";
         List<String> sqlQueryLocationList2Create_NormalizedTables = new ArrayList<String>(
-                Arrays.asList("inputs/CreateTable_CourseCode.txt",
-                        "inputs/CreateTable_CourseTaken_Info.txt",
-                        "inputs/CreateTable_CourseTaken_StudentCourseInfo.txt",
-                        "inputs/CreateTable_Department.txt",
-                        "inputs/CreateTable_Session.txt",
-                        "inputs/CreateTable_SessionTime.txt",
-                        "inputs/CreateTable_Student_Department_Registraion_DateInfo.txt",
-                        "inputs/CreateTable_Student_Department_Registraion_NoInfo.txt",
-                        "inputs/CreateTable_Student.txt",
-                        "inputs/CreateTable_CourseInfo.txt")
+                Arrays.asList("inputs/CreateTable_Courses.txt",
+                        "inputs/CreateTable_Classes.txt",
+                        "inputs/CreateTable_Instructors.txt",
+                        "inputs/CreateTable_Class_Instructor_Infos.txt")
         );
+
+        List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables = new ArrayList<String>(
+                Arrays.asList("inputs/sqlQuery_CleanStart_DB.txt",
+                        "inputs/Insert2Table_Courses.txt",
+                        "inputs/Insert2Table_Classes.txt",
+                        "inputs/Insert2Table_Instructors.txt",
+                        "inputs/Insert2Table_Class_Instructor_Infos.txt")
+        );
+
         String dbName = "CoursePlannerDB2";
 
         CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
         CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
+
+        CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
+
+        System.out.println("asdasd");
 
         /*ArrayList<Course> cList = new ArrayList<Course>();
         Course c5 = new Course("E", 7, 8, 2);
@@ -280,6 +290,10 @@ public class Main {
 
     private static void CreateNormalizedTablesInDB(List<String> sqlQuery_Create_NormalizedTables, String dbName) {
         CreateTableInDB.createNewTablesFromList(dbName, sqlQuery_Create_NormalizedTables);
+    }
+
+    private static void CleanStartAndFill_NormalizedTables(List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables, String dbName) {
+        InsertIntoTableInDB.execQueriesFromList(dbName, sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
     }
 
 }

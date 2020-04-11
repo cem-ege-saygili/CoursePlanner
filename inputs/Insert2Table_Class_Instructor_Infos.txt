@@ -1,0 +1,9 @@
+insert into Class_Instructor_Infos (ClassId,
+                                    InstructorId,
+                                    ClassInstructorRole)
+select cl.ClassId, i.InstructorId, c.Role
+from CoursePlannerBIGGEST c
+inner join Instructors i on i.InstructorName = c.Name
+inner join Classes cl on cl.ClassNbr = c.ClassNbr and cl.ClassPatNbr = c.PatNbr
+group by cl.ClassId, i.InstructorId, c.Role
+order by cl.ClassId, i.InstructorId, c.Role;

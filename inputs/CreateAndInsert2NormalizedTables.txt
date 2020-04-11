@@ -1,0 +1,118 @@
+CREATE TABLE IF NOT EXISTS Courses(
+
+	CourseId INTEGER(4)         NOT NULL,
+    CourseSubject NVARCHAR(4),
+    CourseCatalog INTEGER(3),
+    CourseCareer NVARCHAR(4),
+    CourseAcadOrg NVARCHAR(7),
+    CourseDescr NVARCHAR(100),
+    CourseDescr2 NVARCHAR(100),
+
+    PRIMARY KEY(CourseId)
+
+);
+
+CREATE TABLE IF NOT EXISTS Classes(
+
+    ClassId INTEGER             NOT NULL
+                                PRIMARY KEY
+                                AUTOINCREMENT,
+	ClassNbr INTEGER(4)	        NOT NULL,
+    ClassPatNbr INTEGER(2)      NOT NULL,
+    ClassCourseId INTEGER(4),
+    ClassComponent NVARCHAR(3),
+    ClassSection NVARCHAR(4),
+    --ClassInstructorRole NVARCHAR(2),
+    --ClassInstructorName NVARCHAR(100),
+    ClassMtgStart NVARCHAR(11),
+    ClassMtgEnd NVARCHAR(11),
+    ClassMon NVARCHAR(1),
+    ClassTues NVARCHAR(1),
+    ClassThurs NVARCHAR(1),
+    ClassFri NVARCHAR(1),
+    ClassTotEnrl INTEGER(3),
+    ClassCapEnrl INTEGER(3),
+
+    FOREIGN KEY (
+  				ClassCourseId
+  	    	  )
+    REFERENCES Courses(CourseId)	            ON DELETE NO ACTION
+  												ON UPDATE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS Instructors(
+
+	InstructorId INTEGER        NOT NULL
+	                            PRIMARY KEY
+	                            AUTOINCREMENT,
+
+    InstructorName NVARCHAR(100)
+
+);
+
+CREATE TABLE IF NOT EXISTS Class_Instructor_Infos(
+
+	Class_Instructor_Info_Id    INTEGER
+	                            NOT NULL
+	                            PRIMARY KEY
+	                            AUTOINCREMENT,
+
+    ClassId                     INTEGER(4),
+    InstructorId                INTEGER(4),
+    ClassInstructorRole         NVARCHAR(2),
+
+    FOREIGN KEY (
+      				ClassId
+      			)
+    REFERENCES Classes(ClassId)     ON DELETE NO ACTION
+      							    ON UPDATE NO ACTION,
+    FOREIGN KEY (
+          		    InstructorId
+          	    )
+    REFERENCES Instructors(InstructorId)     ON DELETE NO ACTION
+          							         ON UPDATE NO ACTION
+
+);
+
+insert into Courses
+select CourseID, Subject, Catalog, Career, AcadOrg, Descr, Descr2
+from CoursePlannerBIGGEST
+group by CourseID
+ORDER BY CourseID;
+
+﻿insert into Classes (ClassNbr,
+    ClassPatNbr,
+    ClassCourseId,
+    ClassComponent,
+    ClassSection,
+    ClassMtgStart,
+    ClassMtgEnd,
+    ClassMon,
+    ClassTues,
+    ClassThurs,
+    ClassFri,
+    ClassTotEnrl,
+    ClassCapEnrl)
+select ClassNbr, PatNbr, CourseID, Component, Section,
+       MtgStart, MtgEnd,
+       Mon, Tues, Thurs, Fri,
+       TotEnrl, CapEnrl
+from CoursePlannerBIGGEST
+group by ClassNbr, PatNbr
+order by ClassNbr, PatNbr;
+
+﻿insert into Instructors (InstructorName)
+select DISTINCT name FROM CoursePlannerBIGGEST
+where name != ''
+order by name;
+
+﻿﻿insert into Class_Instructor_Infos (ClassId,
+                                    InstructorId,
+                                    ClassInstructorRole)
+select cl.ClassId, i.InstructorId, c.Role
+from CoursePlannerBIGGEST c
+inner join Instructors i on i.InstructorName = c.Name
+inner join Classes cl on cl.ClassNbr = c.ClassNbr and cl.ClassPatNbr = c.PatNbr
+group by cl.ClassId, i.InstructorId, c.Role
+order by cl.ClassId, i.InstructorId, c.Role;
+
