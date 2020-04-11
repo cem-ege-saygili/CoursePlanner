@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS Classes(
     ClassMtgEnd NVARCHAR(11),
     ClassMon NVARCHAR(1),
     ClassTues NVARCHAR(1),
+    ClassWed NVARCHAR(1),
     ClassThurs NVARCHAR(1),
     ClassFri NVARCHAR(1),
     ClassTotEnrl INTEGER(3),
