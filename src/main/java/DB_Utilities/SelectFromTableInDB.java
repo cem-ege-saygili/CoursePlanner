@@ -104,7 +104,10 @@ public class SelectFromTableInDB {
 
     }
 
-    public static List<String> SelectCourse_Career_AcadOrg_Descr_Descr2(String dbName, String sqlQueryLocation, String selectedCourseSubject, Integer selectedCourseCatalog){
+    public static List<String> SelectCourse_Career_AcadOrg_Descr_Descr2(String dbName,
+                                                                String sqlQueryLocation,
+                                                                String selectedCourseSubject,
+                                                                Integer selectedCourseCatalog){
 
 
         List<String> listResponseFromDB = new ArrayList<>();
@@ -152,6 +155,76 @@ public class SelectFromTableInDB {
         }
 
         return listResponseFromDB;
+
+    }
+
+    public static void SelectClassesOfOneCourse(String dbName,
+                                                              String sqlQueryLocation,
+                                                              String selectedCourseSubject,
+                                                              Integer selectedCourseCatalog,
+                                                              List<domain.Class>classListForTuple){
+
+        String url = "JDBC:sqlite:outputs/" + dbName + ".db";
+
+        ReadFile sqlQueryFile = new ReadFile(sqlQueryLocation);
+
+        //Statement stmt  = null;
+
+        try (Connection conn = DriverManager.getConnection(url);){
+
+            String sqlQuery =  sqlQueryFile.export2String();
+            //sqlQuery = sqlQuery.substring(1,sqlQuery.length());
+//                String str = ("SELECT DISTINCT CourseSubject\n" +
+//                        "FROM Courses\n" +
+//                        "ORDER BY CourseSubject;").substring(0,5);
+//
+//                System.out.println("\n" + sqlQuery.equals(str));
+
+            PreparedStatement pstmt = conn.prepareStatement(sqlQuery);
+            pstmt.setString(1, selectedCourseSubject);
+            pstmt.setInt(2, selectedCourseCatalog);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                int curId = rs.getInt("ClassId");
+                String curComponent = rs.getString("ClassComponent");
+                String curStartTime = rs.getString("ClassMtgStart");
+                String curEndTime = rs.getString("ClassMtgEnd");
+                boolean curMonFlag = rs.getString("ClassMon").equals("Y");
+                boolean curTuesFlag = rs.getString("ClassTues").equals("Y");
+                boolean curWedFlag = rs.getString("ClassWed").equals("Y");
+                boolean curThursFlag = rs.getString("ClassThurs").equals("Y");
+                boolean curFriFlag = rs.getString("ClassFri").equals("Y");
+                String curLocation = rs.getString("ClassFacilID");
+//                String curInstructorName = rs.getString("InstructorName");
+//                String curInstructorRole = rs.getString("ClassInstructorRole");
+
+                //rs.getString("name") + "\t" +
+                //rs.getDouble("capacity"));
+
+                domain.Class curClass = new domain.Class(
+                                        curId,
+                                        curComponent,
+                                        curStartTime,
+                                        curEndTime,
+                                        curMonFlag,
+                                        curTuesFlag,
+                                        curWedFlag,
+                                        curThursFlag,
+                                        curFriFlag,
+                                        curLocation
+//                                        curInstructorName,
+//                                        curInstructorRole
+                );
+
+                classListForTuple.add(curClass);
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 

@@ -1,6 +1,9 @@
 package domain;
 
-public class MtgTimeParser {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Parser {
 
     public static int ParseMtgTime2IntegerTimeStamp(String mtgTime){
 
@@ -108,6 +111,29 @@ public class MtgTimeParser {
                 return -1; //failed to convert mtg. time to integer time stamp :(
         }
 
+    }
+
+    public static List<String> ParseDayBooleans2List(
+            boolean monFlag,
+            boolean tuesFlag,
+            boolean wedFlag,
+            boolean thursFlag,
+            boolean friFlag
+    ){
+        List<String> dayAsString = new ArrayList<>();
+
+        if(monFlag)
+            dayAsString.add("Monday");
+        if(tuesFlag)
+            dayAsString.add("Tuesday");
+        if(wedFlag)
+            dayAsString.add("Wednesday");
+        if(thursFlag)
+            dayAsString.add("Thursday");
+        if(friFlag)
+            dayAsString.add("Friday");
+
+        return dayAsString;
     }
 
 }

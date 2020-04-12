@@ -11,11 +11,13 @@ insert into Classes (ClassNbr,
     ClassThurs,
     ClassFri,
     ClassTotEnrl,
-    ClassCapEnrl)
+    ClassCapEnrl,
+    ClassFacilID
+    )
 select ClassNbr, PatNbr, CourseID, Component, Section,
        MtgStart, MtgEnd,
        Mon, Tues, Wed, Thurs, Fri,
-       TotEnrl, CapEnrl
+       TotEnrl, CapEnrl, FacilID
 from CoursePlannerBIGGEST
 group by ClassNbr, PatNbr
 order by ClassNbr, PatNbr;
