@@ -142,7 +142,7 @@ public class Main {
 
 
         DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
-        JList lstCourses2BePlanned = new JList(lstCourses2BePlannedModel);
+        JList lstCourse2BePlanned = new JList(lstCourses2BePlannedModel);
 
 
 
@@ -206,16 +206,33 @@ public class Main {
             }
         });
 
-
-        List<List<String>> coursesInPlanningList = new ArrayList<List<String>>();
-        List<String> courseNamesInPlanningList = new ArrayList<String>();
+        List<CourseSubject_Catalog_Priority_Tuple> tupleList = new ArrayList<CourseSubject_Catalog_Priority_Tuple>();
 
         btnAdd2PlanningList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedCourseName = (String) courseSubjectsComboBox.getSelectedItem();
-                if(!courseNamesInPlanningList.contains(selectedCourseName)){
-                    String element2BeAdded = "";
+
+                String selectedCourseSubject = (String) courseSubjectsComboBox.getSelectedItem();
+                int selectedCourseCatalog = (int) courseCatalogsComboBox.getSelectedItem();
+                int selectedPriority = (int) priorityValuesComboBox.getSelectedItem();
+
+                CourseSubject_Catalog_Priority_Tuple courseTuple2BeAdded = new CourseSubject_Catalog_Priority_Tuple(
+                                                                    selectedCourseSubject,
+                                                                    selectedCourseCatalog,
+                                                                    selectedPriority);
+
+                String courseTuple2BeAdded_Subject = courseTuple2BeAdded.getSubject();
+                int courseTuple2BeAdded_Catalog = courseTuple2BeAdded.getCatalog();
+                int courseTuple2BeAdded_Priority = courseTuple2BeAdded.getPriority();
+
+                String element2BeAdded = "Subject: " + courseTuple2BeAdded_Subject
+                        + ", Catalog: " + courseTuple2BeAdded_Catalog
+                        + ", Priority: " + courseTuple2BeAdded_Priority;
+
+
+
+                if(!tupleList.contains(courseTuple2BeAdded)){
+
 //                    Integer[] selectedCourseTimeTable = timeTables.get(selectedCourseName);
 //                    Integer selectedCourseStartTime = selectedCourseTimeTable[0];
 //                    Integer selectedCourseEndTime = selectedCourseTimeTable[1];
@@ -228,8 +245,12 @@ public class Main {
 //                    arrList2BeAdded.add(selectedCourseStartTime.toString());arrList2BeAdded.add(selectedCourseEndTime.toString());
 //                    coursesInPlanningList.add(arrList2BeAdded);
 //                    courseNamesInPlanningList.add(selectedCourseName);
+                    tupleList.add(courseTuple2BeAdded);
+                    lstCourses2BePlannedModel.addElement(element2BeAdded);
+
                 }else{
-                    JOptionPane.showMessageDialog(btnAdd2PlanningList, selectedCourseName + " has already been added to the planning list!");
+                    JOptionPane.showMessageDialog(btnAdd2PlanningList, "\"" + courseTuple2BeAdded_Subject
+                            + " " + courseTuple2BeAdded_Catalog + "\" has already been added to the planning list!");
                 }
 
             }
@@ -238,11 +259,11 @@ public class Main {
         btnRemoveFromPlanningList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedElementIndex = lstCourses2BePlanned.getSelectedIndex();
+                int selectedElementIndex = lstCourse2BePlanned.getSelectedIndex();
                 if(selectedElementIndex != -1){
-                    coursesInPlanningList.remove(selectedElementIndex);
-                    courseNamesInPlanningList.remove(selectedElementIndex);
+                    tupleList.remove(selectedElementIndex);
                     lstCourses2BePlannedModel.removeElementAt(selectedElementIndex);
+                    //lstCourse2BePlanned.remove(selectedElementIndex);
                 }
 
             }
@@ -251,8 +272,14 @@ public class Main {
         btnClearPlanningList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                coursesInPlanningList.clear();
-                courseNamesInPlanningList.clear();
+
+                for(CourseSubject_Catalog_Priority_Tuple curTuple:tupleList){
+                    System.out.println(curTuple);
+                }
+
+                System.out.println("\n Has been cleared from the planning list!");
+
+                tupleList.clear();
                 lstCourses2BePlannedModel.clear();
 
                 System.out.println("Course Planning list has been cleared!");
@@ -295,11 +322,12 @@ public class Main {
         lblCourseDescr.setBounds(100,175,400,75);
         lblCourseDescr.setVerticalAlignment(JLabel.TOP);
 
-        btnAdd2PlanningList.setBounds(100,275,300,25);
+
         btnRemoveFromPlanningList.setBounds(100,250,300,25);
+        btnAdd2PlanningList.setBounds(100,275,300,25);
         btnClearPlanningList.setBounds(100,300,300,25);
 
-        lstCourses2BePlanned.setBounds(100, 350,300,250);
+        lstCourse2BePlanned.setBounds(100, 350,300,250);
 
         btnGenerateOptimumSchedule.setBounds(100,625,300,25);
 
@@ -307,7 +335,7 @@ public class Main {
         frame.add(lblCourseCatalog);frame.add(courseCatalogsComboBox);frame.add(lblCourseLevel);frame.add(lblCourseDescr);
         frame.add(btnAdd2PlanningList);frame.add(btnRemoveFromPlanningList);frame.add(btnGenerateOptimumSchedule);frame.add(btnClearPlanningList);
         frame.add(lblCourseFaculty);
-        frame.add(lstCourses2BePlanned);
+        frame.add(lstCourse2BePlanned);
         frame.setLayout(null);
         frame.setVisible(true);
 
@@ -331,31 +359,31 @@ public class Main {
 //        Scheduler s1 = new Scheduler(cList);
 //        s1.generateOptimumCoursePlan();
 
-        btnGenerateOptimumSchedule.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(courseNamesInPlanningList.size()!=0){
-                    for(List<String> course: coursesInPlanningList){
-                        String currentCourseName = course.get(0);
-                        Integer currentCoursePriority = Integer.valueOf(course.get(1));
-                        Integer currentCourseStartTime = Integer.valueOf(course.get(2));
-                        Integer currentCourseEndTime = Integer.valueOf(course.get(3));
-                        cList.add(new Course(currentCourseName, currentCourseStartTime,currentCourseEndTime,currentCoursePriority));
-                    }
-                    Scheduler s1 = new Scheduler(cList);
-                    s1.generateOptimumCoursePlan();
-                    cList.clear();
-                    //JOptionPane.showMessageDialog(null,s1.getOutput(),s1.getNumPlans() +" non-overlapping plans are found.", ModifiableJOptionPane.WARNING_MESSAGE);
-                    String message2BeDisplayed = s1.getOutput();
-                    JTextArea textArea = new JTextArea(25, 75);
-                    textArea.setText(message2BeDisplayed);
-                    textArea.setEditable(false);
-                    textArea.setCaretPosition(0);
-                    JScrollPane scrollPane = new JScrollPane(textArea);
-                    JOptionPane.showMessageDialog(null,scrollPane,s1.getNumPlans() +" non-overlapping plans are found.",JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
+//        btnGenerateOptimumSchedule.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                if(courseNamesInPlanningList.size()!=0){
+//                    for(List<String> course: coursesInPlanningList){
+//                        String currentCourseName = course.get(0);
+//                        Integer currentCoursePriority = Integer.valueOf(course.get(1));
+//                        Integer currentCourseStartTime = Integer.valueOf(course.get(2));
+//                        Integer currentCourseEndTime = Integer.valueOf(course.get(3));
+//                        cList.add(new Course(currentCourseName, currentCourseStartTime,currentCourseEndTime,currentCoursePriority));
+//                    }
+//                    Scheduler s1 = new Scheduler(cList);
+//                    s1.generateOptimumCoursePlan();
+//                    cList.clear();
+//                    //JOptionPane.showMessageDialog(null,s1.getOutput(),s1.getNumPlans() +" non-overlapping plans are found.", ModifiableJOptionPane.WARNING_MESSAGE);
+//                    String message2BeDisplayed = s1.getOutput();
+//                    JTextArea textArea = new JTextArea(25, 75);
+//                    textArea.setText(message2BeDisplayed);
+//                    textArea.setEditable(false);
+//                    textArea.setCaretPosition(0);
+//                    JScrollPane scrollPane = new JScrollPane(textArea);
+//                    JOptionPane.showMessageDialog(null,scrollPane,s1.getNumPlans() +" non-overlapping plans are found.",JOptionPane.WARNING_MESSAGE);
+//                }
+//            }
+//        });
 
 
 
