@@ -366,12 +366,13 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(tupleList.size()!= 0){
+
+                    classList.clear();
+
                     for(CourseSubject_Catalog_Priority_Tuple curTuple: tupleList){
 
                         String curCourseSubject = curTuple.getSubject();
                         int curCourseCatalog = curTuple.getCatalog();
-
-                        classList.clear();
 
                         SelectFromTableInDB.SelectClassesOfOneCourse(
                                 dbName,
