@@ -1,10 +1,6 @@
 package domain;
 
-import DB_Utilities.CreateDB;
-import DB_Utilities.CreateTableInDB;
-import DB_Utilities.ExecuteDropDB;
-import DB_Utilities.InsertIntoTableInDB;
-import domain.*;
+import DB_Utilities.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,6 +24,11 @@ public class Main {
         String fPath = "inputs/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
         String sqlQuery_Create_Location = "inputs/sqlQuery_Create.txt";
         String sqlQuery_Insert_Location = "inputs/sqlQuery_Insert.txt";
+        String sqlQuery_SelectDistinctCourseSubjects_Location = "inputs/sqlQuery_selectDistinctCourseSubjects.sql";
+        String sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location = "inputs/sqlQuery_selectCourseCatalogsOfChosenCourseSubject.sql";
+        String sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location = "inputs/sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog.sql";
+
+
 //        String sqlQuery_Insert2Table_Classes_Location = "inputs/Insert2Table_Classes.txt";
 //        String sqlQuery_Insert2Table_Instructors_Location = "inputs/Insert2Table_Instructors.txt";
 //        String sqlQuery_Insert2Table_Class_Instructor_Infos_Location = "inputs/Insert2Table_Class_Instructor_Infos.txt";
@@ -48,11 +49,11 @@ public class Main {
 
         String dbName = "CoursePlannerDB2";
 
-        CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
+        //CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
-        CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
+        //CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
 
-        CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
+        //CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
 
         System.out.println("asdasd");
 
@@ -70,23 +71,69 @@ public class Main {
         cList.add(c1);
         cList.add(c4); cList.add(c5);*/
 
-        String[] courseNames = new String[] {"A", "B",
-                "C", "D", "E", "F", "G"};
+//        String[] courseSubjectList = new String[] {"A", "B",
+//                "C", "D", "E", "F", "G"};
 
 
-        Map<String, Integer[]> timeTables = new HashMap<String, Integer[]>();
-        timeTables.put("A", new Integer[]{1, 2} );
-        timeTables.put("B", new Integer[]{1, 4} );
-        timeTables.put("C", new Integer[]{3, 4} );
-        timeTables.put("D", new Integer[]{3, 7} );
-        timeTables.put("E", new Integer[]{7, 8} );
-        timeTables.put("F", new Integer[]{11, 14} );
-        timeTables.put("G", new Integer[]{13, 14} );
+//        Map<String, Integer[]> timeTables = new HashMap<String, Integer[]>();
+//        timeTables.put("A", new Integer[]{1, 2} );
+//        timeTables.put("B", new Integer[]{1, 4} );
+//        timeTables.put("C", new Integer[]{3, 4} );
+//        timeTables.put("D", new Integer[]{3, 7} );
+//        timeTables.put("E", new Integer[]{7, 8} );
+//        timeTables.put("F", new Integer[]{11, 14} );
+//        timeTables.put("G", new Integer[]{13, 14} );
 
         Integer[] priorityValues = new Integer[] {1,2,3,4,5};
 
-        JComboBox<String> courseNamesComboBox = new JComboBox<>(courseNames);
+        List<String> courseSubjectList = new ArrayList<>();
+        List<Integer> courseCatalogList = new ArrayList<>();
+
+        SelectFromTableInDB.SelectDistinctCourseSubjects(dbName, sqlQuery_SelectDistinctCourseSubjects_Location, courseSubjectList);
+
+        String[] courseSubjectsArr = new String[courseSubjectList.size()];
+        courseSubjectsArr = courseSubjectList.toArray(courseSubjectsArr);
+
+        JComboBox<String> courseSubjectsComboBox = new JComboBox<>(courseSubjectsArr);
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
+
+        SelectFromTableInDB.SelectCourseCatalogsOfChosenCourseSubject(dbName, sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location,
+                                        courseCatalogList,(String) courseSubjectsComboBox.getSelectedItem());
+
+        Integer[] courseCatalogsArr = new Integer[courseCatalogList.size()];
+        courseCatalogsArr = courseCatalogList.toArray(courseCatalogsArr);
+
+        JComboBox<Integer> courseCatalogsComboBox = new JComboBox<>(courseCatalogsArr);
+
+        JLabel lblCourseSubject = new JLabel();
+        lblCourseSubject.setText("Course Subject: ");
+
+        JLabel lblCourseCatalog = new JLabel();
+        lblCourseCatalog.setText("Course Catalog: ");
+
+        JLabel lblPriority = new JLabel();
+        lblPriority.setText("Priority: ");
+
+        JLabel lblCourseFaculty = new JLabel();
+        lblCourseFaculty.setText("Course Faculty: ");
+
+        JLabel lblCourseLevel = new JLabel();
+        lblCourseLevel.setText("Course Level: ");
+
+        JLabel lblCourseDescr = new JLabel();
+        lblCourseDescr.setText("Course Description: ");
+
+        UpdateLabelsFromDB(
+
+                dbName,
+                sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
+                courseSubjectsComboBox,
+                courseCatalogsComboBox,
+                lblCourseLevel,
+                lblCourseFaculty,
+                lblCourseDescr
+
+        );
 
         JButton btnAdd2PlanningList = new JButton("Add Course to the Planning List");
         JButton btnRemoveFromPlanningList = new JButton("Remove Selected from the Planning List");
@@ -98,31 +145,67 @@ public class Main {
         JList lstCourses2BePlanned = new JList(lstCourses2BePlannedModel);
 
 
-        JLabel lblCourseName = new JLabel();
-        lblCourseName.setText("Course Name: ");
-        JLabel lblPriority = new JLabel();
-        lblPriority.setText("Priority: ");
-        JLabel lblStartTime = new JLabel();
 
-        Integer curTimeStart = timeTables.get((String)courseNamesComboBox.getSelectedItem())[0];
-        Integer curTimeEnd = timeTables.get((String)courseNamesComboBox.getSelectedItem())[1];
 
-        lblStartTime.setText("Starts at: " + curTimeStart);
-        JLabel lblEndTime = new JLabel();
-        lblEndTime.setText("Ends at: " + curTimeEnd);
+//        Integer curTimeStart = timeTables.get((String)courseSubjectsComboBox.getSelectedItem())[0];
+//        Integer curTimeEnd = timeTables.get((String)courseSubjectsComboBox.getSelectedItem())[1];
 
-        courseNamesComboBox.addItemListener(new ItemListener() {
+//        lblStartTime.setText("Starts at: " + curTimeStart);
+//        lblEndTime.setText("Ends at: " + curTimeEnd);
+
+        courseSubjectsComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == ItemEvent.SELECTED){
-                    String curCourseName = (String) e.getItem();
-                    Integer curTimeStart = timeTables.get((String)courseNamesComboBox.getSelectedItem())[0];
-                    Integer curTimeEnd = timeTables.get((String)courseNamesComboBox.getSelectedItem())[1];
-                    lblStartTime.setText("Starts at: " + curTimeStart);
-                    lblEndTime.setText("Ends at: " + curTimeEnd);
+                    String curCourseSubject = (String) e.getItem();
+                    SelectFromTableInDB.SelectCourseCatalogsOfChosenCourseSubject(dbName, sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location,
+                            courseCatalogList, curCourseSubject);
+
+                    courseCatalogsComboBox.removeAllItems();
+
+                    for(int curCatalog:courseCatalogList){
+                        courseCatalogsComboBox.addItem(curCatalog);
+                    }
+
+                    UpdateLabelsFromDB(
+
+                            dbName,
+                            sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
+                            courseSubjectsComboBox,
+                            courseCatalogsComboBox,
+                            lblCourseLevel,
+                            lblCourseFaculty,
+                            lblCourseDescr
+
+                    );
+//                    Integer curTimeStart = timeTables.get((String)courseSubjectsComboBox.getSelectedItem())[0];
+//                    Integer curTimeEnd = timeTables.get((String)courseSubjectsComboBox.getSelectedItem())[1];
+//                    lblStartTime.setText("Starts at: " + curTimeStart);
+//                    lblEndTime.setText("Ends at: " + curTimeEnd);
                 }
             }
         });
+
+        courseCatalogsComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+                    int curCourseCatalog = (int) e.getItem();
+                    UpdateLabelsFromDB(
+
+                            dbName,
+                            sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
+                            courseSubjectsComboBox,
+                            courseCatalogsComboBox,
+                            lblCourseLevel,
+                            lblCourseFaculty,
+                            lblCourseDescr
+
+                    );
+                }
+            }
+        });
+
 
         List<List<String>> coursesInPlanningList = new ArrayList<List<String>>();
         List<String> courseNamesInPlanningList = new ArrayList<String>();
@@ -130,21 +213,21 @@ public class Main {
         btnAdd2PlanningList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedCourseName = (String) courseNamesComboBox.getSelectedItem();
+                String selectedCourseName = (String) courseSubjectsComboBox.getSelectedItem();
                 if(!courseNamesInPlanningList.contains(selectedCourseName)){
                     String element2BeAdded = "";
-                    Integer[] selectedCourseTimeTable = timeTables.get(selectedCourseName);
-                    Integer selectedCourseStartTime = selectedCourseTimeTable[0];
-                    Integer selectedCourseEndTime = selectedCourseTimeTable[1];
-                    Integer selectedCoursePriority = (Integer) priorityValuesComboBox.getSelectedItem();
-                    element2BeAdded += selectedCourseName + " with priority: " + selectedCoursePriority + ", from: t" + selectedCourseStartTime
-                            + ", to: t" + selectedCourseEndTime;
-                    lstCourses2BePlannedModel.addElement(element2BeAdded);
-                    ArrayList<String> arrList2BeAdded = new ArrayList<String>();
-                    arrList2BeAdded.add(selectedCourseName);arrList2BeAdded.add(selectedCoursePriority.toString());
-                    arrList2BeAdded.add(selectedCourseStartTime.toString());arrList2BeAdded.add(selectedCourseEndTime.toString());
-                    coursesInPlanningList.add(arrList2BeAdded);
-                    courseNamesInPlanningList.add(selectedCourseName);
+//                    Integer[] selectedCourseTimeTable = timeTables.get(selectedCourseName);
+//                    Integer selectedCourseStartTime = selectedCourseTimeTable[0];
+//                    Integer selectedCourseEndTime = selectedCourseTimeTable[1];
+//                    Integer selectedCoursePriority = (Integer) priorityValuesComboBox.getSelectedItem();
+//                    element2BeAdded += selectedCourseName + " with priority: " + selectedCoursePriority + ", from: t" + selectedCourseStartTime
+//                            + ", to: t" + selectedCourseEndTime;
+//                    lstCourses2BePlannedModel.addElement(element2BeAdded);
+//                    ArrayList<String> arrList2BeAdded = new ArrayList<String>();
+//                    arrList2BeAdded.add(selectedCourseName);arrList2BeAdded.add(selectedCoursePriority.toString());
+//                    arrList2BeAdded.add(selectedCourseStartTime.toString());arrList2BeAdded.add(selectedCourseEndTime.toString());
+//                    coursesInPlanningList.add(arrList2BeAdded);
+//                    courseNamesInPlanningList.add(selectedCourseName);
                 }else{
                     JOptionPane.showMessageDialog(btnAdd2PlanningList, selectedCourseName + " has already been added to the planning list!");
                 }
@@ -192,22 +275,27 @@ public class Main {
 
 
 
-        JFrame frame = new JFrame("CourseScheduler v.1");
+        JFrame frame = new JFrame("CourseScheduler v.2");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500,720);
 
         //int yInc = 25;
 
-        lblCourseName.setBounds(100, 50, 100,25);
-        courseNamesComboBox.setBounds(250,50,150,25);
+        lblCourseSubject.setBounds(100, 50, 150,25);
+        courseSubjectsComboBox.setBounds(250,50,150,25);
+
+        lblCourseCatalog.setBounds(100, 75, 150,25);
+        courseCatalogsComboBox.setBounds(250,75,150,25);
 
         lblPriority.setBounds(100,100,100,25);
         priorityValuesComboBox.setBounds(250,100,150,25);
 
-        lblStartTime.setBounds(100,150,100,25);
-        lblEndTime.setBounds(250,150,100,25);
+        lblCourseFaculty.setBounds(100,125,400,25);
+        lblCourseLevel.setBounds(100,150,400,25);
+        lblCourseDescr.setBounds(100,175,400,75);
+        lblCourseDescr.setVerticalAlignment(JLabel.TOP);
 
-        btnAdd2PlanningList.setBounds(100,200,300,25);
+        btnAdd2PlanningList.setBounds(100,275,300,25);
         btnRemoveFromPlanningList.setBounds(100,250,300,25);
         btnClearPlanningList.setBounds(100,300,300,25);
 
@@ -215,9 +303,10 @@ public class Main {
 
         btnGenerateOptimumSchedule.setBounds(100,625,300,25);
 
-        frame.add(lblCourseName);frame.add(courseNamesComboBox);frame.add(lblPriority);frame.add(priorityValuesComboBox);
-        frame.add(lblStartTime);frame.add(lblEndTime);
+        frame.add(lblCourseSubject);frame.add(courseSubjectsComboBox);frame.add(lblPriority);frame.add(priorityValuesComboBox);
+        frame.add(lblCourseCatalog);frame.add(courseCatalogsComboBox);frame.add(lblCourseLevel);frame.add(lblCourseDescr);
         frame.add(btnAdd2PlanningList);frame.add(btnRemoveFromPlanningList);frame.add(btnGenerateOptimumSchedule);frame.add(btnClearPlanningList);
+        frame.add(lblCourseFaculty);
         frame.add(lstCourses2BePlanned);
         frame.setLayout(null);
         frame.setVisible(true);
@@ -294,6 +383,51 @@ public class Main {
 
     private static void CleanStartAndFill_NormalizedTables(List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables, String dbName) {
         InsertIntoTableInDB.execQueriesFromList(dbName, sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
+    }
+
+    private static void UpdateLabelsFromDB(String dbName,
+                                           String sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
+                                           JComboBox<String> courseSubjectsComboBox,
+                                           JComboBox<Integer> courseCatalogsComboBox,
+                                           JLabel lblCourseLevel,
+                                           JLabel lblCourseFaculty,
+                                           JLabel lblCourseDescr) {
+
+        String defaultCourseFacultyLabel = "Course Faculty: ";
+        String defaultCourseLevelLabel = "Course Level: ";
+        String defaultCourseDescrLabel = "Course Description: ";
+
+        List<String> strListCourse_Career_AcadOrg_Descr_Descr2 = SelectFromTableInDB.SelectCourse_Career_AcadOrg_Descr_Descr2(
+                dbName,
+                sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
+                (String) courseSubjectsComboBox.getSelectedItem(),
+                (Integer)courseCatalogsComboBox.getSelectedItem()
+        );
+
+        String CourseCareerInfo = strListCourse_Career_AcadOrg_Descr_Descr2.get(0);
+        String CourseAcadCareerInfo = strListCourse_Career_AcadOrg_Descr_Descr2.get(1);
+        String CourseDescrInfo = strListCourse_Career_AcadOrg_Descr_Descr2.get(2);
+        String CourseDescr2Info = strListCourse_Career_AcadOrg_Descr_Descr2.get(3);
+
+        lblCourseLevel.setText("<html>"
+                + defaultCourseLevelLabel
+                + "<font face=\"verdana\" color=\"green\"><b><i>"
+                + CourseCareerInfo
+                + "</i></b></font></html>");
+
+        lblCourseFaculty.setText("<html>"
+                + defaultCourseFacultyLabel
+                + "<font face=\"verdana\" color=\"green\"><b><i>"
+                + CourseAcadCareerInfo
+                + "</i></b></font></hmtl>");
+
+        lblCourseDescr.setText("<html>"
+                + defaultCourseDescrLabel
+                + "<br><font face=\"verdana\" color=\"green\"><b><i>"
+                + CourseDescrInfo
+                + "</i></b></font><br><font face=\"verdana\" color=\"green\"><b><i>"
+                + CourseDescr2Info
+                + "</i></b></font></hmtl>");
     }
 
 }
