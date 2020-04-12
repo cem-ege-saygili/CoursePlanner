@@ -28,6 +28,7 @@ public class Main {
         String sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location = "inputs/sqlQuery_selectCourseCatalogsOfChosenCourseSubject.sql";
         String sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location = "inputs/sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog.sql";
 
+        String sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location = "inputs/sqlQuery_selectClassesInfoFromCourseSubject_Catalog.sql";
 
 //        String sqlQuery_Insert2Table_Classes_Location = "inputs/Insert2Table_Classes.txt";
 //        String sqlQuery_Insert2Table_Instructors_Location = "inputs/Insert2Table_Instructors.txt";
@@ -359,17 +360,27 @@ public class Main {
 //        Scheduler s1 = new Scheduler(cList);
 //        s1.generateOptimumCoursePlan();
 
-//        btnGenerateOptimumSchedule.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                if(courseNamesInPlanningList.size()!=0){
-//                    for(List<String> course: coursesInPlanningList){
-//                        String currentCourseName = course.get(0);
-//                        Integer currentCoursePriority = Integer.valueOf(course.get(1));
-//                        Integer currentCourseStartTime = Integer.valueOf(course.get(2));
-//                        Integer currentCourseEndTime = Integer.valueOf(course.get(3));
-//                        cList.add(new Course(currentCourseName, currentCourseStartTime,currentCourseEndTime,currentCoursePriority));
-//                    }
+        List<domain.Class> classList = new ArrayList<>();
+
+        btnGenerateOptimumSchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(tupleList.size()!= 0){
+                    for(CourseSubject_Catalog_Priority_Tuple curTuple: tupleList){
+
+                        String curCourseSubject = curTuple.getSubject();
+                        int curCourseCatalog = curTuple.getCatalog();
+
+                        classList.clear();
+
+                        SelectFromTableInDB.SelectClassesOfOneCourse(
+                                dbName,
+                                sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location,
+                                curCourseSubject,
+                                curCourseCatalog,
+                                classList
+                        );
+                    }
 //                    Scheduler s1 = new Scheduler(cList);
 //                    s1.generateOptimumCoursePlan();
 //                    cList.clear();
@@ -381,9 +392,14 @@ public class Main {
 //                    textArea.setCaretPosition(0);
 //                    JScrollPane scrollPane = new JScrollPane(textArea);
 //                    JOptionPane.showMessageDialog(null,scrollPane,s1.getNumPlans() +" non-overlapping plans are found.",JOptionPane.WARNING_MESSAGE);
-//                }
-//            }
-//        });
+
+                    for(domain.Class curClass:classList){
+                        System.out.println(curClass);
+                    }
+
+                }
+            }
+        });
 
 
 
