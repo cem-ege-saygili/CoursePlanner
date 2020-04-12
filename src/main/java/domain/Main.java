@@ -49,11 +49,11 @@ public class Main {
 
         String dbName = "CoursePlannerDB2";
 
-        //CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
+        CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
-        //CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
+        CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
 
-        //CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
+        CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
 
         System.out.println("asdasd");
 
