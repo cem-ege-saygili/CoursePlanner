@@ -1,5 +1,8 @@
 package DB_Utilities;
 
+import domain.EnrollmentDetailsPair;
+import domain.InstructorNameRolePair;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -197,11 +200,22 @@ public class SelectFromTableInDB {
                 boolean curThursFlag = rs.getString("ClassThurs").equals("Y");
                 boolean curFriFlag = rs.getString("ClassFri").equals("Y");
                 String curLocation = rs.getString("ClassFacilID");
+                List<InstructorNameRolePair> instructorNameRolePairs = new ArrayList<>();
+
+                FillInstructorNameRolePairsWithClassId(dbName, curId, instructorNameRolePairs);
+
 //                String curInstructorName = rs.getString("InstructorName");
 //                String curInstructorRole = rs.getString("ClassInstructorRole");
 
                 //rs.getString("name") + "\t" +
                 //rs.getDouble("capacity"));
+
+
+                EnrollmentDetailsPair edPair = GetEnrollmentDetailsPairWithCourseSubjectCatalogAndClassId(dbName,selectedCourseSubject,
+                                                                                                            selectedCourseCatalog,curId);
+
+                int curTotlEnrl = edPair.getTotlEnrl();
+                int curCapEnrl = edPair.getCapEnrl();
 
                 domain.Class curClass = new domain.Class(
                                         curId,
@@ -213,7 +227,12 @@ public class SelectFromTableInDB {
                                         curWedFlag,
                                         curThursFlag,
                                         curFriFlag,
-                                        curLocation
+                                        curLocation,
+                                        instructorNameRolePairs,
+                                        selectedCourseSubject,
+                                        selectedCourseCatalog,
+                                        curTotlEnrl,
+                                        curCapEnrl
 //                                        curInstructorName,
 //                                        curInstructorRole
                 );
@@ -225,6 +244,84 @@ public class SelectFromTableInDB {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+
+    }
+
+    public static void FillInstructorNameRolePairsWithClassId(String dbName, int classId, List<InstructorNameRolePair> instructorNameRolePairs){
+
+
+        String url = "JDBC:sqlite:outputs/" + dbName + ".db";
+
+        String sqlQueryLocation = "inputs/sqlQuery_selectInstructorNamesAndRolesFromClassId.sql";
+
+        ReadFile sqlQueryFile = new ReadFile(sqlQueryLocation);
+
+        //Statement stmt  = null;
+
+        try (Connection conn = DriverManager.getConnection(url);){
+
+            String sqlQuery =  sqlQueryFile.export2String();
+            PreparedStatement pstmt = conn.prepareStatement(sqlQuery);
+            pstmt.setInt(1, classId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String curInstructorName = rs.getString("InstructorName");
+                String curClassInstructorRole = rs.getString("ClassInstructorRole");
+
+
+                InstructorNameRolePair curInstructorNameRolePair  = new InstructorNameRolePair( curInstructorName,
+                                                                                                curClassInstructorRole);
+                instructorNameRolePairs.add(curInstructorNameRolePair);
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+
+
+    }
+
+    public static EnrollmentDetailsPair GetEnrollmentDetailsPairWithCourseSubjectCatalogAndClassId(String dbName, String courseSubject, int courseCatalog, int classId){
+
+
+        String url = "JDBC:sqlite:outputs/" + dbName + ".db";
+
+        String sqlQueryLocation = "inputs/sqlQuery_selectClassTotEnrlAndCapEnrlFromCourseSubjectCatalogAndClassId.sql";
+
+        ReadFile sqlQueryFile = new ReadFile(sqlQueryLocation);
+
+        //Statement stmt  = null;
+        EnrollmentDetailsPair edPair = null;
+
+        try (Connection conn = DriverManager.getConnection(url);){
+
+            String sqlQuery =  sqlQueryFile.export2String();
+            PreparedStatement pstmt = conn.prepareStatement(sqlQuery);
+            pstmt.setString(1, courseSubject);
+            pstmt.setInt(2, courseCatalog);
+            pstmt.setInt(3, classId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                int classTotalEnrl = rs.getInt("ClassTotEnrl");
+                int classCapEnrl = rs.getInt("ClassCapEnrl");
+
+                edPair = new EnrollmentDetailsPair(classTotalEnrl, classCapEnrl);
+
+                break;
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return edPair;
 
     }
 

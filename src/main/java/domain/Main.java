@@ -37,7 +37,8 @@ public class Main {
                 Arrays.asList("inputs/CreateTable_Courses.txt",
                         "inputs/CreateTable_Classes.txt",
                         "inputs/CreateTable_Instructors.txt",
-                        "inputs/CreateTable_Class_Instructor_Infos.txt")
+                        "inputs/CreateTable_Class_Instructor_Infos.txt",
+                        "inputs/CreateTable_Class_Course_Infos.txt")
         );
 
         List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables = new ArrayList<String>(
@@ -45,7 +46,8 @@ public class Main {
                         "inputs/Insert2Table_Courses.txt",
                         "inputs/Insert2Table_Classes.txt",
                         "inputs/Insert2Table_Instructors.txt",
-                        "inputs/Insert2Table_Class_Instructor_Infos.txt")
+                        "inputs/Insert2Table_Class_Instructor_Infos.txt",
+                        "inputs/Insert2Table_Class_Course_Infos.txt")
         );
 
         String dbName = "CoursePlannerDB2";
@@ -207,7 +209,10 @@ public class Main {
             }
         });
 
+
         List<CourseSubject_Catalog_Priority_Tuple> tupleList = new ArrayList<CourseSubject_Catalog_Priority_Tuple>();
+        List<List<domain.Class>> classesList = new ArrayList<>();
+
 
         btnAdd2PlanningList.addActionListener(new ActionListener() {
             @Override
@@ -232,7 +237,7 @@ public class Main {
 
 
 
-                if(!tupleList.contains(courseTuple2BeAdded)){
+                if(!tupleList.contains(courseTuple2BeAdded)){// CHECKING for ELEC317 vs. ELEC317 case. (i.e. attempt for adding the same course)
 
 //                    Integer[] selectedCourseTimeTable = timeTables.get(selectedCourseName);
 //                    Integer selectedCourseStartTime = selectedCourseTimeTable[0];
@@ -246,6 +251,30 @@ public class Main {
 //                    arrList2BeAdded.add(selectedCourseStartTime.toString());arrList2BeAdded.add(selectedCourseEndTime.toString());
 //                    coursesInPlanningList.add(arrList2BeAdded);
 //                    courseNamesInPlanningList.add(selectedCourseName);
+
+                    List<domain.Class> classListForTuple = new ArrayList<>();
+
+                    PutClassesFromDB2cList(courseTuple2BeAdded, classListForTuple, dbName, sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location);
+
+
+                    for(int i=0;i<classesList.size();i++){// CHECKING for ELEC317 vs. COMP317 case. (i.e. courses with same classes)
+                        List<domain.Class> curClassList = classesList.get(i);
+                        for(domain.Class curClass:classListForTuple){
+                            if(curClassList.contains(curClass)){
+                                CourseSubject_Catalog_Priority_Tuple tupleAlreadyAdded = tupleList.get(i);
+                                String subjectAlreadyAdded = tupleAlreadyAdded.getSubject();
+                                int catalogAlreadyAdded = tupleAlreadyAdded.getCatalog();
+                                String subject2BeAdded = courseTuple2BeAdded.getSubject();
+                                int catalog2BeAdded = courseTuple2BeAdded.getCatalog();
+                                JOptionPane.showMessageDialog(btnAdd2PlanningList, "\""  + subject2BeAdded
+                                        + " " + catalog2BeAdded + "\" has already been added to the planning list as follows: "
+                                        + "\""  +subjectAlreadyAdded + " " +  catalogAlreadyAdded+ "\"");
+                                return;
+                            }
+                        }
+                    }
+
+                    classesList.add(classListForTuple);
                     tupleList.add(courseTuple2BeAdded);
                     lstCourses2BePlannedModel.addElement(element2BeAdded);
 
@@ -253,6 +282,8 @@ public class Main {
                     JOptionPane.showMessageDialog(btnAdd2PlanningList, "\"" + courseTuple2BeAdded_Subject
                             + " " + courseTuple2BeAdded_Catalog + "\" has already been added to the planning list!");
                 }
+
+                PrinOutClassesList(classesList);
 
             }
         });
@@ -264,8 +295,11 @@ public class Main {
                 if(selectedElementIndex != -1){
                     tupleList.remove(selectedElementIndex);
                     lstCourses2BePlannedModel.removeElementAt(selectedElementIndex);
+                    classesList.remove(selectedElementIndex);
                     //lstCourse2BePlanned.remove(selectedElementIndex);
                 }
+
+                PrinOutClassesList(classesList);
 
             }
         });
@@ -281,6 +315,7 @@ public class Main {
                 System.out.println("\n Has been cleared from the planning list!");
 
                 tupleList.clear();
+                classesList.clear();
                 lstCourses2BePlannedModel.clear();
 
                 System.out.println("Course Planning list has been cleared!");
@@ -360,28 +395,44 @@ public class Main {
 //        Scheduler s1 = new Scheduler(cList);
 //        s1.generateOptimumCoursePlan();
 
-        List<domain.Class> classList = new ArrayList<>();
-
         btnGenerateOptimumSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(tupleList.size()!= 0){
 
-                    classList.clear();
+            }
+        });
 
-                    for(CourseSubject_Catalog_Priority_Tuple curTuple: tupleList){
 
-                        String curCourseSubject = curTuple.getSubject();
-                        int curCourseCatalog = curTuple.getCatalog();
 
-                        SelectFromTableInDB.SelectClassesOfOneCourse(
-                                dbName,
-                                sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location,
-                                curCourseSubject,
-                                curCourseCatalog,
-                                classList
-                        );
-                    }
+    }
+
+    private static void PrinOutClassesList(List<List<Class>> classesList) {
+
+        System.out.println("-------");
+
+        int i = 0;
+
+        for (List<Class> cList : classesList) {
+
+            System.out.println("\nCLASS LIST:" + ++i + " \n\n" + cList);
+        }
+    }
+
+    private static void PutClassesFromDB2cList(CourseSubject_Catalog_Priority_Tuple tuple, List<Class> classList, String dbName, String sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location) {
+
+            classList.clear();
+
+
+                String tupleCourseSubject = tuple.getSubject();
+                int tupleCourseCatalog = tuple.getCatalog();
+
+                SelectFromTableInDB.SelectClassesOfOneCourse(
+                        dbName,
+                        sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location,
+                        tupleCourseSubject,
+                        tupleCourseCatalog,
+                        classList
+                );
 //                    Scheduler s1 = new Scheduler(cList);
 //                    s1.generateOptimumCoursePlan();
 //                    cList.clear();
@@ -394,16 +445,9 @@ public class Main {
 //                    JScrollPane scrollPane = new JScrollPane(textArea);
 //                    JOptionPane.showMessageDialog(null,scrollPane,s1.getNumPlans() +" non-overlapping plans are found.",JOptionPane.WARNING_MESSAGE);
 
-                    for(domain.Class curClass:classList){
-                        System.out.println(curClass);
-                    }
-
-                }
-            }
-        });
-
-
-
+//            for(Class curClass:classList){
+//                System.out.println(curClass);
+//            }
     }
 
     private static void CreateAndFill_DB_from_CSV(List<ClassInfo> classInfoList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, String dbName) {
