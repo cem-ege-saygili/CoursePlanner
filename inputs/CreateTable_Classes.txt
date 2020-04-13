@@ -3,9 +3,9 @@ CREATE TABLE IF NOT EXISTS Classes(
     ClassId INTEGER             NOT NULL
                                 PRIMARY KEY
                                 AUTOINCREMENT,
-	ClassNbr INTEGER(4)	        NOT NULL,
-    ClassPatNbr INTEGER(2)      NOT NULL,
-    ClassCourseId INTEGER(4),
+	--ClassNbr INTEGER(4)	        NOT NULL,
+    --ClassPatNbr INTEGER(2)      NOT NULL,
+    --ClassCourseId INTEGER(4),
     ClassComponent NVARCHAR(3),
     ClassSection NVARCHAR(4),
     --ClassInstructorRole NVARCHAR(2),
@@ -17,14 +17,15 @@ CREATE TABLE IF NOT EXISTS Classes(
     ClassWed NVARCHAR(1),
     ClassThurs NVARCHAR(1),
     ClassFri NVARCHAR(1),
-    ClassTotEnrl INTEGER(3),
-    ClassCapEnrl INTEGER(3),
-    ClassFacilID NVARCHAR(100),
+    --ClassTotEnrl INTEGER(3),
+    --ClassCapEnrl INTEGER(3),
+    ClassFacilID NVARCHAR(100)
+    --,
 
-    FOREIGN KEY (
-  				ClassCourseId
-  	    	  )
-    REFERENCES Courses(CourseId)	            ON DELETE NO ACTION
-  												ON UPDATE NO ACTION
+    --FOREIGN KEY (
+  	--			ClassCourseId
+  	--    	  )
+    --REFERENCES Courses(CourseId)	            ON DELETE NO ACTION
+  	--											ON UPDATE NO ACTION
 );
 

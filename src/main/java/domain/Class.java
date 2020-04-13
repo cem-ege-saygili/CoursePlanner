@@ -14,6 +14,11 @@ public class Class {
     private boolean thursFlag;
     private boolean friFlag;
     private String location;
+    private List<InstructorNameRolePair> instructorNameRolePairs;
+    private String courseName;
+    private int courseCatalog;
+    private int totlEnrl;
+    private int capEnrl;
 //    private String instructorName;
 //    private String instructorRole;
 
@@ -27,7 +32,13 @@ public class Class {
             boolean wedFlag,
             boolean thursFlag,
             boolean friFlag,
-            String location
+            String location,
+            List<InstructorNameRolePair> instructorNameRolePairs,
+            String courseName,
+            int courseCatalog,
+            int totlEnrl,
+            int capEnrl
+
 //            String instructorName,
 //            String instructorRole
     ){
@@ -42,6 +53,11 @@ public class Class {
         this.thursFlag = thursFlag;
         this.friFlag = friFlag;
         this.location = location;
+        this.instructorNameRolePairs = instructorNameRolePairs;
+        this.courseName = courseName;
+        this.courseCatalog = courseCatalog;
+        this.capEnrl = capEnrl;
+        this.totlEnrl = totlEnrl;
 //        this.instructorName = instructorName;
 //        this.instructorRole = instructorRole;
 
@@ -67,6 +83,20 @@ public class Class {
         dayStr = dayStr.substring(0,dayStr.length()-5);
 
 
+        String instructorNameRolePairsStr ="{ ";
+
+        for(InstructorNameRolePair curInstructorNameRolePair:instructorNameRolePairs){
+
+            String curInstructorName = curInstructorNameRolePair.getInstructorName();
+            String curInstructorRole = curInstructorNameRolePair.getInstructorRole();
+
+            instructorNameRolePairsStr +=  curInstructorName + " as "
+                                            + curInstructorRole + "; ";
+        }
+
+        instructorNameRolePairsStr = instructorNameRolePairsStr.substring(0,instructorNameRolePairsStr.length()-2);
+
+        instructorNameRolePairsStr += " }";
 
 
         return (
@@ -74,7 +104,10 @@ public class Class {
                 "Class: #" + id
                        // + " is given by " + instructorName
                        // + "(" + instructorRole + ")"
-                        + " is of type " + component
+                        + " as for (\"" + courseName + " " + courseCatalog + "\""
+                        + " (with TotalEnrl: " + totlEnrl + " and CapEnrl: " + capEnrl + ") "
+                        + " is given by " + instructorNameRolePairsStr
+                        + " and is of type " + component
                         + ", taking place on " + dayStr
                         + " between " + startTime + " and " + endTime
                         + " in " + location
