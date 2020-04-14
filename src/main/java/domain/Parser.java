@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Parser {
 
-    public static int ParseMtgTime2IntegerTimeStamp(String mtgTime){
+    public static int ParseMtgTimeStr2IntegerTimeStamp(String mtgTime){
 
         switch(mtgTime) {
             case "8:00:00 AM":
@@ -108,7 +108,115 @@ public class Parser {
                 return 49;
             default:
                 // code block
-                return -1; //failed to convert mtg. time to integer time stamp :(
+                return -1; //failed to convert mtg. time str. to integer time stamp :(
+        }
+
+    }
+
+    public static String ParseIntegerTimeStamp2MtgTimeStr(int integerTimeStamp){
+
+        switch(integerTimeStamp) {
+            case 1:
+                return "8:00:00 AM";
+            case 2:
+                return "8:30:00 AM";
+            case 3:
+                return "9:00:00 AM";
+            case 4:
+                return "9:20:00 AM";
+            case 5:
+                return "9:30:00 AM";
+            case 6:
+                return "9:45:00 AM";
+            case 7:
+                return "10:00:00 AM";
+            case 8:
+                return "10:20:00 AM";
+            case 9:
+                return "10:30:00 AM";
+            case 10:
+                return "10:50:00 AM";
+            case 11:
+                return "11:15:00 AM";
+            case 12:
+                return "11:20:00 AM";
+            case 13:
+                return "11:30:00 AM";
+            case 14:
+                return "11:45:00 AM";
+            case 15:
+                return "12:00:00 PM";
+            case 16:
+                return "12:15:00 PM";
+            case 17:
+                return "12:20:00 PM";
+            case 18:
+                return "12:30:00 PM";
+            case 19:
+                return "12:45:00 PM";
+            case 20:
+                return "1:00:00 PM";
+            case 21:
+                return "1:30:00 PM";
+            case 22:
+                return "2:00:00 PM";
+            case 23:
+                return "2:15:00 PM";
+            case 24:
+                return "2:20:00 PM";
+            case 25:
+                return "2:30:00 PM";
+            case 26:
+                return "3:00:00 PM";
+            case 27:
+                return "3:15:00 PM";
+            case 28:
+                return "3:20:00 PM";
+            case 29:
+                return "3:30:00 PM";
+            case 30:
+                return "3:45:00 PM";
+            case 31:
+                return "3:50:00 PM";
+            case 32:
+                return "4:00:00 PM";
+            case 33:
+                return "4:20:00 PM";
+            case 34:
+                return "4:30:00 PM";
+            case 35:
+                return "4:45:00 PM";
+            case 36:
+                return "5:00:00 PM";
+            case 37:
+                return "5:15:00 PM";
+            case 38:
+                return "5:20:00 PM";
+            case 39:
+                return "5:30:00 PM";
+            case 40:
+                return "5:45:00 PM";
+            case 41:
+                return "6:00:00 PM";
+            case 42:
+                return "6:15:00 PM";
+            case 43:
+                return "6:30:00 PM";
+            case 44:
+                return "6:45:00 PM";
+            case 45:
+                return "7:00:00 PM";
+            case 46:
+                return "7:30:00 PM";
+            case 47:
+                return "9:30:00 PM";
+            case 48:
+                return "10:00:00 PM";
+            case 49:
+                return "11:30:00 PM";
+            default:
+                // code block
+                return ""; //failed to convert integer time stamp to mtg. time str :(
         }
 
     }
