@@ -399,11 +399,29 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                List<domain.Class> c1List = classesList.get(0);
+//                List<domain.Class> c1List = classesList.get(0);
 
-                List<ClassBundle> cBundles = ClassBundle.GenerateClassBundlesFromClasses(c1List);
+                Schedule.scheduleIdcounter = 0;
 
-                System.out.println(cBundles);
+                List<List<ClassBundle>> classBundlesList = new ArrayList<>();
+
+                for(List<Class> curClassList:classesList){
+                    List<ClassBundle> curBundles = ClassBundle.GenerateClassBundlesFromClasses(curClassList);
+                    System.out.println(curBundles);
+                    classBundlesList.add(curBundles);
+                }
+
+                List<Schedule> schedules = Schedule.GenerateSchedulesFromClassBundlesList(classBundlesList);
+
+//                System.out.println(schedules);
+
+                String message2BeDisplayed = schedules.toString();
+                JTextArea textArea = new JTextArea(25, 75);
+                textArea.setText(message2BeDisplayed);
+                textArea.setEditable(false);
+                textArea.setCaretPosition(0);
+                JScrollPane scrollPane = new JScrollPane(textArea);
+                JOptionPane.showMessageDialog(null,scrollPane,Schedule.scheduleIdcounter +" non-overlapping plans are found.",JOptionPane.WARNING_MESSAGE);
 
             }
         });
