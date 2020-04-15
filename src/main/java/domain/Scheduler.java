@@ -1,56 +1,79 @@
 package domain;
 
+import javax.lang.model.type.NullType;
 import java.util.*;
 
 public class Scheduler {
 
 
-    private int numCourse;
-    private ArrayList<Course> sortedCourseList;
-    private ArrayList<Bucket> buckets;
+    private int numBundles;
+    private ArrayList<ClassBundle> bundleList;
     private TreeMap<Integer, Integer> sortedCumPriorityMap;
     private String output;
     private int numPlans;
 
-    public Scheduler(ArrayList<Course> courseList){
-        this.numCourse = courseList.size();
-        this.sortedCourseList = sortCourseList(courseList);
-        buckets = new ArrayList<Bucket>();
-        for(int i=0; i<numCourse;i++)
-            buckets.add(null);
-        for(int i=0;i<numCourse;i++){
-            Course curCourse = sortedCourseList.get(i);
-            ArrayList<Course> cList = new ArrayList<Course>();
-            cList.add(curCourse);
-            Plan p = new Plan(cList);
-            ArrayList<Plan> pList = new ArrayList<Plan>();
-            pList.add(p);
-            Bucket b = new Bucket(curCourse.getPriority(), pList);
-            buckets.set(i, b);
+    public Scheduler(ArrayList<ClassBundle> bundleList){
+        this.numBundles = bundleList.size();
+        this.bundleList = bundleList;
+
+        for(int i=0; i<numBundles;i++) {
+            generateOptimumPlanForGivenDay(bundleList, i);
         }
     }
 
-    private ArrayList<Course> sortCourseList(ArrayList<Course> courseList){
-        Collections.sort(courseList);
-        return courseList;
-    }
+    private void generateOptimumPlanForGivenDay(ArrayList<ClassBundle> bList, int day) {
+        // Initializing:
+        ArrayList<domain.Class> classList = new ArrayList<>();
+        for(int i=0; i<numBundles;i++) {
+            classList.add(null);
+            ClassBundle curBundle = bList.get(i);
+            Class curClass = curBundle.getRegularClass(day); //TODO
+            classList.set(i, curClass);
+        }
+        sortClassList(classList);
 
-    public void generateOptimumCoursePlan(){
-        for(int i=1;i<numCourse;i++){
+        ArrayList<Bucket> buckets = new ArrayList<>();
+        for(int i=0;i<numBundles;i++){
+            buckets.add(null);
+            Class curClass = classList.get(i);
+            ArrayList<Class> cList = new ArrayList<>();
+            cList.add(curClass);
+            Plan p = new Plan(cList);
+            ArrayList<Plan> pList = new ArrayList<>();
+            pList.add(p);
+            Bucket b = new Bucket(curClass.getCourse().getPriority(), pList);
+            buckets.set(i, b);
+        }
+        // Applying weighted job scheduling wrt "day":
+        for(int i=1;i<numBundles;i++){
             for(int j=0;j<i;j++){
                 Bucket b1 = buckets.get(j);
                 Bucket b2 = buckets.get(i);
 
-                Course c1 = sortedCourseList.get(j);
-                Course c2 = sortedCourseList.get(i);
+                Class c1 = classList.get(j);
+                Class c2 = classList.get(i);
+                // Find bundle given class:
+                ClassBundle cb1 = new ClassBundle(); //TODO: ClassBundle needs a default constructor
+                for(int k=0;k<numBundles;k++) {
+                    ClassBundle curBundle = bundleList.get(k);
+                    if (bundleList.get(k).getRegularClass().equals(c1))
+                        cb1 = curBundle;
+                }
+                ClassBundle cb2 = new ClassBundle();
+                for(int k=0;k<numBundles;k++) {
+                    ClassBundle curBundle = bundleList.get(k);
+                    if (bundleList.get(k).getRegularClass().equals(c2))
+                        cb2 = curBundle;
+                }
 
-                if(!c1.isOverlappingWith(c2)){
+
+                if(!cb1.isOverlappingWith(cb2)){
                     int cumBucketPriority = b1.getCumulativeBucketPriority();
-                    int prioritySum = cumBucketPriority + c2.getPriority();
-                    ArrayList<Plan> newPlanList = new ArrayList<Plan>(b1.getPlans().size());
+                    int prioritySum = cumBucketPriority + c2.getCourse.getPriority();
+                    ArrayList<Plan> newPlanList = new ArrayList<>(b1.getPlans().size());
                     for(Plan p:b1.getPlans()){
-                        Plan newPlan = new Plan(new ArrayList<Course>(p.getCourseList()));
-                        newPlan.addCourse(c2);
+                        Plan newPlan = new Plan(new ArrayList<Class>(p.getClassList()));
+                        newPlan.addClass(c2);
                         newPlanList.add(newPlan);
                     }
                     Bucket newBucket = new Bucket(prioritySum, newPlanList);
@@ -65,7 +88,6 @@ public class Scheduler {
                 }
             }
         }
-
         int index = 0;
         int max = buckets.get(index).getCumulativeBucketPriority();
 
@@ -125,7 +147,9 @@ public class Scheduler {
         //System.out.println(winnerBucket);
 
     }
-
+    private void sortClassList(ArrayList<Class> classList){
+        Collections.sort(classList, new ClassComparator());
+    }
 
     public String getOutput(){
         return output;
@@ -143,6 +167,19 @@ public class Scheduler {
     }
 }
 
+class ClassComparator implements Comparator {
+    public int compare(Object o1,Object o2){
+        int s1 = Parser.ParseMtgTimeStr2IntegerTimeStamp((Class)o1.getEndTime());
+        int s2 = Parser.ParseMtgTimeStr2IntegerTimeStamp((Class)o2.getEndTime());
+
+        if(s1 == s2){
+            return 0;
+        }else if(s1<s2){
+            return -1;
+        }
+        return 1;
+    }
+}
 class DescSortComparator implements Comparator {
 
     Map map;
