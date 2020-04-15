@@ -160,7 +160,7 @@ public class ClassBundle{
         }
 
 
-        List<List<domain.Class>> cartesianProductsList = GenerateCartesianProducts(lecPrbLabDisLists);
+        List<List<domain.Class>> cartesianProductsList = CartesianProduct.GenerateCartesianProducts(lecPrbLabDisLists);
 
         for(List<domain.Class> curCartesianProductList:cartesianProductsList) {
 
@@ -180,24 +180,59 @@ public class ClassBundle{
 
     }
 
-    private static <T> List<List<T>> GenerateCartesianProducts(List<List<T>> lists) {
-        List<List<T>> resultLists = new ArrayList<List<T>>();
-        if (lists.size() == 0) {
-            resultLists.add(new ArrayList<T>());
-            return resultLists;
-        } else {
-            List<T> firstList = lists.get(0);
-            List<List<T>> remainingLists = GenerateCartesianProducts(lists.subList(1, lists.size()));
-            for (T condition : firstList) {
-                for (List<T> remainingList : remainingLists) {
-                    ArrayList<T> resultList = new ArrayList<T>();
-                    resultList.add(condition);
-                    resultList.addAll(remainingList);
-                    resultLists.add(resultList);
+    public boolean isCompatibleWith(ClassBundle cb2){
+
+        int id1 = bundleId;
+        int id2 = cb2.bundleId;
+
+        if(id1 == id2)
+            return false;
+
+        List<Class> classList1 = classList;
+        List<Class> classList2 = cb2.classList;
+
+        boolean compatibilityFlag = true;
+
+        for(Class c1:classList1){
+            for(Class c2:classList2){
+                if(!c1.isCompatibleWith(c2)){
+                    compatibilityFlag = false;
+                    break;
                 }
+
             }
         }
-        return resultLists;
+
+        return compatibilityFlag;
+
+    }
+
+    public static boolean AreAllCompatible(List<ClassBundle> classBundleList){
+
+        boolean flag = true;
+
+        if(classBundleList.size()<=1){
+            return flag;
+        }
+
+        for (int i=0;i<classBundleList.size()-1;i++){
+
+            ClassBundle cb1 = classBundleList.get(i);
+
+            for(int j = i+1;j<classBundleList.size();j++){
+
+                ClassBundle cb2 = classBundleList.get(j);
+                if(!cb1.isCompatibleWith(cb2)){
+                    flag =  false;
+                    break;
+                }
+
+            }
+
+        }
+
+        return flag;
+
     }
 
     @Override
