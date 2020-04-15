@@ -2,7 +2,7 @@ package domain;
 
 import java.util.List;
 
-public class Class {
+public class Class implements Comparable<domain.Class>{
 
     private int id;
     private String component;
@@ -63,6 +63,63 @@ public class Class {
 
     }
 
+    public boolean isCompatibleWith(Class c2){
+
+        int id1 = id;
+        int id2 = c2.id;
+
+        if(id1 == id2)
+            return false;
+
+        String day1 = Parser.ParseDayBooleans2List(monFlag,tuesFlag,wedFlag,thursFlag,friFlag).toString();
+        String day2 = Parser.ParseDayBooleans2List(c2.monFlag,c2.tuesFlag,c2.wedFlag,c2.thursFlag,c2.friFlag).toString();
+
+        if(!day1.equals(day2))
+            return true;
+
+        int s1 = Parser.ParseMtgTimeStr2IntegerTimeStamp(this.startTime);
+        int e1 = Parser.ParseMtgTimeStr2IntegerTimeStamp(this.endTime);
+
+        int s2 = Parser.ParseMtgTimeStr2IntegerTimeStamp(c2.startTime);
+        int e2 = Parser.ParseMtgTimeStr2IntegerTimeStamp(c2.endTime);
+
+        return (
+
+                e1 < s2 || e2 < s1
+
+                );
+
+    }
+
+    public static boolean AreAllCompatible(List<Class> classList){
+
+        boolean flag = true;
+
+        if(classList.size()<=1){
+            return flag;
+        }
+
+        for (int i=0;i<classList.size()-1;i++){
+
+            Class c1 = classList.get(i);
+
+            for(int j = i+1;j<classList.size();j++){
+
+                Class c2 = classList.get(j);
+                if(!c1.isCompatibleWith(c2)){
+                    flag =  false;
+                    break;
+                }
+
+            }
+
+        }
+
+        return flag;
+
+    }
+
+
     @Override
     public String toString() {
 
@@ -101,7 +158,7 @@ public class Class {
 
         return (
 
-                "Class: #" + id
+                "\nClass: #" + id
                        // + " is given by " + instructorName
                        // + "(" + instructorRole + ")"
                         + " as for (\"" + courseName + " " + courseCatalog + "\""
@@ -119,6 +176,48 @@ public class Class {
     public boolean equals(Object obj) {
         Class c2 = (Class) obj;
         return (this.id == c2.id);
+    }
+
+    @Override
+    public int compareTo(Class c) {
+
+        int dayInteger1 = convertToDayInteger();
+        int dayInteger2 = c.convertToDayInteger();
+
+        if(dayInteger1>dayInteger2){
+            return -1;
+        }else if(dayInteger1<dayInteger2){
+            return 1;
+        }else{
+
+            int s1 = Parser.ParseMtgTimeStr2IntegerTimeStamp(startTime);
+            int s2 = Parser.ParseMtgTimeStr2IntegerTimeStamp(c.getStartTime());
+
+            if(s1 == s2){
+                return 0;
+            }else if(s1<s2){
+                return -1;
+            }
+            return 1;
+        }
+    }
+
+    private int convertToDayInteger() {
+
+        int integer = 0;
+
+        if(monFlag)
+            integer += 10000;
+        if(tuesFlag)
+            integer += 1000;
+        if(wedFlag)
+            integer += 100;
+        if(thursFlag)
+            integer += 10;
+        if(friFlag)
+            integer += 1;
+
+        return integer;
     }
 
     public int getId() {
@@ -180,5 +279,6 @@ public class Class {
     public int getCapEnrl() {
         return capEnrl;
     }
+
 
 }

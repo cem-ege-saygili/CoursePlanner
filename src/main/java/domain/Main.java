@@ -399,6 +399,12 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                List<domain.Class> c1List = classesList.get(0);
+
+                List<ClassBundle> cBundles = ClassBundle.GenerateClassBundlesFromClasses(c1List);
+
+                System.out.println(cBundles);
+
             }
         });
 
