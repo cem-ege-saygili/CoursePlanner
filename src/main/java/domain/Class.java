@@ -2,7 +2,7 @@ package domain;
 
 import java.util.List;
 
-public class Class {
+public class Class implements Comparable<domain.Class>{
 
     private int id;
     private String component;
@@ -63,6 +63,29 @@ public class Class {
 
     }
 
+    public boolean isCompatibleWith(Class c2){
+
+        int id1 = id;
+        int id2 = c2.id;
+
+        if(id1 == id2)
+            return false;
+
+        int s1 = Parser.ParseMtgTimeStr2IntegerTimeStamp(this.startTime);
+        int e1 = Parser.ParseMtgTimeStr2IntegerTimeStamp(this.endTime);
+
+        int s2 = Parser.ParseMtgTimeStr2IntegerTimeStamp(c2.startTime);
+        int e2 = Parser.ParseMtgTimeStr2IntegerTimeStamp(c2.endTime);
+
+        return (
+
+                e1 < s2 || e2 < s1
+
+                );
+
+    }
+
+
     @Override
     public String toString() {
 
@@ -119,6 +142,22 @@ public class Class {
     public boolean equals(Object obj) {
         Class c2 = (Class) obj;
         return (this.id == c2.id);
+    }
+
+    @Override
+    public int compareTo(Class c) {
+
+        int s1 = Parser.ParseMtgTimeStr2IntegerTimeStamp(startTime);
+        int s2 = Parser.ParseMtgTimeStr2IntegerTimeStamp(c.getStartTime());
+
+        if(s1 == s2){
+            return 0;
+        }else if(s1<s2){
+            return -1;
+        }
+        return 1;
+
+
     }
 
     public int getId() {
@@ -180,5 +219,6 @@ public class Class {
     public int getCapEnrl() {
         return capEnrl;
     }
+
 
 }
