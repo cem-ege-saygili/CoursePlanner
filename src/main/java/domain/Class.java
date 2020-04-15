@@ -120,4 +120,65 @@ public class Class {
         Class c2 = (Class) obj;
         return (this.id == c2.id);
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getComponent() {
+        return component;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public boolean isMonFlag() {
+        return monFlag;
+    }
+
+    public boolean isTuesFlag() {
+        return tuesFlag;
+    }
+
+    public boolean isWedFlag() {
+        return wedFlag;
+    }
+
+    public boolean isThursFlag() {
+        return thursFlag;
+    }
+
+    public boolean isFriFlag() {
+        return friFlag;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public List<InstructorNameRolePair> getInstructorNameRolePairs() {
+        return instructorNameRolePairs;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public int getCourseCatalog() {
+        return courseCatalog;
+    }
+
+    public int getTotlEnrl() {
+        return totlEnrl;
+    }
+
+    public int getCapEnrl() {
+        return capEnrl;
+    }
+
 }
