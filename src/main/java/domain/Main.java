@@ -57,13 +57,16 @@ public class Main {
 
         String dbName = "CoursePlannerDB2";
 
+        /*
         CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
         CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
 
         CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
 
-        System.out.println("asdasd");
+
+         */
+        System.out.println("after CleanStartAndFill_NormalizedTables");
 
         /*ArrayList<Course> cList = new ArrayList<Course>();
         Course c5 = new Course("E", 7, 8, 2);
@@ -462,12 +465,19 @@ public class Main {
                 if (scheduleListToView != null && !scheduleListToView.isEmpty()) {
                     System.out.println("hi1");
 
+                    int scheduleIndex2BeDisplayed = scheduleListComboBox.getSelectedIndex();
+                    Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
+
+                    viewWeeklySchedule(scheduleToView,btnCloseBackgroundPanel);
+
+
+                    /*
                     scheduleFrame = new JFrame("Weekly Schedule");;
 
                     scheduleFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     scheduleFrame.setSize(1200, 840);
 
-
+                    */
 /*                  JLabel testlabel = new JLabel("Comp 130 LEC");
                     testlabel.setBounds(150,50,300,200);
                     scheduleFrame.add(testlabel);
@@ -476,6 +486,7 @@ public class Main {
                     testPanel.setVisible(true);
                     scheduleFrame.add(testPanel);*/
 
+                    /*
                     int scheduleIndex2BeDisplayed = scheduleListComboBox.getSelectedIndex();
 
                     Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
@@ -541,6 +552,7 @@ public class Main {
                     scheduleFrame.add(btnCloseBackgroundPanel);
                     scheduleFrame.setVisible(true);
 
+                    */
                 }
             }
         });
@@ -612,7 +624,7 @@ public class Main {
 
         InsertIntoTableInDB.insertAll(dbName, sqlQuery_Insert_Location, classInfoList);
 
-        System.out.println("asdasd");
+        System.out.println("end of CreateAndFill_DB_from_CSV");
     }
 
     private static void CreateNormalizedTablesInDB(List<String> sqlQuery_Create_NormalizedTables, String dbName) {
@@ -669,6 +681,12 @@ public class Main {
     }
 
 
+    private static void viewWeeklySchedule(Schedule scheduleToView,JButton btnCloseBackgroundPanel){
+        WeeklyScheduleGUI weeklyScheduleView= new WeeklyScheduleGUI();
+        weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
+    }
+
+    /*
     private static int getStartTime(Class currentClass) {
         int startTimeInMinutes;
         if (currentClass.getStartTime().length() == 11) {
@@ -816,5 +834,5 @@ public class Main {
         }
     }
 
-
+    */
 }
