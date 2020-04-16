@@ -16,6 +16,11 @@ public class Schedule {
     }
 
 
+    public List<ClassBundle> getClassBundleList() {
+        return classBundleList;
+    }
+
+
     public static List<Schedule> GenerateSchedulesFromClassBundlesList(List<List<ClassBundle>> classBundlesList){
 
         List<Schedule> schedules = new ArrayList<>();

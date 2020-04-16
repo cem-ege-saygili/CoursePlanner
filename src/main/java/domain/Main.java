@@ -2,14 +2,18 @@ package domain;
 
 import DB_Utilities.*;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 
 public class Main {
+
+    static List<Schedule> scheduleListToView = null;
 
     public static void main(String[] args) {
         System.out.println("\nRunnable\n\n");
@@ -87,7 +91,7 @@ public class Main {
 //        timeTables.put("F", new Integer[]{11, 14} );
 //        timeTables.put("G", new Integer[]{13, 14} );
 
-        Integer[] priorityValues = new Integer[] {1,2,3,4,5};
+        Integer[] priorityValues = new Integer[]{1, 2, 3, 4, 5};
 
         List<String> courseSubjectList = new ArrayList<>();
         List<Integer> courseCatalogList = new ArrayList<>();
@@ -101,7 +105,7 @@ public class Main {
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
 
         SelectFromTableInDB.SelectCourseCatalogsOfChosenCourseSubject(dbName, sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location,
-                                        courseCatalogList,(String) courseSubjectsComboBox.getSelectedItem());
+                courseCatalogList, (String) courseSubjectsComboBox.getSelectedItem());
 
         Integer[] courseCatalogsArr = new Integer[courseCatalogList.size()];
         courseCatalogsArr = courseCatalogList.toArray(courseCatalogsArr);
@@ -142,12 +146,11 @@ public class Main {
         JButton btnRemoveFromPlanningList = new JButton("Remove Selected from the Planning List");
         JButton btnGenerateOptimumSchedule = new JButton("Generate non-overlapping Schedule(s)");
         JButton btnClearPlanningList = new JButton("Clear the Planning List");
+        JButton btnViewWeeklySchedule = new JButton("View weekly schedule");
 
 
         DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
         JList lstCourse2BePlanned = new JList(lstCourses2BePlannedModel);
-
-
 
 
 //        Integer curTimeStart = timeTables.get((String)courseSubjectsComboBox.getSelectedItem())[0];
@@ -159,14 +162,14 @@ public class Main {
         courseSubjectsComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED){
+                if (e.getStateChange() == ItemEvent.SELECTED) {
                     String curCourseSubject = (String) e.getItem();
                     SelectFromTableInDB.SelectCourseCatalogsOfChosenCourseSubject(dbName, sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location,
                             courseCatalogList, curCourseSubject);
 
                     courseCatalogsComboBox.removeAllItems();
 
-                    for(int curCatalog:courseCatalogList){
+                    for (int curCatalog : courseCatalogList) {
                         courseCatalogsComboBox.addItem(curCatalog);
                     }
 
@@ -192,7 +195,7 @@ public class Main {
         courseCatalogsComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
                     int curCourseCatalog = (int) e.getItem();
                     UpdateLabelsFromDB(
 
@@ -223,9 +226,9 @@ public class Main {
                 int selectedPriority = (int) priorityValuesComboBox.getSelectedItem();
 
                 CourseSubject_Catalog_Priority_Tuple courseTuple2BeAdded = new CourseSubject_Catalog_Priority_Tuple(
-                                                                    selectedCourseSubject,
-                                                                    selectedCourseCatalog,
-                                                                    selectedPriority);
+                        selectedCourseSubject,
+                        selectedCourseCatalog,
+                        selectedPriority);
 
                 String courseTuple2BeAdded_Subject = courseTuple2BeAdded.getSubject();
                 int courseTuple2BeAdded_Catalog = courseTuple2BeAdded.getCatalog();
@@ -236,8 +239,7 @@ public class Main {
                         + ", Priority: " + courseTuple2BeAdded_Priority;
 
 
-
-                if(!tupleList.contains(courseTuple2BeAdded)){// CHECKING for ELEC317 vs. ELEC317 case. (i.e. attempt for adding the same course)
+                if (!tupleList.contains(courseTuple2BeAdded)) {// CHECKING for ELEC317 vs. ELEC317 case. (i.e. attempt for adding the same course)
 
 //                    Integer[] selectedCourseTimeTable = timeTables.get(selectedCourseName);
 //                    Integer selectedCourseStartTime = selectedCourseTimeTable[0];
@@ -257,18 +259,18 @@ public class Main {
                     PutClassesFromDB2cList(courseTuple2BeAdded, classListForTuple, dbName, sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location);
 
 
-                    for(int i=0;i<classesList.size();i++){// CHECKING for ELEC317 vs. COMP317 case. (i.e. courses with same classes)
+                    for (int i = 0; i < classesList.size(); i++) {// CHECKING for ELEC317 vs. COMP317 case. (i.e. courses with same classes)
                         List<domain.Class> curClassList = classesList.get(i);
-                        for(domain.Class curClass:classListForTuple){
-                            if(curClassList.contains(curClass)){
+                        for (domain.Class curClass : classListForTuple) {
+                            if (curClassList.contains(curClass)) {
                                 CourseSubject_Catalog_Priority_Tuple tupleAlreadyAdded = tupleList.get(i);
                                 String subjectAlreadyAdded = tupleAlreadyAdded.getSubject();
                                 int catalogAlreadyAdded = tupleAlreadyAdded.getCatalog();
                                 String subject2BeAdded = courseTuple2BeAdded.getSubject();
                                 int catalog2BeAdded = courseTuple2BeAdded.getCatalog();
-                                JOptionPane.showMessageDialog(btnAdd2PlanningList, "\""  + subject2BeAdded
+                                JOptionPane.showMessageDialog(btnAdd2PlanningList, "\"" + subject2BeAdded
                                         + " " + catalog2BeAdded + "\" has already been added to the planning list as follows: "
-                                        + "\""  +subjectAlreadyAdded + " " +  catalogAlreadyAdded+ "\"");
+                                        + "\"" + subjectAlreadyAdded + " " + catalogAlreadyAdded + "\"");
                                 return;
                             }
                         }
@@ -278,7 +280,7 @@ public class Main {
                     tupleList.add(courseTuple2BeAdded);
                     lstCourses2BePlannedModel.addElement(element2BeAdded);
 
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(btnAdd2PlanningList, "\"" + courseTuple2BeAdded_Subject
                             + " " + courseTuple2BeAdded_Catalog + "\" has already been added to the planning list!");
                 }
@@ -292,7 +294,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedElementIndex = lstCourse2BePlanned.getSelectedIndex();
-                if(selectedElementIndex != -1){
+                if (selectedElementIndex != -1) {
                     tupleList.remove(selectedElementIndex);
                     lstCourses2BePlannedModel.removeElementAt(selectedElementIndex);
                     classesList.remove(selectedElementIndex);
@@ -308,7 +310,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                for(CourseSubject_Catalog_Priority_Tuple curTuple:tupleList){
+                for (CourseSubject_Catalog_Priority_Tuple curTuple : tupleList) {
                     System.out.println(curTuple);
                 }
 
@@ -323,9 +325,6 @@ public class Main {
         });
 
 
-
-
-
 //        NumberFormat format = NumberFormat.getInstance();
 //        NumberFormatter formatter = new NumberFormatter(format);
 //        formatter.setValueClass(Integer.class);
@@ -337,39 +336,50 @@ public class Main {
 //        JFormattedTextField txtFieldPriority = new JFormattedTextField(formatter);
 
 
-
         JFrame frame = new JFrame("CourseScheduler v.2");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500,720);
+        frame.setSize(500, 720);
 
         //int yInc = 25;
 
-        lblCourseSubject.setBounds(100, 50, 150,25);
-        courseSubjectsComboBox.setBounds(250,50,150,25);
+        lblCourseSubject.setBounds(100, 50, 150, 25);
+        courseSubjectsComboBox.setBounds(250, 50, 150, 25);
 
-        lblCourseCatalog.setBounds(100, 75, 150,25);
-        courseCatalogsComboBox.setBounds(250,75,150,25);
+        lblCourseCatalog.setBounds(100, 75, 150, 25);
+        courseCatalogsComboBox.setBounds(250, 75, 150, 25);
 
-        lblPriority.setBounds(100,100,100,25);
-        priorityValuesComboBox.setBounds(250,100,150,25);
+        lblPriority.setBounds(100, 100, 100, 25);
+        priorityValuesComboBox.setBounds(250, 100, 150, 25);
 
-        lblCourseFaculty.setBounds(100,125,400,25);
-        lblCourseLevel.setBounds(100,150,400,25);
-        lblCourseDescr.setBounds(100,175,400,75);
+        lblCourseFaculty.setBounds(100, 125, 400, 25);
+        lblCourseLevel.setBounds(100, 150, 400, 25);
+        lblCourseDescr.setBounds(100, 175, 400, 75);
         lblCourseDescr.setVerticalAlignment(JLabel.TOP);
 
 
-        btnRemoveFromPlanningList.setBounds(100,250,300,25);
-        btnAdd2PlanningList.setBounds(100,275,300,25);
-        btnClearPlanningList.setBounds(100,300,300,25);
+        btnRemoveFromPlanningList.setBounds(100, 250, 300, 25);
+        btnAdd2PlanningList.setBounds(100, 275, 300, 25);
+        btnClearPlanningList.setBounds(100, 300, 300, 25);
 
-        lstCourse2BePlanned.setBounds(100, 350,300,250);
+        lstCourse2BePlanned.setBounds(100, 350, 300, 250);
 
-        btnGenerateOptimumSchedule.setBounds(100,625,300,25);
+        btnGenerateOptimumSchedule.setBounds(100, 625, 300, 25);
 
-        frame.add(lblCourseSubject);frame.add(courseSubjectsComboBox);frame.add(lblPriority);frame.add(priorityValuesComboBox);
-        frame.add(lblCourseCatalog);frame.add(courseCatalogsComboBox);frame.add(lblCourseLevel);frame.add(lblCourseDescr);
-        frame.add(btnAdd2PlanningList);frame.add(btnRemoveFromPlanningList);frame.add(btnGenerateOptimumSchedule);frame.add(btnClearPlanningList);
+        btnViewWeeklySchedule.setBounds(100, 650, 300, 25);
+
+        frame.add(lblCourseSubject);
+        frame.add(courseSubjectsComboBox);
+        frame.add(lblPriority);
+        frame.add(priorityValuesComboBox);
+        frame.add(lblCourseCatalog);
+        frame.add(courseCatalogsComboBox);
+        frame.add(lblCourseLevel);
+        frame.add(lblCourseDescr);
+        frame.add(btnAdd2PlanningList);
+        frame.add(btnRemoveFromPlanningList);
+        frame.add(btnGenerateOptimumSchedule);
+        frame.add(btnClearPlanningList);
+        frame.add(btnViewWeeklySchedule);
         frame.add(lblCourseFaculty);
         frame.add(lstCourse2BePlanned);
         frame.setLayout(null);
@@ -405,7 +415,7 @@ public class Main {
 
                 List<List<ClassBundle>> classBundlesList = new ArrayList<>();
 
-                for(List<Class> curClassList:classesList){
+                for (List<Class> curClassList : classesList) {
                     List<ClassBundle> curBundles = ClassBundle.GenerateClassBundlesFromClasses(curClassList);
                     System.out.println(curBundles);
                     classBundlesList.add(curBundles);
@@ -421,14 +431,100 @@ public class Main {
                 textArea.setEditable(false);
                 textArea.setCaretPosition(0);
                 JScrollPane scrollPane = new JScrollPane(textArea);
-                JOptionPane.showMessageDialog(null,scrollPane,Schedule.scheduleIdcounter +" non-overlapping plans are found.",JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, scrollPane, Schedule.scheduleIdcounter + " non-overlapping plans are found.", JOptionPane.WARNING_MESSAGE);
 
+                if (schedules != null)
+                    scheduleListToView = schedules;
+
+                System.out.println("hi");
             }
         });
 
 
+        btnViewWeeklySchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (scheduleListToView != null && !scheduleListToView.isEmpty()) {
+                    System.out.println("hi1");
+                    JFrame scheduleFrame = new JFrame("Weekly Schedule");
+
+                    scheduleFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    scheduleFrame.setSize(1200, 840);
+
+
+/*                  JLabel testlabel = new JLabel("Comp 130 LEC");
+                    testlabel.setBounds(150,50,300,200);
+                    scheduleFrame.add(testlabel);
+
+                    ClassPanel testPanel = new ClassPanel(100,100,200,90);
+                    testPanel.setVisible(true);
+                    scheduleFrame.add(testPanel);*/
+
+                    Schedule scheduleToView = scheduleListToView.get(1);
+                    // Class currentClass = scheduleToView.getClassBundleList().get(0).getLecClass();
+                    for (ClassBundle currentBundle : scheduleToView.getClassBundleList()) {
+
+                        Class currentClass = currentBundle.getLecClass();
+                        addClassPanels(scheduleFrame, currentClass);
+
+                        currentClass = currentBundle.getDisClass();
+                        addClassPanels(scheduleFrame, currentClass);
+
+                        currentClass = currentBundle.getLabClass();
+                        addClassPanels(scheduleFrame, currentClass);
+
+                        currentClass = currentBundle.getPrbClass();
+                        addClassPanels(scheduleFrame, currentClass);
+
+                    }
+
+                    JLabel mondayLabel = new JLabel("MONDAY");
+                    mondayLabel.setBounds(150, 50, 200, 20);
+                    mondayLabel.setFont(mondayLabel.getFont().deriveFont(20.0f));
+                    scheduleFrame.add(mondayLabel);
+
+                    JLabel tuesdayLabel = new JLabel("TUESDAY");
+                    tuesdayLabel.setBounds(350, 50, 200, 20);
+                    tuesdayLabel.setFont(tuesdayLabel.getFont().deriveFont(20.0f));
+                    scheduleFrame.add(tuesdayLabel);
+
+                    JLabel wednesdayLabel = new JLabel("WEDNESDAY");
+                    wednesdayLabel.setBounds(550, 50, 200, 20);
+                    wednesdayLabel.setFont(wednesdayLabel.getFont().deriveFont(20.0f));
+                    scheduleFrame.add(wednesdayLabel);
+
+                    JLabel thursdayLabel = new JLabel("THURSDAY");
+                    thursdayLabel.setBounds(750, 50, 200, 20);
+                    thursdayLabel.setFont(thursdayLabel.getFont().deriveFont(20.0f));
+                    scheduleFrame.add(thursdayLabel);
+
+                    JLabel fridayLabel = new JLabel("FRIDAY");
+                    fridayLabel.setBounds(950, 50, 200, 20);
+                    fridayLabel.setFont(fridayLabel.getFont().deriveFont(20.0f));
+                    scheduleFrame.add(fridayLabel);
+
+
+                    for (int i = 8; i < 19; i++) {
+                        JLabel timeLabel = new JLabel(Integer.toString(i) + ":00");
+                        timeLabel.setBounds(50, (((i - 8) * 600) / 10) + 90, 200, 20);
+                        scheduleFrame.add(timeLabel);
+                    }
+
+
+                    BackgroundPanel bgpanel = new BackgroundPanel();
+                    bgpanel.setVisible(true);
+                    scheduleFrame.add(bgpanel);
+
+                    scheduleFrame.setLayout(null);
+                    scheduleFrame.setVisible(true);
+
+                }
+            }
+        });
 
     }
+
 
     private static void PrinOutClassesList(List<List<Class>> classesList) {
 
@@ -444,19 +540,19 @@ public class Main {
 
     private static void PutClassesFromDB2cList(CourseSubject_Catalog_Priority_Tuple tuple, List<Class> classList, String dbName, String sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location) {
 
-            classList.clear();
+        classList.clear();
 
 
-                String tupleCourseSubject = tuple.getSubject();
-                int tupleCourseCatalog = tuple.getCatalog();
+        String tupleCourseSubject = tuple.getSubject();
+        int tupleCourseCatalog = tuple.getCatalog();
 
-                SelectFromTableInDB.SelectClassesOfOneCourse(
-                        dbName,
-                        sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location,
-                        tupleCourseSubject,
-                        tupleCourseCatalog,
-                        classList
-                );
+        SelectFromTableInDB.SelectClassesOfOneCourse(
+                dbName,
+                sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location,
+                tupleCourseSubject,
+                tupleCourseCatalog,
+                classList
+        );
 //                    Scheduler s1 = new Scheduler(cList);
 //                    s1.generateOptimumCoursePlan();
 //                    cList.clear();
@@ -479,13 +575,13 @@ public class Main {
         ReadCSV.FillIntoList(fPath, classInfoList);
         //System.out.println(classInfoList);
 
-        ExecuteDropDB.executeDropDB_ifExists("outputs/"+ dbName + ".db");
+        ExecuteDropDB.executeDropDB_ifExists("outputs/" + dbName + ".db");
 
         CreateDB.createNewDatabase(dbName);
 
         CreateTableInDB.createNewTable(dbName, sqlQuery_Create_Location);
 
-        InsertIntoTableInDB.insertAll(dbName,sqlQuery_Insert_Location,classInfoList);
+        InsertIntoTableInDB.insertAll(dbName, sqlQuery_Insert_Location, classInfoList);
 
         System.out.println("asdasd");
     }
@@ -514,7 +610,7 @@ public class Main {
                 dbName,
                 sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
                 (String) courseSubjectsComboBox.getSelectedItem(),
-                (Integer)courseCatalogsComboBox.getSelectedItem()
+                (Integer) courseCatalogsComboBox.getSelectedItem()
         );
 
         String CourseCareerInfo = strListCourse_Career_AcadOrg_Descr_Descr2.get(0);
@@ -542,5 +638,154 @@ public class Main {
                 + CourseDescr2Info
                 + "</i></b></font></hmtl>");
     }
+
+
+    private static int getStartTime(Class currentClass) {
+        int startTimeInMinutes;
+        if (currentClass.getStartTime().length() == 11) {
+            startTimeInMinutes = Integer.parseInt(currentClass.getStartTime().substring(0, 2)) * 60
+                    + Integer.parseInt(currentClass.getStartTime().substring(3, 5));
+            if (currentClass.getStartTime().charAt(9) == 'P')
+                startTimeInMinutes += 12 * 60;
+        } else {
+            startTimeInMinutes = Integer.parseInt(currentClass.getStartTime().substring(0, 1)) * 60
+                    + Integer.parseInt(currentClass.getStartTime().substring(2, 4));
+            if (currentClass.getStartTime().charAt(8) == 'P')
+                startTimeInMinutes += 12 * 60;
+        }
+        return ((startTimeInMinutes - 480) * 600) / 600;
+    }
+
+
+    private static int getEndTime(Class currentClass) {
+        int endTimeInMinutes;
+        if (currentClass.getEndTime().length() == 11) {
+            endTimeInMinutes = Integer.parseInt(currentClass.getEndTime().substring(0, 2)) * 60
+                    + Integer.parseInt(currentClass.getEndTime().substring(3, 5));
+            if (currentClass.getEndTime().charAt(9) == 'P' && !currentClass.getEndTime().substring(0, 2).equals("12"))
+                endTimeInMinutes += 12 * 60;
+        } else {
+            endTimeInMinutes = Integer.parseInt(currentClass.getEndTime().substring(0, 1)) * 60
+                    + Integer.parseInt(currentClass.getEndTime().substring(2, 4));
+            if (currentClass.getEndTime().charAt(8) == 'P' && !currentClass.getEndTime().substring(0, 2).equals("12"))
+                endTimeInMinutes += 12 * 60;
+        }
+        return ((endTimeInMinutes - 480) * 600) / 600;
+    }
+
+
+    private static void addClassPanels(JFrame scheduleFrame, Class currentClass) {
+        addClassPanelMonday(scheduleFrame, currentClass);
+        addClassPanelTuesday(scheduleFrame, currentClass);
+        addClassPanelWednesday(scheduleFrame, currentClass);
+        addClassPanelThursday(scheduleFrame, currentClass);
+        addClassPanelFriday(scheduleFrame, currentClass);
+    }
+
+    private static void addClassPanelMonday(JFrame scheduleFrame, Class currentClass) {
+        if (currentClass != null && currentClass.isMonFlag()) {
+            int ystart = getStartTime(currentClass);
+            int yend = getEndTime(currentClass);
+
+            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
+            JLabel currentClassLabel = new JLabel(classLabel);
+            currentClassLabel.setBounds(150, ystart + 110, 200, 20);
+            scheduleFrame.add(currentClassLabel);
+
+            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
+            JLabel currentTimeLabel = new JLabel(timeLabel);
+            currentTimeLabel.setBounds(150, ystart + 130, 200, 20);
+            scheduleFrame.add(currentTimeLabel);
+
+            ClassPanel currentClassPanel = new ClassPanel(100, ystart + 100, 200, yend - ystart);
+            currentClassPanel.setVisible(true);
+            scheduleFrame.add(currentClassPanel);
+        }
+    }
+
+    private static void addClassPanelTuesday(JFrame scheduleFrame, Class currentClass) {
+        if (currentClass != null && currentClass.isTuesFlag()) {
+            int ystart = getStartTime(currentClass);
+            int yend = getEndTime(currentClass);
+
+            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
+            JLabel currentClassLabel = new JLabel(classLabel);
+            currentClassLabel.setBounds(350, ystart + 110, 200, 20);
+            scheduleFrame.add(currentClassLabel);
+
+            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
+            JLabel currentTimeLabel = new JLabel(timeLabel);
+            currentTimeLabel.setBounds(350, ystart + 130, 200, 20);
+            scheduleFrame.add(currentTimeLabel);
+
+            ClassPanel currentClassPanel = new ClassPanel(300, ystart + 100, 200, yend - ystart);
+            currentClassPanel.setVisible(true);
+            scheduleFrame.add(currentClassPanel);
+        }
+    }
+
+    private static void addClassPanelWednesday(JFrame scheduleFrame, Class currentClass) {
+        if (currentClass != null && currentClass.isWedFlag()) {
+            int ystart = getStartTime(currentClass);
+            int yend = getEndTime(currentClass);
+
+            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
+            JLabel currentClassLabel = new JLabel(classLabel);
+            currentClassLabel.setBounds(550, ystart + 110, 200, 20);
+            scheduleFrame.add(currentClassLabel);
+
+            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
+            JLabel currentTimeLabel = new JLabel(timeLabel);
+            currentTimeLabel.setBounds(550, ystart + 130, 200, 20);
+            scheduleFrame.add(currentTimeLabel);
+
+            ClassPanel currentClassPanel = new ClassPanel(500, ystart + 100, 200, yend - ystart);
+            currentClassPanel.setVisible(true);
+            scheduleFrame.add(currentClassPanel);
+        }
+    }
+
+    private static void addClassPanelThursday(JFrame scheduleFrame, Class currentClass) {
+        if (currentClass != null && currentClass.isThursFlag()) {
+            int ystart = getStartTime(currentClass);
+            int yend = getEndTime(currentClass);
+
+            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
+            JLabel currentClassLabel = new JLabel(classLabel);
+            currentClassLabel.setBounds(750, ystart + 110, 200, 20);
+            scheduleFrame.add(currentClassLabel);
+
+            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
+            JLabel currentTimeLabel = new JLabel(timeLabel);
+            currentTimeLabel.setBounds(750, ystart + 130, 200, 20);
+            scheduleFrame.add(currentTimeLabel);
+
+            ClassPanel currentClassPanel = new ClassPanel(700, ystart + 100, 200, yend - ystart);
+            currentClassPanel.setVisible(true);
+            scheduleFrame.add(currentClassPanel);
+        }
+    }
+
+    private static void addClassPanelFriday(JFrame scheduleFrame, Class currentClass) {
+        if (currentClass != null && currentClass.isFriFlag()) {
+            int ystart = getStartTime(currentClass);
+            int yend = getEndTime(currentClass);
+
+            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
+            JLabel currentClassLabel = new JLabel(classLabel);
+            currentClassLabel.setBounds(950, ystart + 110, 200, 20);
+            scheduleFrame.add(currentClassLabel);
+
+            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
+            JLabel currentTimeLabel = new JLabel(timeLabel);
+            currentTimeLabel.setBounds(950, ystart + 130, 200, 20);
+            scheduleFrame.add(currentTimeLabel);
+
+            ClassPanel currentClassPanel = new ClassPanel(900, ystart + 100, 200, yend - ystart);
+            currentClassPanel.setVisible(true);
+            scheduleFrame.add(currentClassPanel);
+        }
+    }
+
 
 }
