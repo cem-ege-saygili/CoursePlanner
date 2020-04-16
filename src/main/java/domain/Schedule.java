@@ -80,9 +80,13 @@ public class Schedule {
     @Override
     public String toString(){
         return  "\n-------------------" +
-                "\n\nSchedule #" + scheduleId +
+                "\n\nSchedule #" + (scheduleId+1) +
                 ",\n has the following courses: " + getCourseSubjectsAndCatalogsAsString() +
                 "\n\nDetails are as follows: \n" + classBundleList;
+    }
+
+    public int getScheduleId(){
+        return scheduleId;
     }
 
 }

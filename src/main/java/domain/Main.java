@@ -104,6 +104,8 @@ public class Main {
         JComboBox<String> courseSubjectsComboBox = new JComboBox<>(courseSubjectsArr);
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
 
+        JComboBox<String> shceduleListComboBox = new JComboBox<>();
+
         SelectFromTableInDB.SelectCourseCatalogsOfChosenCourseSubject(dbName, sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location,
                 courseCatalogList, (String) courseSubjectsComboBox.getSelectedItem());
 
@@ -144,7 +146,7 @@ public class Main {
 
         JButton btnAdd2PlanningList = new JButton("Add Course to the Planning List");
         JButton btnRemoveFromPlanningList = new JButton("Remove Selected from the Planning List");
-        JButton btnGenerateOptimumSchedule = new JButton("Generate non-overlapping Schedule(s)");
+        JButton btnGenerateNonOverlappingSchedules = new JButton("Generate non-overlapping Schedule(s)");
         JButton btnClearPlanningList = new JButton("Clear the Planning List");
         JButton btnViewWeeklySchedule = new JButton("View weekly schedule");
 
@@ -363,7 +365,8 @@ public class Main {
 
         lstCourse2BePlanned.setBounds(100, 350, 300, 250);
 
-        btnGenerateOptimumSchedule.setBounds(100, 625, 300, 25);
+        btnGenerateNonOverlappingSchedules.setBounds(100, 600, 300, 25);
+        shceduleListComboBox.setBounds(100, 625, 300, 25);;
 
         btnViewWeeklySchedule.setBounds(100, 650, 300, 25);
 
@@ -377,7 +380,8 @@ public class Main {
         frame.add(lblCourseDescr);
         frame.add(btnAdd2PlanningList);
         frame.add(btnRemoveFromPlanningList);
-        frame.add(btnGenerateOptimumSchedule);
+        frame.add(btnGenerateNonOverlappingSchedules);
+        frame.add(shceduleListComboBox);
         frame.add(btnClearPlanningList);
         frame.add(btnViewWeeklySchedule);
         frame.add(lblCourseFaculty);
@@ -405,7 +409,7 @@ public class Main {
 //        Scheduler s1 = new Scheduler(cList);
 //        s1.generateOptimumCoursePlan();
 
-        btnGenerateOptimumSchedule.addActionListener(new ActionListener() {
+        btnGenerateNonOverlappingSchedules.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -436,6 +440,12 @@ public class Main {
                 if (schedules != null)
                     scheduleListToView = schedules;
 
+                shceduleListComboBox.removeAllItems();
+
+                for(int i = 0;i<Schedule.scheduleIdcounter;i++){
+                    shceduleListComboBox.addItem("Schedule #" + (i+1));
+                }
+
                 System.out.println("hi");
             }
         });
@@ -461,7 +471,9 @@ public class Main {
                     testPanel.setVisible(true);
                     scheduleFrame.add(testPanel);*/
 
-                    Schedule scheduleToView = scheduleListToView.get(1);
+                    int scheduleIndex2BeDisplayed = shceduleListComboBox.getSelectedIndex();
+
+                    Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
                     // Class currentClass = scheduleToView.getClassBundleList().get(0).getLecClass();
                     for (ClassBundle currentBundle : scheduleToView.getClassBundleList()) {
 
