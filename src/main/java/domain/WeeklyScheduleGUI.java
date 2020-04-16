@@ -12,30 +12,30 @@ public class WeeklyScheduleGUI {
 
 
 
-    public WeeklyScheduleGUI() {
-        scheduleFrame = new JFrame("Weekly Schedule");
+    public WeeklyScheduleGUI(JFrame scheduleFrame) {
+        this.scheduleFrame = scheduleFrame;
         //createWeeklySchedule();
     }
 
 
 
 
-    //for testing
-    public static void main(String args[]){
-        WeeklyScheduleGUI gui= new WeeklyScheduleGUI();
-        //gui.test1();
-        //gui.test2();
-        gui.test();
-
-
-    }
+//    //for testing
+//    public static void main(String args[]){
+//        WeeklyScheduleGUI gui= new WeeklyScheduleGUI();
+//        //gui.test1();
+//        //gui.test2();
+//        gui.test();
+//
+//
+//    }
 
     public void createWeeklySchedule(){
 
     }
 
 
-    public void createWeeklySchedule1(Schedule scheduleToView, JButton btnCloseBackgroundPanel){
+    public void createWeeklySchedule1(Schedule scheduleToView, JFrame scheduleFrame, JButton btnCloseBackgroundPanel){
 
 
 
@@ -118,14 +118,30 @@ public class WeeklyScheduleGUI {
             int ystart = getStartTime(currentClass);
             int yend = getEndTime(currentClass);
 
-            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
-            JLabel currentClassLabel = new JLabel(classLabel);
-            currentClassLabel.setBounds(150, ystart + 110, 200, 20);
+            String classLabel = currentClass.getCourseName() + " "
+                    + Integer.toString(currentClass.getCourseCatalog());
+
+            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
+
+            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
+
+            JLabel currentClassLabel = new JLabel();
+
+            currentClassLabel.setText("<html>"
+                    + classLabel
+                    + "<font face=\"verdana\" color=\"red\"><b><i>"
+                    + curClassComponentStr
+                    + "</i></b></font><br>"
+                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
+                    + curClassLocationStr
+                    + "</i></b></font>"
+                    + "</html>");
+            currentClassLabel.setBounds(150, ystart + 110, 200, 40);
             scheduleFrame.add(currentClassLabel);
 
             String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
             JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(150, ystart + 130, 200, 20);
+            currentTimeLabel.setBounds(150, ystart + 150, 200, 20);
             scheduleFrame.add(currentTimeLabel);
 
             ClassPanel currentClassPanel = new ClassPanel(100, ystart + 100, 200, yend - ystart);
@@ -139,14 +155,30 @@ public class WeeklyScheduleGUI {
             int ystart = getStartTime(currentClass);
             int yend = getEndTime(currentClass);
 
-            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
-            JLabel currentClassLabel = new JLabel(classLabel);
-            currentClassLabel.setBounds(350, ystart + 110, 200, 20);
+            String classLabel = currentClass.getCourseName() + " "
+                    + Integer.toString(currentClass.getCourseCatalog());
+
+            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
+
+            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
+
+            JLabel currentClassLabel = new JLabel();
+
+            currentClassLabel.setText("<html>"
+                    + classLabel
+                    + "<font face=\"verdana\" color=\"red\"><b><i>"
+                    + curClassComponentStr
+                    + "</i></b></font><br>"
+                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
+                    + curClassLocationStr
+                    + "</i></b></font>"
+                    + "</html>");
+            currentClassLabel.setBounds(350, ystart + 110, 200, 40);
             scheduleFrame.add(currentClassLabel);
 
             String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
             JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(350, ystart + 130, 200, 20);
+            currentTimeLabel.setBounds(350, ystart + 150, 200, 20);
             scheduleFrame.add(currentTimeLabel);
 
             ClassPanel currentClassPanel = new ClassPanel(300, ystart + 100, 200, yend - ystart);
@@ -160,14 +192,30 @@ public class WeeklyScheduleGUI {
             int ystart = getStartTime(currentClass);
             int yend = getEndTime(currentClass);
 
-            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
-            JLabel currentClassLabel = new JLabel(classLabel);
-            currentClassLabel.setBounds(550, ystart + 110, 200, 20);
+            String classLabel = currentClass.getCourseName() + " "
+                    + Integer.toString(currentClass.getCourseCatalog());
+
+            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
+
+            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
+
+            JLabel currentClassLabel = new JLabel();
+
+            currentClassLabel.setText("<html>"
+                    + classLabel
+                    + "<font face=\"verdana\" color=\"red\"><b><i>"
+                    + curClassComponentStr
+                    + "</i></b></font><br>"
+                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
+                    + curClassLocationStr
+                    + "</i></b></font>"
+                    + "</html>");
+            currentClassLabel.setBounds(550, ystart + 110, 200, 40);
             scheduleFrame.add(currentClassLabel);
 
             String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
             JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(550, ystart + 130, 200, 20);
+            currentTimeLabel.setBounds(550, ystart + 150, 200, 20);
             scheduleFrame.add(currentTimeLabel);
 
             ClassPanel currentClassPanel = new ClassPanel(500, ystart + 100, 200, yend - ystart);
@@ -181,14 +229,30 @@ public class WeeklyScheduleGUI {
             int ystart = getStartTime(currentClass);
             int yend = getEndTime(currentClass);
 
-            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
-            JLabel currentClassLabel = new JLabel(classLabel);
-            currentClassLabel.setBounds(750, ystart + 110, 200, 20);
+            String classLabel = currentClass.getCourseName() + " "
+                    + Integer.toString(currentClass.getCourseCatalog());
+
+            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
+
+            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
+
+            JLabel currentClassLabel = new JLabel();
+
+            currentClassLabel.setText("<html>"
+                    + classLabel
+                    + "<font face=\"verdana\" color=\"red\"><b><i>"
+                    + curClassComponentStr
+                    + "</i></b></font><br>"
+                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
+                    + curClassLocationStr
+                    + "</i></b></font>"
+                    + "</html>");
+            currentClassLabel.setBounds(750, ystart + 110, 200, 40);
             scheduleFrame.add(currentClassLabel);
 
             String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
             JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(750, ystart + 130, 200, 20);
+            currentTimeLabel.setBounds(750, ystart + 150, 200, 20);
             scheduleFrame.add(currentTimeLabel);
 
             ClassPanel currentClassPanel = new ClassPanel(700, ystart + 100, 200, yend - ystart);
@@ -202,14 +266,31 @@ public class WeeklyScheduleGUI {
             int ystart = getStartTime(currentClass);
             int yend = getEndTime(currentClass);
 
-            String classLabel = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
-            JLabel currentClassLabel = new JLabel(classLabel);
-            currentClassLabel.setBounds(950, ystart + 110, 200, 20);
+            String classLabel = currentClass.getCourseName() + " "
+                    + Integer.toString(currentClass.getCourseCatalog());
+
+            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
+
+            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
+
+            JLabel currentClassLabel = new JLabel();
+
+            currentClassLabel.setText("<html>"
+                    + classLabel
+                    + "<font face=\"verdana\" color=\"red\"><b><i>"
+                    + curClassComponentStr
+                    + "</i></b></font><br>"
+                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
+                    + curClassLocationStr
+                    + "</i></b></font>"
+                    + "</html>");
+
+            currentClassLabel.setBounds(950, ystart + 110, 200, 40);
             scheduleFrame.add(currentClassLabel);
 
             String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
             JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(950, ystart + 130, 200, 20);
+            currentTimeLabel.setBounds(950, ystart + 150, 200, 20);
             scheduleFrame.add(currentTimeLabel);
 
             ClassPanel currentClassPanel = new ClassPanel(900, ystart + 100, 200, yend - ystart);
