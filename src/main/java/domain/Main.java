@@ -14,6 +14,7 @@ import javax.swing.*;
 public class Main {
 
     static List<Schedule> scheduleListToView = null;
+    static JFrame scheduleFrame;
 
     public static void main(String[] args) {
         System.out.println("\nRunnable\n\n");
@@ -104,7 +105,7 @@ public class Main {
         JComboBox<String> courseSubjectsComboBox = new JComboBox<>(courseSubjectsArr);
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
 
-        JComboBox<String> shceduleListComboBox = new JComboBox<>();
+        JComboBox<String> scheduleListComboBox = new JComboBox<>();
 
         SelectFromTableInDB.SelectCourseCatalogsOfChosenCourseSubject(dbName, sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location,
                 courseCatalogList, (String) courseSubjectsComboBox.getSelectedItem());
@@ -149,6 +150,8 @@ public class Main {
         JButton btnGenerateNonOverlappingSchedules = new JButton("Generate non-overlapping Schedule(s)");
         JButton btnClearPlanningList = new JButton("Clear the Planning List");
         JButton btnViewWeeklySchedule = new JButton("View weekly schedule");
+
+        JButton btnCloseBackgroundPanel = new JButton("CLOSE");
 
 
         DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
@@ -321,6 +324,7 @@ public class Main {
                 tupleList.clear();
                 classesList.clear();
                 lstCourses2BePlannedModel.clear();
+                scheduleListComboBox.removeAllItems();
 
                 System.out.println("Course Planning list has been cleared!");
             }
@@ -366,7 +370,7 @@ public class Main {
         lstCourse2BePlanned.setBounds(100, 350, 300, 250);
 
         btnGenerateNonOverlappingSchedules.setBounds(100, 600, 300, 25);
-        shceduleListComboBox.setBounds(100, 625, 300, 25);;
+        scheduleListComboBox.setBounds(100, 625, 300, 25);;
 
         btnViewWeeklySchedule.setBounds(100, 650, 300, 25);
 
@@ -381,7 +385,7 @@ public class Main {
         frame.add(btnAdd2PlanningList);
         frame.add(btnRemoveFromPlanningList);
         frame.add(btnGenerateNonOverlappingSchedules);
-        frame.add(shceduleListComboBox);
+        frame.add(scheduleListComboBox);
         frame.add(btnClearPlanningList);
         frame.add(btnViewWeeklySchedule);
         frame.add(lblCourseFaculty);
@@ -440,10 +444,10 @@ public class Main {
                 if (schedules != null)
                     scheduleListToView = schedules;
 
-                shceduleListComboBox.removeAllItems();
+                scheduleListComboBox.removeAllItems();
 
                 for(int i = 0;i<Schedule.scheduleIdcounter;i++){
-                    shceduleListComboBox.addItem("Schedule #" + (i+1));
+                    scheduleListComboBox.addItem("Schedule #" + (i+1));
                 }
 
                 System.out.println("hi");
@@ -457,7 +461,8 @@ public class Main {
 
                 if (scheduleListToView != null && !scheduleListToView.isEmpty()) {
                     System.out.println("hi1");
-                    JFrame scheduleFrame = new JFrame("Weekly Schedule");
+
+                    scheduleFrame = new JFrame("Weekly Schedule");;
 
                     scheduleFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     scheduleFrame.setSize(1200, 840);
@@ -471,7 +476,7 @@ public class Main {
                     testPanel.setVisible(true);
                     scheduleFrame.add(testPanel);*/
 
-                    int scheduleIndex2BeDisplayed = shceduleListComboBox.getSelectedIndex();
+                    int scheduleIndex2BeDisplayed = scheduleListComboBox.getSelectedIndex();
 
                     Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
                     // Class currentClass = scheduleToView.getClassBundleList().get(0).getLecClass();
@@ -529,9 +534,21 @@ public class Main {
                     scheduleFrame.add(bgpanel);
 
                     scheduleFrame.setLayout(null);
+
+                    int scheduleFrameWidth = scheduleFrame.getWidth();
+                    int scheduleFrameHeight = scheduleFrame.getHeight();
+                    btnCloseBackgroundPanel.setBounds(scheduleFrameWidth-75,scheduleFrameHeight-50,75,25);
+                    scheduleFrame.add(btnCloseBackgroundPanel);
                     scheduleFrame.setVisible(true);
 
                 }
+            }
+        });
+
+        btnCloseBackgroundPanel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scheduleFrame.setVisible(false);
             }
         });
 
