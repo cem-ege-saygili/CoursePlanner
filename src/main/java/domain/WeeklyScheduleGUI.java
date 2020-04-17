@@ -4,16 +4,48 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import java.util.List;
 
 public class WeeklyScheduleGUI {
+
+    private String[] commands = {
+            "UP",
+            "DOWN",
+            "LEFT",
+            "RIGHT"
+    };
 
     public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private JFrame scheduleFrame;
 
+    JButton buttonCloseBackgroundPanel;
+    JButton buttonNextSchedule;
+    JButton buttonPrevSchedule;
 
 
-    public WeeklyScheduleGUI(JFrame scheduleFrame) {
+    private ActionListener panelAction = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            String command = (String) ae.getActionCommand();
+            if (command.equals("DOWN")) {
+                buttonCloseBackgroundPanel.doClick();
+            }else if (command.equals("RIGHT")) {
+                buttonCloseBackgroundPanel.doClick();
+                buttonNextSchedule.doClick();
+            }else if (command.equals("LEFT")) {
+                buttonCloseBackgroundPanel.doClick();
+                buttonPrevSchedule.doClick();
+            }
+
+            //repaint();
+        }
+    };
+
+    public WeeklyScheduleGUI(JFrame scheduleFrame, List<JButton> btnList) {
         this.scheduleFrame = scheduleFrame;
+        buttonCloseBackgroundPanel = btnList.get(0);
+        buttonNextSchedule = btnList.get(1);
+        buttonPrevSchedule = btnList.get(2);
         //createWeeklySchedule();
     }
 
@@ -35,12 +67,19 @@ public class WeeklyScheduleGUI {
     }
 
 
-    public void createWeeklySchedule1(Schedule scheduleToView, JFrame scheduleFrame, JButton btnCloseBackgroundPanel){
+    public void createWeeklySchedule1(Schedule scheduleToView, JFrame scheduleFrame){
 
-
+//        JButton btnCloseBackgroundPanel = btnList.get(0);
+//        JButton btnNextSchedule = btnList.get(1);
+//        JButton btnPrevSchedule = btnList.get(2);
 
         scheduleFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         scheduleFrame.setSize(1200, 840);
+
+//        buttonCloseBackgroundPanel = btnCloseBackgroundPanel;
+//        buttonNextSchedule = btnNextSchedule;
+//        buttonPrevSchedule = btnPrevSchedule;
+
 
         for (ClassBundle currentBundle : scheduleToView.getClassBundleList()) {
 
@@ -92,6 +131,11 @@ public class WeeklyScheduleGUI {
 
 
         BackgroundPanel bgpanel = new BackgroundPanel();
+        for (int i = 0; i < commands.length; i++)
+            bgpanel.registerKeyboardAction(panelAction,
+                commands[i],
+                KeyStroke.getKeyStroke(commands[i]),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
         bgpanel.setVisible(true);
         scheduleFrame.add(bgpanel);
 
@@ -99,8 +143,12 @@ public class WeeklyScheduleGUI {
 
         int scheduleFrameWidth = scheduleFrame.getWidth();
         int scheduleFrameHeight = scheduleFrame.getHeight();
-        btnCloseBackgroundPanel.setBounds(scheduleFrameWidth-75,scheduleFrameHeight-50,75,25);
-        scheduleFrame.add(btnCloseBackgroundPanel);
+        buttonCloseBackgroundPanel.setBounds(scheduleFrameWidth-75,scheduleFrameHeight-50,75,25);
+        buttonNextSchedule.setBounds(scheduleFrameWidth-175,scheduleFrameHeight-50,75,25);
+        buttonPrevSchedule.setBounds(scheduleFrameWidth-275,scheduleFrameHeight-50,75,25);
+        scheduleFrame.add(buttonCloseBackgroundPanel);
+        scheduleFrame.add(buttonNextSchedule);
+        scheduleFrame.add(buttonPrevSchedule);
         scheduleFrame.setVisible(true);
 
     }
