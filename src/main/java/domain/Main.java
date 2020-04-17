@@ -683,7 +683,8 @@ public class Main {
 
     private static void viewWeeklySchedule(Schedule scheduleToView,JButton btnCloseBackgroundPanel){
         WeeklyScheduleGUI weeklyScheduleView= new WeeklyScheduleGUI();
-        weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
+        //weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
+        weeklyScheduleView.createWeeklySchedule2(scheduleToView,btnCloseBackgroundPanel);
     }
 
     /*
