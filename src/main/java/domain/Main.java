@@ -2,7 +2,6 @@ package domain;
 
 import DB_Utilities.*;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -57,7 +56,7 @@ public class Main {
 
         String dbName = "CoursePlannerDB2";
 
-        /*
+
         CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
         CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
@@ -65,8 +64,8 @@ public class Main {
         CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
 
 
-         */
-        System.out.println("after CleanStartAndFill_NormalizedTables");
+
+        //System.out.println("after CleanStartAndFill_NormalizedTables");
 
         /*ArrayList<Course> cList = new ArrayList<Course>();
         Course c5 = new Course("E", 7, 8, 2);
@@ -468,16 +467,14 @@ public class Main {
                     int scheduleIndex2BeDisplayed = scheduleListComboBox.getSelectedIndex();
                     Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
 
-                    viewWeeklySchedule(scheduleToView,btnCloseBackgroundPanel);
-
-
-                    /*
                     scheduleFrame = new JFrame("Weekly Schedule");;
 
                     scheduleFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     scheduleFrame.setSize(1200, 840);
 
-                    */
+                    ViewWeeklySchedule(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
+
+
 /*                  JLabel testlabel = new JLabel("Comp 130 LEC");
                     testlabel.setBounds(150,50,300,200);
                     scheduleFrame.add(testlabel);
@@ -681,10 +678,14 @@ public class Main {
     }
 
 
+
     private static void viewWeeklySchedule(Schedule scheduleToView,JButton btnCloseBackgroundPanel){
         WeeklyScheduleGUI weeklyScheduleView= new WeeklyScheduleGUI();
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
+        //weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
         weeklyScheduleView.createWeeklySchedule2(scheduleToView,btnCloseBackgroundPanel);
+
+
     }
 
     /*
