@@ -71,10 +71,17 @@ public class Class implements Comparable<domain.Class>{
         if(id1 == id2)
             return false;
 
-        String day1 = Parser.ParseDayBooleans2List(monFlag,tuesFlag,wedFlag,thursFlag,friFlag).toString();
-        String day2 = Parser.ParseDayBooleans2List(c2.monFlag,c2.tuesFlag,c2.wedFlag,c2.thursFlag,c2.friFlag).toString();
+//        String day1 = Parser.ParseDayBooleans2List(monFlag,tuesFlag,wedFlag,thursFlag,friFlag).toString();
+//        String day2 = Parser.ParseDayBooleans2List(c2.monFlag,c2.tuesFlag,c2.wedFlag,c2.thursFlag,c2.friFlag).toString();
+//
+//        if(!day1.equals(day2))
+//            return true;
 
-        if(!day1.equals(day2))
+        if(!((monFlag && c2.monFlag)
+                || (tuesFlag && c2.tuesFlag)
+                || (wedFlag && c2.wedFlag)
+                || (thursFlag && c2.thursFlag)
+                || (friFlag && c2.friFlag))) // If 2 classes are on different days. (i.e. distinct days, no overlapping days)
             return true;
 
         int s1 = Parser.ParseMtgTimeStr2IntegerTimeStamp(this.startTime);

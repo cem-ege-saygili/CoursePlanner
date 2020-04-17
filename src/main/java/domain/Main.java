@@ -15,6 +15,12 @@ public class Main {
     static List<Schedule> scheduleListToView = null;
     static JFrame scheduleFrame;
 
+//    static boolean monExclFlag;
+//    static boolean tuesExclFlag;
+//    static boolean wedExclFlag;
+//    static boolean thursExclFlag;
+//    static boolean friExclFlag;
+
     public static void main(String[] args) {
         System.out.println("\nRunnable\n\n");
 
@@ -107,7 +113,7 @@ public class Main {
         JComboBox<String> courseSubjectsComboBox = new JComboBox<>(courseSubjectsArr);
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
 
-        JComboBox<String> scheduleListComboBox = new JComboBox<>();
+        JComboBox<Schedule> scheduleListComboBox = new JComboBox<>();
 
         SelectFromTableInDB.SelectCourseCatalogsOfChosenCourseSubject(dbName, sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location,
                 courseCatalogList, (String) courseSubjectsComboBox.getSelectedItem());
@@ -151,6 +157,31 @@ public class Main {
         JButton btnRemoveFromPlanningList = new JButton("Remove Selected from the Planning List");
         JButton btnGenerateNonOverlappingSchedules = new JButton("Generate non-overlapping Schedule(s)");
         JButton btnClearPlanningList = new JButton("Clear the Planning List");
+
+        JCheckBox checkBox_Exclude_Mon = new JCheckBox("Monday");
+        JCheckBox checkBox_Exclude_Tues = new JCheckBox("Tuesday");
+        JCheckBox checkBox_Exclude_Wed = new JCheckBox("Wednesday");
+        JCheckBox checkBox_Exclude_Thurs = new JCheckBox("Thursday");
+        JCheckBox checkBox_Exclude_Fri = new JCheckBox("Friday");
+
+        JComboBox<String> filterStartTimeComboBox = new JComboBox<>();
+        JComboBox<String> filterEndTimeComboBox = new JComboBox<>();
+
+        JLabel fromLabel = new JLabel("From:");
+        JLabel toLabel = new JLabel("To:");
+
+        JLabel activeFiltersLabel = new JLabel("Filters to be applied:");
+        JLabel courses2BePlannedLabel = new JLabel("Courses to be planned:");
+
+        JButton btnAddFilter = new JButton("Add filter");
+        JButton btnRemoveFilter = new JButton("Remove filter");
+        JButton btnClearFilters = new JButton("Clear filters");
+
+        DefaultListModel lstFiltersModel = new DefaultListModel();
+        JList lstFilters = new JList(lstFiltersModel);
+
+        InitialFillFilterTimeComboBoxes(filterStartTimeComboBox, filterEndTimeComboBox);
+
         JButton btnViewWeeklySchedule = new JButton("View weekly schedule");
 
         JButton btnCloseBackgroundPanel = new JButton("CLOSE");
@@ -332,6 +363,79 @@ public class Main {
             }
         });
 
+        btnAddFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean isMonFilterEnabled = checkBox_Exclude_Mon.isSelected();
+                boolean isTuesFilterEnabled = checkBox_Exclude_Tues.isSelected();
+                boolean isWedFilterEnabled = checkBox_Exclude_Wed.isSelected();
+                boolean isThursFilterEnabled = checkBox_Exclude_Thurs.isSelected();
+                boolean isFriFilterEnabled = checkBox_Exclude_Fri.isSelected();
+                String selectedFilterStartTime = (String) filterStartTimeComboBox.getSelectedItem();
+                String selectedFilterEndTime = (String) filterEndTimeComboBox.getSelectedItem();
+
+
+
+                DayTimeFramePair curDayTimeFramePair = new DayTimeFramePair(isMonFilterEnabled,
+                        isTuesFilterEnabled,
+                        isWedFilterEnabled,
+                        isThursFilterEnabled,
+                        isFriFilterEnabled,
+                        selectedFilterStartTime,
+                        selectedFilterEndTime);
+
+                if(!lstFiltersModel.contains(curDayTimeFramePair)){
+                    lstFiltersModel.addElement(curDayTimeFramePair);
+                }
+
+            }
+        });
+
+        btnRemoveFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int indexOfElt2BeRemoved = lstFilters.getSelectedIndex();
+                if(indexOfElt2BeRemoved != -1){
+                    lstFiltersModel.removeElementAt(indexOfElt2BeRemoved);
+                }
+
+            }
+        });
+
+        btnClearFilters.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                lstFiltersModel.removeAllElements();
+            }
+        });
+
+        filterStartTimeComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    String selectedFilterStartTimeStr = (String) e.getItem();
+                    int index = DayTimeFramePair.AllTimeStrings.indexOf(selectedFilterStartTimeStr);
+                    filterEndTimeComboBox.removeAllItems();
+                    for(int i = index+1;i<DayTimeFramePair.AllTimeStrings.size();i++){
+                        String curStartTimeStr = DayTimeFramePair.AllTimeStrings.get(i);
+                        filterEndTimeComboBox.addItem(curStartTimeStr);
+                    }
+                }
+            }
+        });
+
+        checkBox_Exclude_Mon.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                JCheckBox cbLog = (JCheckBox) e.getSource();
+//                if (cbLog.isSelected()) {
+//                    System.out.println("Filter-Enabled");
+//                } else {
+//                    System.out.println("Filter-Disabled");
+//                }
+            }
+        });
+
 
 //        NumberFormat format = NumberFormat.getInstance();
 //        NumberFormatter formatter = new NumberFormatter(format);
@@ -344,9 +448,9 @@ public class Main {
 //        JFormattedTextField txtFieldPriority = new JFormattedTextField(formatter);
 
 
-        JFrame frame = new JFrame("CourseScheduler v.2");
+        JFrame frame = new JFrame("CourseScheduler v.3");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 720);
+        frame.setSize(550, 805);
 
         //int yInc = 25;
 
@@ -369,12 +473,34 @@ public class Main {
         btnAdd2PlanningList.setBounds(100, 275, 300, 25);
         btnClearPlanningList.setBounds(100, 300, 300, 25);
 
-        lstCourse2BePlanned.setBounds(100, 350, 300, 250);
+        checkBox_Exclude_Mon.setBounds(100, 325, 85, 25);
+        checkBox_Exclude_Tues.setBounds(175, 325, 90, 25);
+        checkBox_Exclude_Wed.setBounds(255, 325, 102, 25);
+        checkBox_Exclude_Thurs.setBounds(350, 325, 95, 25);
+        checkBox_Exclude_Fri.setBounds(435, 325, 80, 25);
 
-        btnGenerateNonOverlappingSchedules.setBounds(100, 600, 300, 25);
-        scheduleListComboBox.setBounds(100, 625, 300, 25);;
+        filterStartTimeComboBox.setBounds(140, 350, 125, 25);
+        filterEndTimeComboBox.setBounds(300, 350, 125, 25);
 
-        btnViewWeeklySchedule.setBounds(100, 650, 300, 25);
+        fromLabel.setBounds(100, 350, 50, 25);
+        toLabel.setBounds(275, 350, 50, 25);
+
+        btnAddFilter.setBounds(100, 375, 100, 25);
+        btnRemoveFilter.setBounds(190, 375, 120, 25);
+        btnClearFilters.setBounds(300, 375, 100, 25);
+
+        activeFiltersLabel.setBounds(100, 410, 200, 25);
+
+        lstFilters.setBounds(75, 30+405, 400, 75);
+
+        courses2BePlannedLabel.setBounds(100, 525, 200, 25);
+
+        lstCourse2BePlanned.setBounds(75, 50+500, 400, 120);
+
+        btnGenerateNonOverlappingSchedules.setBounds(100, 50+630, 300, 25);
+        scheduleListComboBox.setBounds(100, 50+655, 300, 25);;
+
+        btnViewWeeklySchedule.setBounds(100, 50+680, 300, 25);
 
         frame.add(lblCourseSubject);
         frame.add(courseSubjectsComboBox);
@@ -386,9 +512,24 @@ public class Main {
         frame.add(lblCourseDescr);
         frame.add(btnAdd2PlanningList);
         frame.add(btnRemoveFromPlanningList);
+        frame.add(filterStartTimeComboBox);
+        frame.add(filterEndTimeComboBox);
+        frame.add(btnAddFilter);
+        frame.add(btnRemoveFilter);
+        frame.add(btnClearFilters);
+        frame.add(lstFilters);
         frame.add(btnGenerateNonOverlappingSchedules);
         frame.add(scheduleListComboBox);
         frame.add(btnClearPlanningList);
+        frame.add(checkBox_Exclude_Mon);
+        frame.add(checkBox_Exclude_Tues);
+        frame.add(checkBox_Exclude_Wed);
+        frame.add(checkBox_Exclude_Thurs);
+        frame.add(checkBox_Exclude_Fri);
+        frame.add(fromLabel);
+        frame.add(toLabel);
+        frame.add(activeFiltersLabel);
+        frame.add(courses2BePlannedLabel);
         frame.add(btnViewWeeklySchedule);
         frame.add(lblCourseFaculty);
         frame.add(lstCourse2BePlanned);
@@ -425,6 +566,9 @@ public class Main {
 
                 List<List<ClassBundle>> classBundlesList = new ArrayList<>();
 
+                scheduleListComboBox.removeAllItems();
+
+
                 for (List<Class> curClassList : classesList) {
                     List<ClassBundle> curBundles = ClassBundle.GenerateClassBundlesFromClasses(curClassList);
                     System.out.println(curBundles);
@@ -432,6 +576,23 @@ public class Main {
                 }
 
                 List<Schedule> schedules = Schedule.GenerateSchedulesFromClassBundlesList(classBundlesList);
+
+
+
+                if(!lstFiltersModel.isEmpty()){
+                    List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
+                    for(int i =0;i<lstFiltersModel.size();i++){
+                        DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
+                        dayTimeFramePairs.add(curDayTimeFramePair);
+                    }
+                    Schedule.FilterOutSchedulesFrom(schedules, dayTimeFramePairs);
+                }
+
+                for(Schedule curSchedule:schedules){
+                    scheduleListComboBox.addItem(curSchedule);
+                }
+
+                int numSchedulesGenerated = schedules.size();
 
 //                System.out.println(schedules);
 
@@ -441,16 +602,10 @@ public class Main {
                 textArea.setEditable(false);
                 textArea.setCaretPosition(0);
                 JScrollPane scrollPane = new JScrollPane(textArea);
-                JOptionPane.showMessageDialog(null, scrollPane, Schedule.scheduleIdcounter + " non-overlapping plans are found.", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, scrollPane, numSchedulesGenerated + " non-overlapping plans are found.", JOptionPane.WARNING_MESSAGE);
 
-                if (schedules != null)
+                if (schedules != null )
                     scheduleListToView = schedules;
-
-                scheduleListComboBox.removeAllItems();
-
-                for(int i = 0;i<Schedule.scheduleIdcounter;i++){
-                    scheduleListComboBox.addItem("Schedule #" + (i+1));
-                }
 
                 System.out.println("hi");
             }
@@ -463,8 +618,15 @@ public class Main {
 
                 if (scheduleListToView != null && !scheduleListToView.isEmpty()) {
                     System.out.println("hi1");
-
+//                    String selectedItemStr = (String) scheduleListComboBox.getSelectedIndex();
                     int scheduleIndex2BeDisplayed = scheduleListComboBox.getSelectedIndex();
+                    if(scheduleIndex2BeDisplayed == -1){
+                        JOptionPane.showMessageDialog(null,
+                                "Please select a schedule first.",
+                                "No Schedule has been selected.",
+                                JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
                     Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
 
                     scheduleFrame = new JFrame("Weekly Schedule");;
@@ -561,6 +723,18 @@ public class Main {
             }
         });
 
+    }
+
+    private static void InitialFillFilterTimeComboBoxes(JComboBox<String> filterStartTimeComboBox, JComboBox<String> filterEndComboBox) {
+        for(int i = 0; i< DayTimeFramePair.AllTimeStrings.size(); i++){
+            String curTimeStr = DayTimeFramePair.AllTimeStrings.get(i);
+            if(i==0){
+                filterStartTimeComboBox.addItem(curTimeStr);
+                continue;
+            }
+            filterEndComboBox.addItem(curTimeStr);
+            filterStartTimeComboBox.addItem(curTimeStr);
+        }
     }
 
 
