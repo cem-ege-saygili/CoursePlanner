@@ -185,6 +185,12 @@ public class Main {
         JButton btnViewWeeklySchedule = new JButton("View weekly schedule");
 
         JButton btnCloseBackgroundPanel = new JButton("CLOSE");
+        JButton btnPrevSchedule = new JButton("<-");
+        JButton btnNextSchedule = new JButton("->");
+
+        List<JButton> btnList = new ArrayList<>();
+        btnList.add(btnCloseBackgroundPanel);
+        btnList.add(btnNextSchedule);btnList.add(btnPrevSchedule);
 
 
         DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
@@ -634,7 +640,7 @@ public class Main {
                     scheduleFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     scheduleFrame.setSize(1200, 840);
 
-                    ViewWeeklySchedule(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
+                    ViewWeeklySchedule(scheduleToView, scheduleFrame, btnList);
 
 
 /*                  JLabel testlabel = new JLabel("Comp 130 LEC");
@@ -720,6 +726,26 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 scheduleFrame.setVisible(false);
+            }
+        });
+
+        btnNextSchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int nextScheduleIndex = (scheduleListComboBox.getSelectedIndex() + 1) % scheduleListComboBox.getItemCount();
+                scheduleListComboBox.setSelectedIndex(nextScheduleIndex);
+                btnViewWeeklySchedule.doClick();
+            }
+        });
+
+        btnPrevSchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int prevScheduleIndex = (scheduleListComboBox.getSelectedIndex() - 1);
+                if(prevScheduleIndex<0)
+                    prevScheduleIndex += scheduleListComboBox.getItemCount();
+                scheduleListComboBox.setSelectedIndex(prevScheduleIndex);
+                btnViewWeeklySchedule.doClick();
             }
         });
 
@@ -852,9 +878,9 @@ public class Main {
     }
 
 
-    private static void ViewWeeklySchedule(Schedule scheduleToView, JFrame scheduleFrame, JButton btnCloseBackgroundPanel){
-        WeeklyScheduleGUI weeklyScheduleView = new WeeklyScheduleGUI(scheduleFrame);
-        weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
+    private static void ViewWeeklySchedule(Schedule scheduleToView, JFrame scheduleFrame, List<JButton> btnList){
+        WeeklyScheduleGUI weeklyScheduleView = new WeeklyScheduleGUI(scheduleFrame, btnList);
+        weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame);
     }
 
     /*
