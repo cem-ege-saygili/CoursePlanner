@@ -49,19 +49,6 @@ public class WeeklyScheduleGUI {
         //createWeeklySchedule();
     }
 
-
-
-
-//    //for testing
-//    public static void main(String args[]){
-//        WeeklyScheduleGUI gui= new WeeklyScheduleGUI();
-//        //gui.test1();
-//        //gui.test2();
-//        gui.test();
-//
-//
-//    }
-
     public void createWeeklySchedule(){
 
     }
@@ -154,6 +141,8 @@ public class WeeklyScheduleGUI {
     }
 
     public static void addClassPanels(JFrame scheduleFrame, Class currentClass) {
+        int yStart = getStartTime(currentClass);
+        int yEnd = getEndTime(currentClass);
         int offsetX = 200;
         for(int dayIndex = 0; dayIndex < 5; dayIndex++) {
             boolean dayFlag = false;
@@ -177,9 +166,6 @@ public class WeeklyScheduleGUI {
                 }
 
                 if (dayFlag) {
-                    int ystart = getStartTime(currentClass);
-                    int yend = getEndTime(currentClass);
-
                     String classLabel = currentClass.getCourseName() + " "
                             + Integer.toString(currentClass.getCourseCatalog());
 
@@ -198,15 +184,15 @@ public class WeeklyScheduleGUI {
                             + curClassLocationStr
                             + "</i></b></font>"
                             + "</html>");
-                    currentClassLabel.setBounds(150 + dayIndex * offsetX, ystart + 110, 200, 40);
+                    currentClassLabel.setBounds(150 + dayIndex * offsetX, yStart + 110, 200, 40);
                     scheduleFrame.add(currentClassLabel);
 
                     String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
                     JLabel currentTimeLabel = new JLabel(timeLabel);
-                    currentTimeLabel.setBounds(150 + dayIndex * offsetX, ystart + 150, 200, 20);
+                    currentTimeLabel.setBounds(150 + dayIndex * offsetX, yStart + 150, 200, 20);
                     scheduleFrame.add(currentTimeLabel);
 
-                    ClassPanel currentClassPanel = new ClassPanel(100 + dayIndex * offsetX, ystart + 100, 200, yend - ystart);
+                    ClassPanel currentClassPanel = new ClassPanel(100 + dayIndex * offsetX, yStart + 100, 200, yEnd - yStart);
                     currentClassPanel.setVisible(true);
                     scheduleFrame.add(currentClassPanel);
                 }
