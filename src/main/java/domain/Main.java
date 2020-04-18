@@ -62,12 +62,13 @@ public class Main {
 
         String dbName = "CoursePlannerDB2";
 
-        /*run only once
-        //CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
+        //run only once
+        /*
+        CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
-        //CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
+        CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
 
-        //CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
+        CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
         */
 
 
@@ -810,6 +811,7 @@ public class Main {
      */
     private static void viewWeeklySchedule(Schedule scheduleToView,List<JButton> btnList){
         WeeklyScheduleGUI weeklyScheduleView= new WeeklyScheduleGUI(btnList);
+        scheduleFrame=weeklyScheduleView.getScheduleFrame();
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
         weeklyScheduleView.createWeeklySchedule1(scheduleToView);
