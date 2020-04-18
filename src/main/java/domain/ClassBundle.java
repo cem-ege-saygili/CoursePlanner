@@ -188,6 +188,19 @@ public class ClassBundle{
         if(id1 == id2)
             return false;
 
+        int cat1 = this.getCourseCatalog();
+        String subj1 = this.getCourseSubject();
+        String subj2 = cb2.getCourseSubject();
+        int cat2 = this.getCourseCatalog();
+
+        if(
+
+                cat1 == cat2 &&
+                        subj1.equals(subj2)//two bundles corresponding to the same course
+
+        )
+            return false;
+
         List<Class> classList1 = classList;
         List<Class> classList2 = cb2.classList;
 
