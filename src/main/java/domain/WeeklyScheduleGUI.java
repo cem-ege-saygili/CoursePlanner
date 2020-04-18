@@ -71,16 +71,20 @@ public class WeeklyScheduleGUI {
         for (ClassBundle currentBundle : scheduleToView.getClassBundleList()) {
 
             Class currentClass = currentBundle.getLecClass();
-            addClassPanels(scheduleFrame, currentClass);
+            if(currentClass !=null)
+                addClassPanels(scheduleFrame, currentClass);
 
             currentClass = currentBundle.getDisClass();
-            addClassPanels(scheduleFrame, currentClass);
+            if(currentClass !=null)
+                addClassPanels(scheduleFrame, currentClass);
 
             currentClass = currentBundle.getLabClass();
-            addClassPanels(scheduleFrame, currentClass);
+            if(currentClass !=null)
+                addClassPanels(scheduleFrame, currentClass);
 
             currentClass = currentBundle.getPrbClass();
-            addClassPanels(scheduleFrame, currentClass);
+            if(currentClass !=null)
+                addClassPanels(scheduleFrame, currentClass);
 
         }
 
