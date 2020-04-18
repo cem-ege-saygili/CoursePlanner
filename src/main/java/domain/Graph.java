@@ -13,18 +13,24 @@ public class Graph {
     }
 
     public void addVertex(Vertex v){
-        vertex_AdjacencyList_Mappings.put(v, new LinkedList<Vertex>());
+        if(!vertex_AdjacencyList_Mappings.containsKey(v))
+            vertex_AdjacencyList_Mappings.put(v, new LinkedList<Vertex>());
+        else
+            System.out.println(v + " already exists, cannot add.");
     }
 
-    public void addEdge(Vertex sourceVertex,
-                        Vertex destinationVertex){
-        if(!vertex_AdjacencyList_Mappings.containsKey(sourceVertex))
-            addVertex(sourceVertex);
-        if(!vertex_AdjacencyList_Mappings.containsKey(destinationVertex))
-            addVertex(destinationVertex);
+    public void addEdge(Vertex v1,
+                        Vertex v2){
+        addVertex(v1);
+        addVertex(v2);
 
-        List<Vertex> sourceVertexAdjacencyList = vertex_AdjacencyList_Mappings.get(sourceVertex);
-        sourceVertexAdjacencyList.add(destinationVertex);
+        List<Vertex> vertex1AdjacencyList = vertex_AdjacencyList_Mappings.get(v1); //bidirectional graph, add v1 to v2 and v2 to v1
+        vertex1AdjacencyList.add(v2);
+
+        List<Vertex> vertex2AdjacencyList = vertex_AdjacencyList_Mappings.get(v2);
+        vertex2AdjacencyList.add(v1);
+
+
     }
 
     public int getVertexCount(){
@@ -53,4 +59,25 @@ public class Graph {
         return adjListOfVertexSource.contains(vertexDestination);
     }
 
+    @Override
+    public String toString() {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (Vertex v : vertex_AdjacencyList_Mappings.keySet()) {
+            builder.append(v.toString() + ": ");
+            for (Vertex w : vertex_AdjacencyList_Mappings.get(v)) {
+                builder.append(w.toString() + " ");
+            }
+            builder.append("\n");
+        }
+
+        String strAdjacencyList = builder.toString();
+
+        return "Graph: " +
+                "contains " + getVertexCount() + " vertices, " +
+                getEdgesCount() + " edges.\n\n" +
+                "AdjacencyList is as follows:\n\n" +
+                strAdjacencyList;
+    }
 }
