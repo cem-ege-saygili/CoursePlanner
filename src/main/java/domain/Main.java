@@ -2,10 +2,7 @@ package domain;
 
 import DB_Utilities.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -14,6 +11,8 @@ public class Main {
 
     static List<Schedule> scheduleListToView = null;
     static JFrame scheduleFrame;
+    private static List<String> distinctClassComponentsList_GivenCourse;
+    private static List<Class> classListForClassFilter;
 
 //    static boolean monExclFlag;
 //    static boolean tuesExclFlag;
@@ -37,6 +36,8 @@ public class Main {
         String sqlQuery_SelectDistinctCourseSubjects_Location = "inputs/sqlQuery_selectDistinctCourseSubjects.sql";
         String sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location = "inputs/sqlQuery_selectCourseCatalogsOfChosenCourseSubject.sql";
         String sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location = "inputs/sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog.sql";
+        String sqlQuery_SelectDistinctClassComponentsOfGivenCourse_Location = "inputs/sqlQuery_SelectDistinctClassComponentsOfGivenCourse.sql";
+        String sqlQuery_sqlQuery_SelectClassesFromCourseSubjectCatalogAndClassComponent_Location = "inputs/sqlQuery_SelectClassesFromCourseSubjectCatalogAndClassComponent.sql";
 
         String sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location = "inputs/sqlQuery_selectClassesInfoFromCourseSubject_Catalog.sql";
 
@@ -113,6 +114,27 @@ public class Main {
 
         JComboBox<String> courseSubjectsComboBox = new JComboBox<>(courseSubjectsArr);
         JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
+
+        JLabel lblCourseClassFilter = new JLabel();
+        lblCourseClassFilter.setText("Course Class Filter: ");
+
+        JLabel lblCourseSubjectAndCatalog = new JLabel();
+        lblCourseSubjectAndCatalog.setText("Please double click to a course in \"Courses to be planned\" pane");
+
+        JComboBox<String> distinctClassComponents_GivenCourse_ComboBox = new JComboBox<>();
+
+        JButton btnAddClassFilter = new JButton("Add Class Filter");
+        JButton btnRemoveClassFilter = new JButton("Remove Class Filter");
+        JButton btnClearClassFilters = new JButton("Clear Class Filters");
+        DefaultListModel lstClassFiltersListModel = new DefaultListModel();
+        JList lstClassFiltersList = new JList(lstClassFiltersListModel);
+        JScrollPane scrollablePane = new JScrollPane(lstClassFiltersList);
+
+        JLabel lblAddedClassFilters = new JLabel("Active Class Filters:");
+
+        DefaultListModel lstAddedClassFiltersListModel = new DefaultListModel();
+        JList lstAddedClassFiltersList = new JList(lstAddedClassFiltersListModel);
+        JScrollPane scrollablePaneAddedClassFilters = new JScrollPane(lstAddedClassFiltersList);
 
         JComboBox<Schedule> scheduleListComboBox = new JComboBox<>();
 
@@ -275,13 +297,13 @@ public class Main {
                         selectedCourseCatalog,
                         selectedPriority);
 
-                String courseTuple2BeAdded_Subject = courseTuple2BeAdded.getSubject();
-                int courseTuple2BeAdded_Catalog = courseTuple2BeAdded.getCatalog();
-                int courseTuple2BeAdded_Priority = courseTuple2BeAdded.getPriority();
+//                String courseTuple2BeAdded_Subject = courseTuple2BeAdded.getSubject();
+//                int courseTuple2BeAdded_Catalog = courseTuple2BeAdded.getCatalog();
+//                int courseTuple2BeAdded_Priority = courseTuple2BeAdded.getPriority();
 
-                String element2BeAdded = "Subject: " + courseTuple2BeAdded_Subject
-                        + ", Catalog: " + courseTuple2BeAdded_Catalog
-                        + ", Priority: " + courseTuple2BeAdded_Priority;
+//                String element2BeAdded = "Subject: " + courseTuple2BeAdded_Subject
+//                        + ", Catalog: " + courseTuple2BeAdded_Catalog
+//                        + ", Priority: " + courseTuple2BeAdded_Priority;
 
 
                 if (!tupleList.contains(courseTuple2BeAdded)) {// CHECKING for ELEC317 vs. ELEC317 case. (i.e. attempt for adding the same course)
@@ -323,11 +345,11 @@ public class Main {
 
                     classesList.add(classListForTuple);
                     tupleList.add(courseTuple2BeAdded);
-                    lstCourses2BePlannedModel.addElement(element2BeAdded);
+                    lstCourses2BePlannedModel.addElement(courseTuple2BeAdded);
 
                 } else {
-                    JOptionPane.showMessageDialog(btnAdd2PlanningList, "\"" + courseTuple2BeAdded_Subject
-                            + " " + courseTuple2BeAdded_Catalog + "\" has already been added to the planning list!");
+                    JOptionPane.showMessageDialog(btnAdd2PlanningList, "\"" + courseTuple2BeAdded.getSubject()
+                            + " " + courseTuple2BeAdded.getCatalog() + "\" has already been added to the planning list!");
                 }
 
                 PrinOutClassesList(classesList);
@@ -443,6 +465,97 @@ public class Main {
             }
         });
 
+        lstCourse2BePlanned.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                CourseSubject_Catalog_Priority_Tuple selectedTuple = (CourseSubject_Catalog_Priority_Tuple) lstCourse2BePlanned.getSelectedValue();
+
+                String courseSubject = selectedTuple.getSubject();
+                int courseCatalog = selectedTuple.getCatalog();
+
+                if(e.getClickCount() == 2){//if double-clicked
+
+                    lblCourseSubjectAndCatalog.setText("Selected Course: "
+                            + "\""
+                            + courseSubject + " " + courseCatalog
+                            + "\"");
+
+                    distinctClassComponentsList_GivenCourse = new ArrayList<>();
+                    distinctClassComponents_GivenCourse_ComboBox.removeAllItems();
+
+                    distinctClassComponentsList_GivenCourse = SelectFromTableInDB.SelectDistinctClassComponentsOfGivenCourse(courseSubject, courseCatalog, dbName, sqlQuery_SelectDistinctClassComponentsOfGivenCourse_Location);
+
+
+                    for(String curClassComponentStr:distinctClassComponentsList_GivenCourse){
+                        distinctClassComponents_GivenCourse_ComboBox.addItem(curClassComponentStr);
+                    }
+
+                    ReFillClassFilterList(
+                            courseSubject,
+                            courseCatalog,
+                            distinctClassComponents_GivenCourse_ComboBox,
+                            dbName,
+                            sqlQuery_sqlQuery_SelectClassesFromCourseSubjectCatalogAndClassComponent_Location,
+                            lstClassFiltersListModel);
+
+                }
+            }
+        });
+
+        btnRemoveClassFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedActiveClassFilterElementIndex = lstAddedClassFiltersList.getSelectedIndex();
+                if(selectedActiveClassFilterElementIndex != -1){
+                    ActiveClassFilterElement selectedActiveClassFilterElement = (ActiveClassFilterElement) lstAddedClassFiltersListModel.getElementAt(selectedActiveClassFilterElementIndex);
+                    lstAddedClassFiltersListModel.removeElement(selectedActiveClassFilterElement);
+                }
+            }
+        });
+
+        btnClearClassFilters.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                lstAddedClassFiltersListModel.removeAllElements();
+            }
+        });
+
+        distinctClassComponents_GivenCourse_ComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent event) {
+                if (event.getStateChange() == ItemEvent.SELECTED) {
+                    String lblCourseSubjectAndCatalogStr = lblCourseSubjectAndCatalog.getText();
+                    int startIndex = lblCourseSubjectAndCatalogStr.indexOf("\"");
+                    int endIndex = lblCourseSubjectAndCatalogStr.indexOf("\"", startIndex+1);
+                    String courseSubjectAndCatalogStr = lblCourseSubjectAndCatalogStr.substring(startIndex+1, endIndex);
+                    String[] arr = courseSubjectAndCatalogStr.split(" ");
+                    String courseSubject = arr[0];
+                    int courseCatalog = Integer.parseInt(arr[1]);
+                    ReFillClassFilterList(
+                            courseSubject,
+                            courseCatalog,
+                            distinctClassComponents_GivenCourse_ComboBox,
+                            dbName,
+                            sqlQuery_sqlQuery_SelectClassesFromCourseSubjectCatalogAndClassComponent_Location,
+                            lstClassFiltersListModel);
+                }
+            }
+        });
+
+        btnAddClassFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedClassFilterElementIndex = lstClassFiltersList.getSelectedIndex();
+                if(selectedClassFilterElementIndex != -1){
+                    ClassFilterElement selectedClassFilterElement = (ClassFilterElement) lstClassFiltersListModel.getElementAt(selectedClassFilterElementIndex);
+                    Class selectedClass = selectedClassFilterElement.getClassForClassFilterElement();
+                    ActiveClassFilterElement acfe = new ActiveClassFilterElement(selectedClass);
+                    lstAddedClassFiltersListModel.addElement(acfe);
+                }
+            }
+        });
+
 
 //        NumberFormat format = NumberFormat.getInstance();
 //        NumberFormatter formatter = new NumberFormatter(format);
@@ -457,63 +570,86 @@ public class Main {
 
         JFrame frame = new JFrame("CourseScheduler v.3");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(550, 805);
+        frame.setSize(1350, 805);//w:550
 
         //int yInc = 25;
 
-        lblCourseSubject.setBounds(100, 50, 150, 25);
-        courseSubjectsComboBox.setBounds(250, 50, 150, 25);
+        lblCourseSubject.setBounds(100-85, 50, 150, 25);
+        courseSubjectsComboBox.setBounds(250-85, 50, 150, 25);
 
-        lblCourseCatalog.setBounds(100, 75, 150, 25);
-        courseCatalogsComboBox.setBounds(250, 75, 150, 25);
+        lblCourseCatalog.setBounds(100-85, 75, 150, 25);
+        courseCatalogsComboBox.setBounds(250-85, 75, 150, 25);
 
-        lblPriority.setBounds(100, 100, 100, 25);
-        priorityValuesComboBox.setBounds(250, 100, 150, 25);
+        lblPriority.setBounds(100-85, 100, 100, 25);
+        priorityValuesComboBox.setBounds(250-85, 100, 150, 25);
 
-        lblCourseFaculty.setBounds(100, 125, 400, 25);
-        lblCourseLevel.setBounds(100, 150, 400, 25);
-        lblCourseDescr.setBounds(100, 175, 400, 75);
+        lblCourseClassFilter.setBounds(400+20, 50, 200, 25); ///////////////////////
+        lblCourseSubjectAndCatalog.setBounds(400+20, 75, 500, 25);
+
+        distinctClassComponents_GivenCourse_ComboBox.setBounds(400+25, 100, 100, 25);
+
+        btnAddClassFilter.setBounds(500+25, 100, 130, 25);
+        //lstClassFiltersList.setBounds(400, 125, 800, 200);
+        scrollablePane.setBounds(400+25, 130, 900, 200);
+
+        lblAddedClassFilters.setBounds(400+25, 350, 130, 25);
+        btnRemoveClassFilter.setBounds(560, 350,150,25);
+        btnClearClassFilters.setBounds(710, 350,150,25);
+        scrollablePaneAddedClassFilters.setBounds(400+25, 375, 900, 200);
+
+        lblCourseFaculty.setBounds(100-85, 125, 400, 25);
+        lblCourseLevel.setBounds(100-85, 150, 400, 25);
+        lblCourseDescr.setBounds(100-85, 175, 400, 75);
         lblCourseDescr.setVerticalAlignment(JLabel.TOP);
 
 
-        btnRemoveFromPlanningList.setBounds(100, 250, 300, 25);
-        btnAdd2PlanningList.setBounds(100, 275, 300, 25);
-        btnClearPlanningList.setBounds(100, 300, 300, 25);
+        btnRemoveFromPlanningList.setBounds(100-85, 250, 300, 25);
+        btnAdd2PlanningList.setBounds(100-85, 275, 300, 25);
+        btnClearPlanningList.setBounds(100-85, 300, 300, 25);
 
-        checkBox_Exclude_Mon.setBounds(100, 325, 85, 25);
-        checkBox_Exclude_Tues.setBounds(175, 325, 90, 25);
-        checkBox_Exclude_Wed.setBounds(255, 325, 102, 25);
-        checkBox_Exclude_Thurs.setBounds(350, 325, 95, 25);
-        checkBox_Exclude_Fri.setBounds(435, 325, 80, 25);
+        checkBox_Exclude_Mon.setBounds(100-85, 325, 85, 25);
+        checkBox_Exclude_Tues.setBounds(175-85, 325, 90, 25);
+        checkBox_Exclude_Wed.setBounds(255-85, 325, 102, 25);
+        checkBox_Exclude_Thurs.setBounds(350-85, 325, 95, 25);
+        checkBox_Exclude_Fri.setBounds(435-85, 325, 80, 25);
 
-        filterStartTimeComboBox.setBounds(140, 350, 125, 25);
-        filterEndTimeComboBox.setBounds(300, 350, 125, 25);
+        filterStartTimeComboBox.setBounds(140-85, 350, 125, 25);
+        filterEndTimeComboBox.setBounds(300-85, 350, 125, 25);
 
-        fromLabel.setBounds(100, 350, 50, 25);
-        toLabel.setBounds(275, 350, 50, 25);
+        fromLabel.setBounds(100-85, 350, 50, 25);
+        toLabel.setBounds(275-85, 350, 50, 25);
 
-        btnAddFilter.setBounds(100, 375, 100, 25);
-        btnRemoveFilter.setBounds(190, 375, 120, 25);
-        btnClearFilters.setBounds(300, 375, 100, 25);
+        btnAddFilter.setBounds(100-85, 375, 100, 25);
+        btnRemoveFilter.setBounds(190-85, 375, 120, 25);
+        btnClearFilters.setBounds(300-85, 375, 100, 25);
 
-        activeFiltersLabel.setBounds(100, 410, 200, 25);
+        activeFiltersLabel.setBounds(100-85, 410, 200, 25);
 
-        lstFilters.setBounds(75, 30+405, 400, 75);
+        lstFilters.setBounds(75-65, 30+405, 400, 75);
 
-        courses2BePlannedLabel.setBounds(100, 525, 200, 25);
+        courses2BePlannedLabel.setBounds(100-85, 525, 200, 25);
 
-        lstCourse2BePlanned.setBounds(75, 50+500, 400, 120);
+        lstCourse2BePlanned.setBounds(75-65, 50+500, 400, 120);
 
-        btnGenerateNonOverlappingSchedules.setBounds(100, 50+630, 300, 25);
-        scheduleListComboBox.setBounds(100, 50+655, 300, 25);;
+        btnGenerateNonOverlappingSchedules.setBounds(100-85, 50+630, 300, 25);
+        scheduleListComboBox.setBounds(100-85, 50+655, 300, 25);;
 
-        btnViewWeeklySchedule.setBounds(100, 50+680, 300, 25);
+        btnViewWeeklySchedule.setBounds(100-85, 50+680, 300, 25);
 
         frame.add(lblCourseSubject);
         frame.add(courseSubjectsComboBox);
         frame.add(lblPriority);
         frame.add(priorityValuesComboBox);
         frame.add(lblCourseCatalog);
+        frame.add(lblCourseClassFilter);/////////////////////////////////////////
+        frame.add(lblCourseSubjectAndCatalog);
+        frame.add(distinctClassComponents_GivenCourse_ComboBox);
+        frame.add(btnAddClassFilter);
+        frame.add(btnRemoveClassFilter);
+        frame.add(btnClearClassFilters);
+        frame.add(scrollablePane);
+        frame.add(lblAddedClassFilters);
+        frame.add(scrollablePaneAddedClassFilters);
         frame.add(courseCatalogsComboBox);
         frame.add(lblCourseLevel);
         frame.add(lblCourseDescr);
@@ -586,13 +722,24 @@ public class Main {
 
 
 
-                if(!lstFiltersModel.isEmpty()){
+                if(!lstFiltersModel.isEmpty()){//Time & Day Exclusion Filter
                     List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
                     for(int i =0;i<lstFiltersModel.size();i++){
                         DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
                         dayTimeFramePairs.add(curDayTimeFramePair);
                     }
                     Schedule.FilterOutSchedulesFrom(schedules, dayTimeFramePairs);
+                }
+
+                if(!lstAddedClassFiltersListModel.isEmpty()){//INCLUDE CLASSES filter
+                    List<Class> activeClassFilterElementClassList = new ArrayList<>();
+                    for(int i =0;i<lstAddedClassFiltersListModel.size();i++){
+                        Class curActiveClassFilterElementClass = ((ActiveClassFilterElement) lstAddedClassFiltersListModel
+                                .getElementAt(i))
+                                .getClassForActiveClassFilterElement();
+                        activeClassFilterElementClassList.add(curActiveClassFilterElementClass);
+                    }
+                    Schedule.ClassFilterSchedulesIncluding_ClassLists(schedules, activeClassFilterElementClassList);
                 }
 
                 for(Schedule curSchedule:schedules){
@@ -673,6 +820,28 @@ public class Main {
             }
         });
 
+    }
+
+    private static void ReFillClassFilterList(String courseSubject,
+                                              int courseCatalog,
+                                              JComboBox<String> distinctClassComponents_GivenCourse_ComboBox,
+                                              String dbName,
+                                              String sqlQuery_sqlQuery_SelectClassesFromCourseSubjectCatalogAndClassComponent_Location,
+                                              DefaultListModel lstClassFiltersListModel) {
+
+        String selectedClassComponent = (String) distinctClassComponents_GivenCourse_ComboBox.getSelectedItem();
+
+        classListForClassFilter = SelectFromTableInDB.SelectClassesFromCourseSubjectCatalogAndClassComponent(
+                courseSubject,
+                courseCatalog,
+                selectedClassComponent,dbName,sqlQuery_sqlQuery_SelectClassesFromCourseSubjectCatalogAndClassComponent_Location);
+
+        lstClassFiltersListModel.removeAllElements();
+
+        for(Class curClass:classListForClassFilter){
+            ClassFilterElement cfe = new ClassFilterElement(curClass);
+            lstClassFiltersListModel.addElement(cfe);
+        }
     }
 
     private static void InitialFillFilterTimeComboBoxes(JComboBox<String> filterStartTimeComboBox, JComboBox<String> filterEndComboBox) {

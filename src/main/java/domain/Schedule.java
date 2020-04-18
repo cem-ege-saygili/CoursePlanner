@@ -122,6 +122,45 @@ public class Schedule {
 //        Schedule.scheduleIdcounter = scheduleList.size();
     }
 
+    public static void ClassFilterSchedulesIncluding_ClassLists (List<Schedule> scheduleList, List<Class> classListToInclude){
+        for(Class curClassToInclude:classListToInclude){
+            ClassFilterSchedulesIncluding_OneClass(scheduleList, curClassToInclude);
+        }
+    }
+
+    public static void ClassFilterSchedulesIncluding_OneClass(List<Schedule> scheduleList, Class classToInclude){
+        boolean monFlag = classToInclude.isMonFlag();
+        boolean tuesFlag = classToInclude.isTuesFlag();
+        boolean wedFlag = classToInclude.isWedFlag();
+        boolean thursFlag = classToInclude.isThursFlag();
+        boolean friFlag = classToInclude.isFriFlag();
+
+        int startTimeStamp2Include = Parser.ParseMtgTimeStr2IntegerTimeStamp(classToInclude.getStartTime());
+        int endTimeStamp2Include = Parser.ParseMtgTimeStr2IntegerTimeStamp(classToInclude.getEndTime());
+
+        List<Schedule> schedules2BeExcluded = new ArrayList<>();
+
+        for(Schedule curSchedule:scheduleList){
+            boolean flag = false;
+            nextSchedule:{
+                for(ClassBundle curClassBundle:curSchedule.getClassBundleList()){
+                    for(Class curClass:curClassBundle.getClassList()){
+                        if(curClass.equals(classToInclude)){
+                            flag = true;
+                            break nextSchedule;
+                        }
+                    }
+                }
+            }
+            if(!flag)
+                schedules2BeExcluded.add(curSchedule);
+        }
+
+        scheduleList.removeAll(schedules2BeExcluded);
+
+//        Schedule.scheduleIdcounter = scheduleList.size();
+    }
+
     @Override
     public boolean equals(Object obj) {
 
