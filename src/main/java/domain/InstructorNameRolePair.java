@@ -20,6 +20,9 @@ public class InstructorNameRolePair {
     @Override
     public boolean equals(Object obj) {
 
+        if(!(obj instanceof InstructorNameRolePair))
+            return false;
+
         InstructorNameRolePair p2 = (InstructorNameRolePair) obj;
 
         return (
@@ -32,8 +35,7 @@ public class InstructorNameRolePair {
 
     @Override
     public String toString() {
-        return "EnrollmentDetailsPair: " +
-                instructorName +" has the role of " + instructorRole;
+        return instructorName +"(" + instructorRole + ")";
     }
 
     public String getInstructorName() {
