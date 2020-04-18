@@ -63,13 +63,14 @@ public class Main {
 
         String dbName = "CoursePlannerDB2";
 
-
+        //run only once
+        /*
         CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
         CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
 
         CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
-
+        */
 
 
         //System.out.println("after CleanStartAndFill_NormalizedTables");
@@ -782,89 +783,12 @@ public class Main {
                     }
                     Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
 
-                    scheduleFrame = new JFrame("Weekly Schedule");;
-
-                    scheduleFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    scheduleFrame.setSize(1200, 840);
-
-                    ViewWeeklySchedule(scheduleToView, scheduleFrame, btnList);
 
 
-/*                  JLabel testlabel = new JLabel("Comp 130 LEC");
-                    testlabel.setBounds(150,50,300,200);
-                    scheduleFrame.add(testlabel);
-
-                    ClassPanel testPanel = new ClassPanel(100,100,200,90);
-                    testPanel.setVisible(true);
-                    scheduleFrame.add(testPanel);*/
-
-                    /*
-                    int scheduleIndex2BeDisplayed = scheduleListComboBox.getSelectedIndex();
-
-                    Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
-                    // Class currentClass = scheduleToView.getClassBundleList().get(0).getLecClass();
-                    for (ClassBundle currentBundle : scheduleToView.getClassBundleList()) {
-
-                        Class currentClass = currentBundle.getLecClass();
-                        addClassPanels(scheduleFrame, currentClass);
-
-                        currentClass = currentBundle.getDisClass();
-                        addClassPanels(scheduleFrame, currentClass);
-
-                        currentClass = currentBundle.getLabClass();
-                        addClassPanels(scheduleFrame, currentClass);
-
-                        currentClass = currentBundle.getPrbClass();
-                        addClassPanels(scheduleFrame, currentClass);
-
-                    }
-
-                    JLabel mondayLabel = new JLabel("MONDAY");
-                    mondayLabel.setBounds(150, 50, 200, 20);
-                    mondayLabel.setFont(mondayLabel.getFont().deriveFont(20.0f));
-                    scheduleFrame.add(mondayLabel);
-
-                    JLabel tuesdayLabel = new JLabel("TUESDAY");
-                    tuesdayLabel.setBounds(350, 50, 200, 20);
-                    tuesdayLabel.setFont(tuesdayLabel.getFont().deriveFont(20.0f));
-                    scheduleFrame.add(tuesdayLabel);
-
-                    JLabel wednesdayLabel = new JLabel("WEDNESDAY");
-                    wednesdayLabel.setBounds(550, 50, 200, 20);
-                    wednesdayLabel.setFont(wednesdayLabel.getFont().deriveFont(20.0f));
-                    scheduleFrame.add(wednesdayLabel);
-
-                    JLabel thursdayLabel = new JLabel("THURSDAY");
-                    thursdayLabel.setBounds(750, 50, 200, 20);
-                    thursdayLabel.setFont(thursdayLabel.getFont().deriveFont(20.0f));
-                    scheduleFrame.add(thursdayLabel);
-
-                    JLabel fridayLabel = new JLabel("FRIDAY");
-                    fridayLabel.setBounds(950, 50, 200, 20);
-                    fridayLabel.setFont(fridayLabel.getFont().deriveFont(20.0f));
-                    scheduleFrame.add(fridayLabel);
+                    viewWeeklySchedule(scheduleToView, btnList);
 
 
-                    for (int i = 8; i < 19; i++) {
-                        JLabel timeLabel = new JLabel(Integer.toString(i) + ":00");
-                        timeLabel.setBounds(50, (((i - 8) * 600) / 10) + 90, 200, 20);
-                        scheduleFrame.add(timeLabel);
-                    }
 
-
-                    BackgroundPanel bgpanel = new BackgroundPanel();
-                    bgpanel.setVisible(true);
-                    scheduleFrame.add(bgpanel);
-
-                    scheduleFrame.setLayout(null);
-
-                    int scheduleFrameWidth = scheduleFrame.getWidth();
-                    int scheduleFrameHeight = scheduleFrame.getHeight();
-                    btnCloseBackgroundPanel.setBounds(scheduleFrameWidth-75,scheduleFrameHeight-50,75,25);
-                    scheduleFrame.add(btnCloseBackgroundPanel);
-                    scheduleFrame.setVisible(true);
-
-                    */
                 }
             }
         });
@@ -1046,10 +970,23 @@ public class Main {
                 + "</i></b></font></hmtl>");
     }
 
-
-    private static void ViewWeeklySchedule(Schedule scheduleToView, JFrame scheduleFrame, List<JButton> btnList){
-        WeeklyScheduleGUI weeklyScheduleView = new WeeklyScheduleGUI(scheduleFrame, btnList);
+    /*
+    private static void viewWeeklySchedule(Schedule scheduleToView, JFrame scheduleFrame, List<JButton> btnList){
+        WeeklyScheduleGUI weeklyScheduleView = new WeeklyScheduleGUI( btnList);
         weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame);
+    }
+
+
+     */
+    private static void viewWeeklySchedule(Schedule scheduleToView,List<JButton> btnList){
+        WeeklyScheduleGUI weeklyScheduleView= new WeeklyScheduleGUI(btnList);
+        scheduleFrame=weeklyScheduleView.getScheduleFrame();
+        //weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
+        //weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
+        weeklyScheduleView.createWeeklySchedule1(scheduleToView);
+        //weeklyScheduleView.createWeeklySchedule2(scheduleToView);
+
+
     }
 
     /*

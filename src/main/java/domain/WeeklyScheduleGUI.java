@@ -22,6 +22,11 @@ public class WeeklyScheduleGUI {
     JButton buttonNextSchedule;
     JButton buttonPrevSchedule;
 
+    private int screenWidth;
+    private int screenHeight;
+    private int mainPanelHeight;
+    private int mainPanelWidth;
+    private int panelDivide;
 
     private ActionListener panelAction = new ActionListener() {
         @Override
@@ -41,20 +46,21 @@ public class WeeklyScheduleGUI {
         }
     };
 
-    public WeeklyScheduleGUI(JFrame scheduleFrame, List<JButton> btnList) {
-        this.scheduleFrame = scheduleFrame;
+    public WeeklyScheduleGUI( List<JButton> btnList) {
+        scheduleFrame = new JFrame("Weekly Schedule");
+        this.panelDivide=14;
+        //this.scheduleFrame = scheduleFrame;
         buttonCloseBackgroundPanel = btnList.get(0);
         buttonNextSchedule = btnList.get(1);
         buttonPrevSchedule = btnList.get(2);
         //createWeeklySchedule();
     }
-
     public void createWeeklySchedule(){
 
     }
 
 
-    public void createWeeklySchedule1(Schedule scheduleToView, JFrame scheduleFrame){
+    public void createWeeklySchedule1(Schedule scheduleToView){
 
 //        JButton btnCloseBackgroundPanel = btnList.get(0);
 //        JButton btnNextSchedule = btnList.get(1);
@@ -143,6 +149,84 @@ public class WeeklyScheduleGUI {
         scheduleFrame.setVisible(true);
 
     }
+
+    private void addClasstoPanel(JPanel[] panelHolder,Class currentClass){
+        if (currentClass != null && currentClass.isMonFlag()) {
+            addClassPanel(panelHolder[1], currentClass,this.mainPanelHeight,this.mainPanelWidth,this.panelDivide);
+            addClassPanel(panelHolder[3], currentClass,this.mainPanelHeight,this.mainPanelWidth,this.panelDivide);
+        }else if (currentClass != null && currentClass.isTuesFlag()) {
+            addClassPanel(panelHolder[2], currentClass,this.mainPanelHeight,this.mainPanelWidth,this.panelDivide);
+            addClassPanel(panelHolder[4], currentClass,this.mainPanelHeight,this.mainPanelWidth,this.panelDivide);
+        }else if (currentClass != null && currentClass.isWedFlag()) {
+            addClassPanel(panelHolder[3], currentClass,this.mainPanelHeight,this.mainPanelWidth,this.panelDivide);
+        }else if (currentClass != null && currentClass.isThursFlag()) {
+            addClassPanel(panelHolder[4], currentClass,this.mainPanelHeight,this.mainPanelWidth,this.panelDivide);
+        }else if (currentClass != null && currentClass.isFriFlag()) {
+            addClassPanel(panelHolder[5], currentClass,this.mainPanelHeight,this.mainPanelWidth,this.panelDivide);
+        }
+    }
+
+    public void addClassPanel(JPanel dayPanel, Class currentClass,int mainPanelHeight,int mainPanelWidth,int panelDivide){
+        String classLabelStr = currentClass.getCourseName() + " " + Integer.toString(currentClass.getCourseCatalog()) + " " + currentClass.getComponent();
+        JLabel classLabel = new JLabel(classLabelStr);
+        int startLoc=getClassLocationFromString(currentClass,mainPanelHeight,panelDivide);
+        double panelHeight=((double) ((mainPanelHeight/14)*5)/4);
+        System.out.println("panelHeight: "+panelHeight);
+        classLabel.setBounds(0,startLoc,mainPanelWidth/6,(int) panelHeight/2);
+
+        dayPanel.add(classLabel);
+        String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
+        JLabel currentTimeLabel = new JLabel(timeLabel);
+        currentTimeLabel.setBounds(0, startLoc+20, 200, 20);
+        dayPanel.add(currentTimeLabel);
+
+        JPanel classPanel=new JPanel();
+        classPanel.setBounds(0,startLoc,mainPanelWidth/6,(int) panelHeight);
+        classPanel.setBackground(Color.GREEN);
+        classPanel.setVisible(true);
+        dayPanel.add(classPanel);
+    }
+
+    private int getClassLocationFromString(Class currentClass,int PanelHeight,int PanelDivide){
+        int startHour;
+        int startMin;
+        if (currentClass.getStartTime().length() == 11) {
+
+            startHour=Integer.parseInt(currentClass.getStartTime().substring(0, 2));
+            startMin=Integer.parseInt(currentClass.getStartTime().substring(3, 5));
+            if (currentClass.getStartTime().charAt(9) == 'P')
+                startHour += 12;
+        } else {
+
+            startHour=Integer.parseInt(currentClass.getStartTime().substring(0, 1));
+            startMin=Integer.parseInt(currentClass.getStartTime().substring(2, 4));
+            if (currentClass.getStartTime().charAt(8) == 'P')
+                startHour += 12;
+        }
+
+        return getClassLocation(PanelHeight,PanelDivide,startHour,startMin);
+    }
+
+
+    private int getClassLocation(int PanelHeight,int PanelDivide,int hour,int min){
+
+        int startHour=hour;
+        int startMin=min;
+        //System.out.println("startHour"+startHour);
+        //System.out.println("startMin "+startMin);
+
+
+        int hourInc=PanelHeight/PanelDivide;
+        double locationD= hourInc*(startHour-8);
+        //System.out.println("locationDHour"+locationD);
+        locationD =locationD+ (((startMin))/60)*hourInc;
+
+        //System.out.println("hourInc: "+hourInc);
+        //System.out.println("location: "+locationD);
+        return (int)locationD+5;
+    }
+
+
 
     public static void addClassPanels(JFrame scheduleFrame, Class currentClass) {
         int yStart = getStartTime(currentClass);
