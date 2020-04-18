@@ -43,6 +43,10 @@ public class CourseSubject_Catalog_Priority_Tuple {
 
     @Override
     public boolean equals(Object obj){
+
+        if(!(obj instanceof CourseSubject_Catalog_Priority_Tuple))
+            return false;
+
         CourseSubject_Catalog_Priority_Tuple t2 = (CourseSubject_Catalog_Priority_Tuple) obj;
         return ((
                 //this.priority == t2.priority &&

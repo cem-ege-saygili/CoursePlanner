@@ -181,6 +181,8 @@ public class Class implements Comparable<domain.Class>{
 
     @Override
     public boolean equals(Object obj) {
+        if(!(obj instanceof  Class))
+            return false;
         Class c2 = (Class) obj;
         return (this.id == c2.id);
     }

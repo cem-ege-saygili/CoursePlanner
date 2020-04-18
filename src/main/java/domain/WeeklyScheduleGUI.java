@@ -49,19 +49,6 @@ public class WeeklyScheduleGUI {
         //createWeeklySchedule();
     }
 
-
-
-
-//    //for testing
-//    public static void main(String args[]){
-//        WeeklyScheduleGUI gui= new WeeklyScheduleGUI();
-//        //gui.test1();
-//        //gui.test2();
-//        gui.test();
-//
-//
-//    }
-
     public void createWeeklySchedule(){
 
     }
@@ -154,199 +141,64 @@ public class WeeklyScheduleGUI {
     }
 
     public static void addClassPanels(JFrame scheduleFrame, Class currentClass) {
-        addClassPanelMonday(scheduleFrame, currentClass);
-        addClassPanelTuesday(scheduleFrame, currentClass);
-        addClassPanelWednesday(scheduleFrame, currentClass);
-        addClassPanelThursday(scheduleFrame, currentClass);
-        addClassPanelFriday(scheduleFrame, currentClass);
-    }
+        int yStart = getStartTime(currentClass);
+        int yEnd = getEndTime(currentClass);
+        int offsetX = 200;
+        for(int dayIndex = 0; dayIndex < 5; dayIndex++) {
+            boolean dayFlag = false;
+            if (currentClass != null) {
+                switch (dayIndex) {
+                    case 0:
+                        dayFlag = currentClass.isMonFlag();
+                        break;
+                    case 1:
+                        dayFlag = currentClass.isTuesFlag();
+                        break;
+                    case 2:
+                        dayFlag = currentClass.isWedFlag();
+                        break;
+                    case 3:
+                        dayFlag = currentClass.isThursFlag();
+                        break;
+                    case 4:
+                        dayFlag = currentClass.isFriFlag();
+                        break;
+                }
 
-    private static void addClassPanelMonday(JFrame scheduleFrame, Class currentClass) {
-        if (currentClass != null && currentClass.isMonFlag()) {
-            int ystart = getStartTime(currentClass);
-            int yend = getEndTime(currentClass);
+                if (dayFlag) {
+                    String classLabel = currentClass.getCourseName() + " "
+                            + Integer.toString(currentClass.getCourseCatalog());
 
-            String classLabel = currentClass.getCourseName() + " "
-                    + Integer.toString(currentClass.getCourseCatalog());
+                    String curClassComponentStr = " (" + currentClass.getComponent() + ")";
 
-            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
+                    String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
 
-            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
+                    JLabel currentClassLabel = new JLabel();
 
-            JLabel currentClassLabel = new JLabel();
+                    currentClassLabel.setText("<html>"
+                            + classLabel
+                            + "<font face=\"verdana\" color=\"red\"><b><i>"
+                            + curClassComponentStr
+                            + "</i></b></font><br>"
+                            + "<font face=\"verdana\" color=\"blue\"><b><i>"
+                            + curClassLocationStr
+                            + "</i></b></font>"
+                            + "</html>");
+                    currentClassLabel.setBounds(150 + dayIndex * offsetX, yStart + 110, 200, 40);
+                    scheduleFrame.add(currentClassLabel);
 
-            currentClassLabel.setText("<html>"
-                    + classLabel
-                    + "<font face=\"verdana\" color=\"red\"><b><i>"
-                    + curClassComponentStr
-                    + "</i></b></font><br>"
-                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
-                    + curClassLocationStr
-                    + "</i></b></font>"
-                    + "</html>");
-            currentClassLabel.setBounds(150, ystart + 110, 200, 40);
-            scheduleFrame.add(currentClassLabel);
+                    String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
+                    JLabel currentTimeLabel = new JLabel(timeLabel);
+                    currentTimeLabel.setBounds(150 + dayIndex * offsetX, yStart + 150, 200, 20);
+                    scheduleFrame.add(currentTimeLabel);
 
-            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
-            JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(150, ystart + 150, 200, 20);
-            scheduleFrame.add(currentTimeLabel);
-
-            ClassPanel currentClassPanel = new ClassPanel(100, ystart + 100, 200, yend - ystart);
-            currentClassPanel.setVisible(true);
-            scheduleFrame.add(currentClassPanel);
+                    ClassPanel currentClassPanel = new ClassPanel(100 + dayIndex * offsetX, yStart + 100, 200, yEnd - yStart);
+                    currentClassPanel.setVisible(true);
+                    scheduleFrame.add(currentClassPanel);
+                }
+            }
         }
     }
-
-    private static void addClassPanelTuesday(JFrame scheduleFrame, Class currentClass) {
-        if (currentClass != null && currentClass.isTuesFlag()) {
-            int ystart = getStartTime(currentClass);
-            int yend = getEndTime(currentClass);
-
-            String classLabel = currentClass.getCourseName() + " "
-                    + Integer.toString(currentClass.getCourseCatalog());
-
-            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
-
-            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
-
-            JLabel currentClassLabel = new JLabel();
-
-            currentClassLabel.setText("<html>"
-                    + classLabel
-                    + "<font face=\"verdana\" color=\"red\"><b><i>"
-                    + curClassComponentStr
-                    + "</i></b></font><br>"
-                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
-                    + curClassLocationStr
-                    + "</i></b></font>"
-                    + "</html>");
-            currentClassLabel.setBounds(350, ystart + 110, 200, 40);
-            scheduleFrame.add(currentClassLabel);
-
-            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
-            JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(350, ystart + 150, 200, 20);
-            scheduleFrame.add(currentTimeLabel);
-
-            ClassPanel currentClassPanel = new ClassPanel(300, ystart + 100, 200, yend - ystart);
-            currentClassPanel.setVisible(true);
-            scheduleFrame.add(currentClassPanel);
-        }
-    }
-
-    private static void addClassPanelWednesday(JFrame scheduleFrame, Class currentClass) {
-        if (currentClass != null && currentClass.isWedFlag()) {
-            int ystart = getStartTime(currentClass);
-            int yend = getEndTime(currentClass);
-
-            String classLabel = currentClass.getCourseName() + " "
-                    + Integer.toString(currentClass.getCourseCatalog());
-
-            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
-
-            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
-
-            JLabel currentClassLabel = new JLabel();
-
-            currentClassLabel.setText("<html>"
-                    + classLabel
-                    + "<font face=\"verdana\" color=\"red\"><b><i>"
-                    + curClassComponentStr
-                    + "</i></b></font><br>"
-                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
-                    + curClassLocationStr
-                    + "</i></b></font>"
-                    + "</html>");
-            currentClassLabel.setBounds(550, ystart + 110, 200, 40);
-            scheduleFrame.add(currentClassLabel);
-
-            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
-            JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(550, ystart + 150, 200, 20);
-            scheduleFrame.add(currentTimeLabel);
-
-            ClassPanel currentClassPanel = new ClassPanel(500, ystart + 100, 200, yend - ystart);
-            currentClassPanel.setVisible(true);
-            scheduleFrame.add(currentClassPanel);
-        }
-    }
-
-    private static void addClassPanelThursday(JFrame scheduleFrame, Class currentClass) {
-        if (currentClass != null && currentClass.isThursFlag()) {
-            int ystart = getStartTime(currentClass);
-            int yend = getEndTime(currentClass);
-
-            String classLabel = currentClass.getCourseName() + " "
-                    + Integer.toString(currentClass.getCourseCatalog());
-
-            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
-
-            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
-
-            JLabel currentClassLabel = new JLabel();
-
-            currentClassLabel.setText("<html>"
-                    + classLabel
-                    + "<font face=\"verdana\" color=\"red\"><b><i>"
-                    + curClassComponentStr
-                    + "</i></b></font><br>"
-                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
-                    + curClassLocationStr
-                    + "</i></b></font>"
-                    + "</html>");
-            currentClassLabel.setBounds(750, ystart + 110, 200, 40);
-            scheduleFrame.add(currentClassLabel);
-
-            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
-            JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(750, ystart + 150, 200, 20);
-            scheduleFrame.add(currentTimeLabel);
-
-            ClassPanel currentClassPanel = new ClassPanel(700, ystart + 100, 200, yend - ystart);
-            currentClassPanel.setVisible(true);
-            scheduleFrame.add(currentClassPanel);
-        }
-    }
-
-    private static void addClassPanelFriday(JFrame scheduleFrame, Class currentClass) {
-        if (currentClass != null && currentClass.isFriFlag()) {
-            int ystart = getStartTime(currentClass);
-            int yend = getEndTime(currentClass);
-
-            String classLabel = currentClass.getCourseName() + " "
-                    + Integer.toString(currentClass.getCourseCatalog());
-
-            String curClassComponentStr = " (" + currentClass.getComponent() + ")";
-
-            String curClassLocationStr = "@\"" + currentClass.getLocation() + "\"";
-
-            JLabel currentClassLabel = new JLabel();
-
-            currentClassLabel.setText("<html>"
-                    + classLabel
-                    + "<font face=\"verdana\" color=\"red\"><b><i>"
-                    + curClassComponentStr
-                    + "</i></b></font><br>"
-                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
-                    + curClassLocationStr
-                    + "</i></b></font>"
-                    + "</html>");
-
-            currentClassLabel.setBounds(950, ystart + 110, 200, 40);
-            scheduleFrame.add(currentClassLabel);
-
-            String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
-            JLabel currentTimeLabel = new JLabel(timeLabel);
-            currentTimeLabel.setBounds(950, ystart + 150, 200, 20);
-            scheduleFrame.add(currentTimeLabel);
-
-            ClassPanel currentClassPanel = new ClassPanel(900, ystart + 100, 200, yend - ystart);
-            currentClassPanel.setVisible(true);
-            scheduleFrame.add(currentClassPanel);
-        }
-    }
-
 
     public static int getStartTime(Class currentClass) {
         int startTimeInMinutes;
