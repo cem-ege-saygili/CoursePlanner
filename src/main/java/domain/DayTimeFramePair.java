@@ -10,7 +10,7 @@ public class DayTimeFramePair {
     private String startTime;
     private String endTime;
 
-    public static List<String> AllTimeStrings = new ArrayList<>(List.of("8:00:00 AM",
+    public static List<String> AllTimeStrings = new ArrayList<>(List.of("8:00:00 AM", //Arrays.AsList( for jre 8
             "8:30:00 AM",
             "9:00:00 AM",
             "9:20:00 AM",
