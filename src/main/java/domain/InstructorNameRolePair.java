@@ -12,9 +12,19 @@ public class InstructorNameRolePair {
 
                                  ){
 
-    this.instructorName = instructorName;
+    this.instructorName = convertNaming2FirstLastName(instructorName);
     this.instructorRole = instructorRole;
 
+    }
+
+    private String convertNaming2FirstLastName(String name){
+        String[] delimitedNameArr = name.split(",");
+        String lastName = delimitedNameArr[0];
+        String firstName = delimitedNameArr[1];
+
+        return  firstName +
+                " " +
+                lastName;
     }
 
     @Override

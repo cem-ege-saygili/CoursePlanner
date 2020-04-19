@@ -2,9 +2,10 @@ package domain;
 
 import DB_Utilities.SelectFromTableInDB;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Class implements Comparable<domain.Class>{
+public class Class implements Comparable<domain.Class> {
 
     private int id;
     private String component;
@@ -21,7 +22,7 @@ public class Class implements Comparable<domain.Class>{
     private int courseCatalog;
     private int totlEnrl;
     private int capEnrl;
-//    private String instructorName;
+    //    private String instructorName;
 //    private String instructorRole;
     private String courseFaculty;
     private String courseLevel;
@@ -47,7 +48,7 @@ public class Class implements Comparable<domain.Class>{
 //            String instructorName,
 //            String instructorRole
 
-    ){
+    ) {
 
         this.id = id;
         this.component = component;
@@ -59,7 +60,7 @@ public class Class implements Comparable<domain.Class>{
         this.thursFlag = thursFlag;
         this.friFlag = friFlag;
         this.location = location;
-        this.instructorNameRolePairs = instructorNameRolePairs;
+        this.instructorNameRolePairs = manageTA_Information(instructorNameRolePairs, component);
         this.courseName = courseName;
         this.courseCatalog = courseCatalog;
         this.capEnrl = capEnrl;
@@ -79,12 +80,12 @@ public class Class implements Comparable<domain.Class>{
 
     }
 
-    public boolean isCompatibleWith(Class c2){
+    public boolean isCompatibleWith(Class c2) {
 
         int id1 = id;
         int id2 = c2.id;
 
-        if(id1 == id2)
+        if (id1 == id2)
             return false;
 
 //        String day1 = Parser.ParseDayBooleans2List(monFlag,tuesFlag,wedFlag,thursFlag,friFlag).toString();
@@ -93,7 +94,7 @@ public class Class implements Comparable<domain.Class>{
 //        if(!day1.equals(day2))
 //            return true;
 
-        if(!((monFlag && c2.monFlag)
+        if (!((monFlag && c2.monFlag)
                 || (tuesFlag && c2.tuesFlag)
                 || (wedFlag && c2.wedFlag)
                 || (thursFlag && c2.thursFlag)
@@ -110,27 +111,27 @@ public class Class implements Comparable<domain.Class>{
 
                 e1 < s2 || e2 < s1
 
-                );
+        );
 
     }
 
-    public static boolean AreAllCompatible(List<Class> classList){
+    public static boolean AreAllCompatible(List<Class> classList) {
 
         boolean flag = true;
 
-        if(classList.size()<=1){
+        if (classList.size() <= 1) {
             return flag;
         }
 
-        for (int i=0;i<classList.size()-1;i++){
+        for (int i = 0; i < classList.size() - 1; i++) {
 
             Class c1 = classList.get(i);
 
-            for(int j = i+1;j<classList.size();j++){
+            for (int j = i + 1; j < classList.size(); j++) {
 
                 Class c2 = classList.get(j);
-                if(!c1.isCompatibleWith(c2)){
-                    flag =  false;
+                if (!c1.isCompatibleWith(c2)) {
+                    flag = false;
                     break;
                 }
 
@@ -146,35 +147,35 @@ public class Class implements Comparable<domain.Class>{
     @Override
     public String toString() {
 
-        String dayStr ="";
+        String dayStr = "";
 
         List<String> dayList = Parser.ParseDayBooleans2List(
-                                                            monFlag,
-                                                            tuesFlag,
-                                                            wedFlag,
-                                                            thursFlag,
-                                                            friFlag
+                monFlag,
+                tuesFlag,
+                wedFlag,
+                thursFlag,
+                friFlag
         );
 
-        for(String day:dayList){
+        for (String day : dayList) {
             dayStr += day + " and ";
         }
 
-        dayStr = dayStr.substring(0,dayStr.length()-5);
+        dayStr = dayStr.substring(0, dayStr.length() - 5);
 
 
-        String instructorNameRolePairsStr ="{ ";
+        String instructorNameRolePairsStr = "{ ";
 
-        for(InstructorNameRolePair curInstructorNameRolePair:instructorNameRolePairs){
+        for (InstructorNameRolePair curInstructorNameRolePair : instructorNameRolePairs) {
 
             String curInstructorName = curInstructorNameRolePair.getInstructorName();
             String curInstructorRole = curInstructorNameRolePair.getInstructorRole();
 
-            instructorNameRolePairsStr +=  curInstructorName + " as "
-                                            + curInstructorRole + "; ";
+            instructorNameRolePairsStr += curInstructorName + " as "
+                    + curInstructorRole + "; ";
         }
 
-        instructorNameRolePairsStr = instructorNameRolePairsStr.substring(0,instructorNameRolePairsStr.length()-2);
+        instructorNameRolePairsStr = instructorNameRolePairsStr.substring(0, instructorNameRolePairsStr.length() - 2);
 
         instructorNameRolePairsStr += " }";
 
@@ -182,8 +183,8 @@ public class Class implements Comparable<domain.Class>{
         return (
 
                 "\nClass: #" + id
-                       // + " is given by " + instructorName
-                       // + "(" + instructorRole + ")"
+                        // + " is given by " + instructorName
+                        // + "(" + instructorRole + ")"
                         + " as for (\"" + courseName + " " + courseCatalog + "\""
                         + " (with TotalEnrl: " + totlEnrl + " and CapEnrl: " + capEnrl + ") "
                         + " is given by " + instructorNameRolePairsStr
@@ -192,12 +193,12 @@ public class Class implements Comparable<domain.Class>{
                         + " between " + startTime + " and " + endTime
                         + " in " + location
 
-                );
+        );
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof  Class))
+        if (!(obj instanceof Class))
             return false;
         Class c2 = (Class) obj;
         return (this.id == c2.id);
@@ -209,18 +210,18 @@ public class Class implements Comparable<domain.Class>{
         int dayInteger1 = convertToDayInteger();
         int dayInteger2 = c.convertToDayInteger();
 
-        if(dayInteger1>dayInteger2){
+        if (dayInteger1 > dayInteger2) {
             return -1;
-        }else if(dayInteger1<dayInteger2){
+        } else if (dayInteger1 < dayInteger2) {
             return 1;
-        }else{
+        } else {
 
             int s1 = Parser.ParseMtgTimeStr2IntegerTimeStamp(startTime);
             int s2 = Parser.ParseMtgTimeStr2IntegerTimeStamp(c.getStartTime());
 
-            if(s1 == s2){
+            if (s1 == s2) {
                 return 0;
-            }else if(s1<s2){
+            } else if (s1 < s2) {
                 return -1;
             }
             return 1;
@@ -231,18 +232,73 @@ public class Class implements Comparable<domain.Class>{
 
         int integer = 0;
 
-        if(monFlag)
+        if (monFlag)
             integer += 10000;
-        if(tuesFlag)
+        if (tuesFlag)
             integer += 1000;
-        if(wedFlag)
+        if (wedFlag)
             integer += 100;
-        if(thursFlag)
+        if (thursFlag)
             integer += 10;
-        if(friFlag)
+        if (friFlag)
             integer += 1;
 
         return integer;
+    }
+
+    private List<InstructorNameRolePair> manageTA_Information(List<InstructorNameRolePair> instructorNameRolePairs,
+                                                              String classComponent){
+        List<InstructorNameRolePair> TYPE_InstructorNameRolePairs = instructorNameRolePairs;
+
+        if(containsAny_Type(instructorNameRolePairs, "instructor")){
+            TYPE_InstructorNameRolePairs = get_InstructorNameRolePairs_OfType(instructorNameRolePairs, "instructor");
+        }else if(!containsAny_Type(instructorNameRolePairs, "instructor") &&
+                    containsAny_Type(instructorNameRolePairs, "TA")){
+            TYPE_InstructorNameRolePairs = get_InstructorNameRolePairs_OfType(instructorNameRolePairs, "TA");
+        }else if(!containsAny_Type(instructorNameRolePairs, "instructor") &&
+                (classComponent.equals("LAB") || classComponent.equals("PRB") || classComponent.equals("DIS"))){
+            TYPE_InstructorNameRolePairs = get_InstructorNameRolePairs_OfType(instructorNameRolePairs, "TA");
+        }
+        return TYPE_InstructorNameRolePairs;
+    }
+
+    private boolean containsAny_Type(List<InstructorNameRolePair> instructorNameRolePairs, String type) {
+        if (type.equals("instructor")) {
+            for (InstructorNameRolePair curInstructorNameRolePair : instructorNameRolePairs) {
+                String curInstructorRole = curInstructorNameRolePair.getInstructorRole();
+                if (!curInstructorRole.equals("TA"))
+                    return true;
+            }
+        } else if (type.equals("TA")) {
+            for (InstructorNameRolePair curInstructorNameRolePair : instructorNameRolePairs) {
+                String curInstructorRole = curInstructorNameRolePair.getInstructorRole();
+                if (curInstructorRole.equals("TA"))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private List<InstructorNameRolePair> get_InstructorNameRolePairs_OfType(List<InstructorNameRolePair> instructorNameRolePairs, String type){
+        List<InstructorNameRolePair> TYPE_instructorNameRolePairs = new ArrayList<>();
+        if(type.equals("instructor")){
+            if(!containsAny_Type(instructorNameRolePairs, "instructor"))
+                return TYPE_instructorNameRolePairs;//return empty arr. list
+            for(InstructorNameRolePair curInstructorNameRolePair:instructorNameRolePairs){
+                String curInstructorRole = curInstructorNameRolePair.getInstructorRole();
+                if(!curInstructorRole.equals("TA"))
+                    TYPE_instructorNameRolePairs.add(curInstructorNameRolePair);
+            }
+        }else if(type.equals("TA")){
+            if(!containsAny_Type(instructorNameRolePairs, "TA"))
+                return TYPE_instructorNameRolePairs;//return empty arr. list
+            for(InstructorNameRolePair curInstructorNameRolePair:instructorNameRolePairs){
+                String curInstructorRole = curInstructorNameRolePair.getInstructorRole();
+                if(curInstructorRole.equals("TA"))
+                    TYPE_instructorNameRolePairs.add(curInstructorNameRolePair);
+            }
+        }
+        return TYPE_instructorNameRolePairs;
     }
 
     public int getId() {
