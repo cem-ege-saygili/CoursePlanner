@@ -307,7 +307,16 @@ public class WeeklyScheduleGUI {
                     currentClassLabel.setBounds(150 + dayIndex * offsetX, yStart + 110, 200, 40);
                     scheduleFrame.add(currentClassLabel);
 
-                    String timeLabel = currentClass.getStartTime().substring(0, 5) + "-" + currentClass.getEndTime().substring(0, 5);
+                    String timeLabel = "";
+                    if (currentClass.getStartTime().length() == 11)
+                        timeLabel += currentClass.getStartTime().substring(0, 5);
+                    else
+                        timeLabel += currentClass.getStartTime().substring(0, 4);
+                    if (currentClass.getEndTime().length() == 11)
+                        timeLabel += "-" + currentClass.getEndTime().substring(0, 5);
+                    else
+                        timeLabel += "-" + currentClass.getEndTime().substring(0, 4);
+
                     JLabel currentTimeLabel = new JLabel(timeLabel);
                     currentTimeLabel.setBounds(150 + dayIndex * offsetX, yStart + 150, 200, 20);
                     scheduleFrame.add(currentTimeLabel);
