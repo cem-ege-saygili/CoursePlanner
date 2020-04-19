@@ -587,7 +587,7 @@ public class Main {
 
         JFrame frame = new JFrame("CourseScheduler v.4");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1350, 805);//w:550
+        frame.setSize(1350, 805+30);//w:550
 
         //int yInc = 25;
 
@@ -652,6 +652,11 @@ public class Main {
         scheduleListComboBox.setBounds(100-85, 50+655, 300, 25);;
 
         btnViewWeeklySchedule.setBounds(100-85, 50+680, 300, 25);
+
+
+        JButton btnViewMultipleWeeklySchedule=new JButton("View Multiple Weekly Schedule");
+        btnViewMultipleWeeklySchedule.setBounds(100-85,50+680+30,300,25);
+        frame.add(btnViewMultipleWeeklySchedule);
 
         frame.add(lblCourseSubject);
         frame.add(courseSubjectsComboBox);
@@ -765,7 +770,7 @@ public class Main {
 
                 int numSchedulesGenerated = schedules.size();
 
-//                System.out.println(schedules);
+//               System.out.println(schedules);
 
 //                String message2BeDisplayed = schedules.toString();
                 String message2BeDisplayed = Schedule.PrintOutSchedulesToUser(schedules);
@@ -795,7 +800,7 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
 
                 if (scheduleListToView != null && !scheduleListToView.isEmpty()) {
-                    System.out.println("hi1");
+                    System.out.println("viewWeeklySchedule button clicked");
 //                    String selectedItemStr = (String) scheduleListComboBox.getSelectedIndex();
                     int scheduleIndex2BeDisplayed = scheduleListComboBox.getSelectedIndex();
                     if(scheduleIndex2BeDisplayed == -1){
@@ -805,9 +810,8 @@ public class Main {
                                 JOptionPane.WARNING_MESSAGE);
                         return;
                     }
+
                     Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
-
-
 
                     viewWeeklySchedule(scheduleToView, btnList);
 
@@ -844,6 +848,23 @@ public class Main {
             }
         });
 
+
+
+        btnViewMultipleWeeklySchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (scheduleListToView != null && !scheduleListToView.isEmpty()) {
+                    System.out.println("viewMultipleWeeklySchedule button clicked");
+                    //implementation of view multiple weekly schedule button
+                    int numSchedules=scheduleListToView.size();
+                    if(scheduleListToView.size()>=4){
+                        numSchedules=4;
+                    }
+                    viewMultipleWeeklySchedule(scheduleListToView,numSchedules);
+                }
+            }
+        });
     }
 
     private static void ReFillClassFilterList(String courseSubject,
@@ -1007,10 +1028,15 @@ public class Main {
         scheduleFrame=weeklyScheduleView.getScheduleFrame();
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
-        weeklyScheduleView.createWeeklySchedule1(scheduleToView);
-        //weeklyScheduleView.createWeeklySchedule2(scheduleToView);
+        //weeklyScheduleView.createWeeklySchedule1(scheduleToView);
+        weeklyScheduleView.createWeeklySchedule2(scheduleToView);
 
+    }
 
+    private static void viewMultipleWeeklySchedule(List<Schedule> schedules,int nSchedules){
+        WeeklyScheduleGUI weeklyScheduleView= new WeeklyScheduleGUI("MultipleWeeklyScheduleView");
+        scheduleFrame=weeklyScheduleView.getScheduleFrame();
+        weeklyScheduleView.createMultipleWeeklySchedule(schedules,nSchedules);
     }
 
     /*
