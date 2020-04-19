@@ -94,16 +94,48 @@ public class WeeklyScheduleGUI {
 
     }
 
+    public WeeklyScheduleGUI(String title) {
+        scheduleFrame = new JFrame(title);
+        this.panelDivide=13;
+    }
 
+
+   public void createMultipleWeeklySchedule(List<Schedule> schedules,int n_schedules){
+       scheduleFrame.setLayout(null);
+
+       //first column is for time, rest for days.
+       int n_columns=6;
+       double sizeCoeff=0.40;
+       int mainPanelWidth= 3*(screenSize.width)/4;
+       int mainPanelHeight=  3*(screenSize.height/4);
+       mainPanelWidth=(int)(screenSize.width*sizeCoeff);
+       mainPanelHeight=(int)(screenSize.height*sizeCoeff);
+       this.mainPanelHeight=mainPanelHeight;
+       this.mainPanelWidth=mainPanelWidth;
+
+       Point startPosArray[]= new Point[4];
+       int startx=this.startx/4;
+       int starty=this.starty/4;
+       startPosArray[0]=new Point(startx,starty);
+       startPosArray[1]=new Point(startx+(int)(screenWidth/2.0),starty);
+       startPosArray[2]=new Point(startx,(int)(starty+screenHeight/2.0));
+       startPosArray[3]=new Point(startx+(int)(screenWidth/2.0),(int)(starty+screenHeight/2.0));
+
+       for(int i=0;i<n_schedules;i++) {
+           createWeeklySchedulePanel(startPosArray[i].x, startPosArray[i].y, mainPanelWidth, mainPanelHeight, n_columns, schedules.get(i));
+           System.out.println("createWeeklySchedulePanel method call i:"+i);
+           System.out.println("-----------------------");
+       }
+       scheduleFrame.setVisible(true);
+
+   }
     //tanil initiated
     public void createWeeklySchedule2(Schedule scheduleToView){
         //public void createWeeklySchedule2(){
 
-
-
         //JFrame mainFrame= new JFrame();
         scheduleFrame.setLayout(null);
-        JPanel mainPanel=new JPanel();
+
         //first column is for time, rest for days.
         int n_columns=6;
         double size=(3/4);
@@ -114,11 +146,12 @@ public class WeeklyScheduleGUI {
         this.mainPanelHeight=mainPanelHeight;
         this.mainPanelWidth=mainPanelWidth;
 
+        JPanel mainPanel=new JPanel();
         JPanel[] panelHolder = new JPanel[n_columns];
         mainPanel.setLayout(new GridLayout(1,n_columns));
         mainPanel.setSize(mainPanelWidth,mainPanelHeight);
         mainPanel.setLocation(startx,starty);
-
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,10));
         //mainPanel.setVisible(true);//making the frame visible
         for(int i=0;i<n_columns;i++){
             panelHolder[i]=new JPanel();
@@ -147,7 +180,8 @@ public class WeeklyScheduleGUI {
                 timeLabelCells[i].setBackground(Color.green);
 
             timeLabelCells[i].add(timeLabels[i]);
-            timeLabelCells[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            if(i!=0 & i!=n_times-1)
+                timeLabelCells[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
             //timeLabels[i].setLocation(timeLabelCells[i].getWidth()/2,timeLabelCells[i].getHeight()/2);
             //System.out.println("x: "+timeLabelCells[i].getWidth()/2);
             //System.out.println("y: "+timeLabelCells[i].getHeight()/2);
@@ -220,7 +254,87 @@ public class WeeklyScheduleGUI {
 
     }
 
+    private JPanel createWeeklySchedulePanel(int startx,int starty,int mainPanelWidth,int mainPanelHeight,int n_columns,Schedule scheduleToView){
+        JPanel mainPanel=new JPanel();
+        mainPanel.setLayout(new GridLayout(1,n_columns));
+        mainPanel.setSize(mainPanelWidth,mainPanelHeight);
+        mainPanel.setLocation(startx,starty);
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,10));
 
+        JPanel[] panelHolder = new JPanel[n_columns];
+
+
+        for(int i=0;i<n_columns;i++){
+            panelHolder[i]=new JPanel();
+            panelHolder[i].setLayout(null);
+            if(i%2==0)
+                panelHolder[i].setBackground(Color.lightGray);
+            else
+                panelHolder[i].setBackground(Color.lightGray);
+            panelHolder[i].setBorder(BorderFactory.createLineBorder(Color.black));
+            mainPanel.add(panelHolder[i]);
+        }
+
+        int n_times=panelDivide;//14
+        JLabel[] timeLabels = new JLabel[n_times];
+        panelHolder[0].setLayout(new GridLayout(n_times,1));
+        JPanel[] timeLabelCells= new JPanel[n_times];
+
+        for(int i=0;i<n_times;i++){
+            String text=Integer.toString((i+8))+".00";
+            //System.out.println(text);
+            timeLabels[i]= new JLabel(text);
+            timeLabelCells[i]=new JPanel();
+            if(i%2==0)
+                timeLabelCells[i].setBackground(Color.cyan);
+            else
+                timeLabelCells[i].setBackground(Color.green);
+
+            timeLabelCells[i].add(timeLabels[i]);
+            if(i!=0 & i!=n_times-1)
+                timeLabelCells[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            //timeLabels[i].setLocation(timeLabelCells[i].getWidth()/2,timeLabelCells[i].getHeight()/2);
+            //System.out.println("x: "+timeLabelCells[i].getWidth()/2);
+            //System.out.println("y: "+timeLabelCells[i].getHeight()/2);
+            panelHolder[0].setBackground(Color.cyan);
+            panelHolder[0].add(timeLabelCells[i]);
+        }
+
+        double inc= (screenSize.height/n_times)/4;
+
+        for (ClassBundle currentBundle : scheduleToView.getClassBundleList()) {
+
+            Class currentClass = currentBundle.getLecClass();
+            addClasstoPanel(panelHolder, currentClass);
+
+            currentClass = currentBundle.getDisClass();
+            addClasstoPanel(panelHolder, currentClass);
+
+            currentClass = currentBundle.getLabClass();
+            addClasstoPanel(panelHolder, currentClass);
+
+            currentClass = currentBundle.getPrbClass();
+            addClasstoPanel(panelHolder, currentClass);
+
+        }
+
+        for(int i=1;i<6;i++) {
+            panelHolder[1].setVisible(true);
+        }
+
+        mainPanel.setVisible(true);//making the frame visible
+        scheduleFrame.add(mainPanel);
+
+        return mainPanel;
+    }
+
+    private void initializeMainPanel(int startx,int starty,int mainPanelWidth,int mainPanelHeight,int n_columns){
+        JPanel mainPanel=new JPanel();
+        mainPanel.setLayout(new GridLayout(1,n_columns));
+        mainPanel.setSize(mainPanelWidth,mainPanelHeight);
+        mainPanel.setLocation(startx,starty);
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,10));
+    }
 
     //aras initiated
     public void createWeeklySchedule1(Schedule scheduleToView){
@@ -393,7 +507,7 @@ public class WeeklyScheduleGUI {
 
         //System.out.println("hourInc: "+hourInc);
         System.out.println("location: "+locationD);
-        return (int)locationD+5;
+        return (int)locationD;
     }
 
 
