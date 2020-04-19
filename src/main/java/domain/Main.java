@@ -985,8 +985,8 @@ public class Main {
         scheduleFrame=weeklyScheduleView.getScheduleFrame();
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
-        weeklyScheduleView.createWeeklySchedule1(scheduleToView);
-        //weeklyScheduleView.createWeeklySchedule2(scheduleToView);
+        //weeklyScheduleView.createWeeklySchedule1(scheduleToView);
+        weeklyScheduleView.createWeeklySchedule2(scheduleToView);
 
 
     }
