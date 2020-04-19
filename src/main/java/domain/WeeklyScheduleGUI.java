@@ -308,14 +308,35 @@ public class WeeklyScheduleGUI {
                     scheduleFrame.add(currentClassLabel);
 
                     String timeLabel = "";
-                    if (currentClass.getStartTime().length() == 11)
+                    if (currentClass.getStartTime().length() == 11) {
                         timeLabel += currentClass.getStartTime().substring(0, 5);
-                    else
+                        if (currentClass.getStartTime().charAt(9) == 'P' && !currentClass.getStartTime().substring(0, 2).equals("12")){
+                            timeLabel = Integer.toString(Integer.parseInt(timeLabel.substring(0, 2)) + 12) + ":" + timeLabel.substring(3,5);
+                        }
+                    }
+                    else {
                         timeLabel += currentClass.getStartTime().substring(0, 4);
-                    if (currentClass.getEndTime().length() == 11)
-                        timeLabel += "-" + currentClass.getEndTime().substring(0, 5);
-                    else
-                        timeLabel += "-" + currentClass.getEndTime().substring(0, 4);
+                        if (currentClass.getStartTime().charAt(8) == 'P' && !currentClass.getStartTime().substring(0, 2).equals("12")){
+                            timeLabel = Integer.toString(Integer.parseInt(timeLabel.substring(0, 1)) + 12) + ":" + timeLabel.substring(2,4);
+                        }
+                    }
+
+                    String timeEndLabel = "";
+                    if (currentClass.getEndTime().length() == 11) {
+                        timeEndLabel += currentClass.getEndTime().substring(0, 5);
+                        if (currentClass.getEndTime().charAt(9) == 'P' && !currentClass.getEndTime().substring(0, 2).equals("12")){
+                            timeEndLabel = Integer.toString(Integer.parseInt(timeEndLabel.substring(0, 2)) + 12) + ":" + timeEndLabel.substring(3,5);
+                        }
+                    }
+                    else {
+                        timeEndLabel += currentClass.getEndTime().substring(0, 4);
+                        if (currentClass.getEndTime().charAt(8) == 'P' && !currentClass.getEndTime().substring(0, 2).equals("12")){
+                            timeEndLabel = Integer.toString(Integer.parseInt(timeEndLabel.substring(0, 1)) + 12) + ":" + timeEndLabel.substring(2,4);
+                        }
+                    }
+
+
+                    timeLabel +=  "-" + timeEndLabel;
 
                     JLabel currentTimeLabel = new JLabel(timeLabel);
                     currentTimeLabel.setBounds(150 + dayIndex * offsetX, yStart + 150, 200, 20);
