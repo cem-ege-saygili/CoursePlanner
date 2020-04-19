@@ -100,14 +100,14 @@ public class Schedule {
                                 (wedFlag && curClassWedFlag) ||
                                 (thursFlag && curClassThursFlag) ||
                                 (friFlag && curClassFriFlag) ){//if the curClass takes place on a day that is to be excluded.
-                            if(!(endTimeStamp2Exclude <  curClassStartTimeStamp ||
-                                    curClassEndTimeStamp < startTimeStamp2Exclude)){//if they are overlapping
+                            if(!(endTimeStamp2Exclude <=  curClassStartTimeStamp ||
+                                    curClassEndTimeStamp <= startTimeStamp2Exclude)){//if they are overlapping
                                 schedules2BeRemoved.add(curSchedule);
                                 break nextSchedule;
                             }
                         }else if(!monFlag && !tuesFlag && !wedFlag && !thursFlag && !friFlag){//filter out the entire week
-                            if(!(endTimeStamp2Exclude <  curClassStartTimeStamp ||
-                                    curClassEndTimeStamp < startTimeStamp2Exclude)){//if they are overlapping
+                            if(!(endTimeStamp2Exclude <=  curClassStartTimeStamp ||
+                                    curClassEndTimeStamp <= startTimeStamp2Exclude)){//if they are overlapping
                                 schedules2BeRemoved.add(curSchedule);
                                 break nextSchedule;
                             }
