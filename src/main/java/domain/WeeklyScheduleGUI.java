@@ -172,9 +172,9 @@ public class WeeklyScheduleGUI {
 
         int scheduleFrameWidth = scheduleFrame.getWidth();
         int scheduleFrameHeight = scheduleFrame.getHeight();
-        buttonCloseBackgroundPanel.setBounds(scheduleFrameWidth-75,scheduleFrameHeight-50,75,25);
-        buttonNextSchedule.setBounds(scheduleFrameWidth-175,scheduleFrameHeight-50,75,25);
-        buttonPrevSchedule.setBounds(scheduleFrameWidth-275,scheduleFrameHeight-50,75,25);
+        buttonCloseBackgroundPanel.setBounds(scheduleFrameWidth-125,scheduleFrameHeight-100,75,25);
+        buttonNextSchedule.setBounds(scheduleFrameWidth-225,scheduleFrameHeight-100,75,25);
+        buttonPrevSchedule.setBounds(scheduleFrameWidth-325,scheduleFrameHeight-100,75,25);
         scheduleFrame.add(buttonCloseBackgroundPanel);
         scheduleFrame.add(buttonNextSchedule);
         scheduleFrame.add(buttonPrevSchedule);
