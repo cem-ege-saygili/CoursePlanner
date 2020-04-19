@@ -12,13 +12,26 @@ public class InstructorNameRolePair {
 
                                  ){
 
-    this.instructorName = instructorName;
+    this.instructorName = convertNaming2FirstLastName(instructorName);
     this.instructorRole = instructorRole;
 
     }
 
+    private String convertNaming2FirstLastName(String name){
+        String[] delimitedNameArr = name.split(",");
+        String lastName = delimitedNameArr[0];
+        String firstName = delimitedNameArr[1];
+
+        return  firstName +
+                " " +
+                lastName;
+    }
+
     @Override
     public boolean equals(Object obj) {
+
+        if(!(obj instanceof InstructorNameRolePair))
+            return false;
 
         InstructorNameRolePair p2 = (InstructorNameRolePair) obj;
 
@@ -32,8 +45,7 @@ public class InstructorNameRolePair {
 
     @Override
     public String toString() {
-        return "EnrollmentDetailsPair: " +
-                instructorName +" has the role of " + instructorRole;
+        return instructorName +"(" + instructorRole + ")";
     }
 
     public String getInstructorName() {
