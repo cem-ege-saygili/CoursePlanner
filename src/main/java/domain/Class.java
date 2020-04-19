@@ -1,5 +1,7 @@
 package domain;
 
+import DB_Utilities.SelectFromTableInDB;
+
 import java.util.List;
 
 public class Class implements Comparable<domain.Class>{
@@ -21,6 +23,10 @@ public class Class implements Comparable<domain.Class>{
     private int capEnrl;
 //    private String instructorName;
 //    private String instructorRole;
+    private String courseFaculty;
+    private String courseLevel;
+    private String courseDescription;
+
 
     public Class(
             int id,
@@ -38,9 +44,9 @@ public class Class implements Comparable<domain.Class>{
             int courseCatalog,
             int totlEnrl,
             int capEnrl
-
 //            String instructorName,
 //            String instructorRole
+
     ){
 
         this.id = id;
@@ -60,6 +66,16 @@ public class Class implements Comparable<domain.Class>{
         this.totlEnrl = totlEnrl;
 //        this.instructorName = instructorName;
 //        this.instructorRole = instructorRole;
+        List<String> strListCourse_Career_AcadOrg_Descr_Descr2 = SelectFromTableInDB.SelectCourse_Career_AcadOrg_Descr_Descr2(
+                "CoursePlannerDB2",
+                "inputs/sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog.sql",
+                (String) this.courseName,
+                (Integer) this.courseCatalog
+        );
+
+        this.courseLevel = strListCourse_Career_AcadOrg_Descr_Descr2.get(0);
+        this.courseFaculty = strListCourse_Career_AcadOrg_Descr_Descr2.get(1);
+        this.courseDescription = strListCourse_Career_AcadOrg_Descr_Descr2.get(2);
 
     }
 
@@ -289,5 +305,16 @@ public class Class implements Comparable<domain.Class>{
         return capEnrl;
     }
 
+    public String getCourseFaculty() {
+        return courseFaculty;
+    }
+
+    public String getCourseLevel() {
+        return courseLevel;
+    }
+
+    public String getCourseDescription() {
+        return courseDescription;
+    }
 
 }

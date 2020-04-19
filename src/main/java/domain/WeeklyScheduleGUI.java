@@ -1,9 +1,13 @@
 package domain;
 
+import DB_Utilities.SelectFromTableInDB;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 public class WeeklyScheduleGUI {
@@ -28,6 +32,33 @@ public class WeeklyScheduleGUI {
     private int mainPanelWidth;
     private int panelDivide;
 
+    private static MouseListener mouseAction = new MouseListener() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            Point p = MouseInfo.getPointerInfo().getLocation();
+            System.out.println("X: " + p.x + "Y: " + p.y);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    };
     private ActionListener panelAction = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent ae) {
@@ -133,6 +164,7 @@ public class WeeklyScheduleGUI {
                 commands[i],
                 KeyStroke.getKeyStroke(commands[i]),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
+
         bgpanel.setVisible(true);
         scheduleFrame.add(bgpanel);
 
@@ -282,7 +314,15 @@ public class WeeklyScheduleGUI {
 
                     ClassPanel currentClassPanel = new ClassPanel(100 + dayIndex * offsetX, yStart + 100, 200, yEnd - yStart);
                     currentClassPanel.setVisible(true);
+
+                    currentClassPanel.setToolTipText("<html>"
+                            + "Course Description: " + currentClass.getCourseDescription() + "</br>"
+                            + "<br>" + "Course Level: " + currentClass.getCourseLevel() + "</br>"
+                            + "<br>" + "Course Faculty: " + currentClass.getCourseFaculty() + "</br>"
+                            + "<br>" + "Instructor:" + currentClass.getInstructorNameRolePairs() + "</br>"
+                            + "</html>");
                     scheduleFrame.add(currentClassPanel);
+
                 }
             }
         }
