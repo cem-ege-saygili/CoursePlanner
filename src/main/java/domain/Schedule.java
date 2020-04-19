@@ -1,5 +1,10 @@
 package domain;
 
+import org.sqlite.util.StringUtils;
+
+import java.awt.*;
+import java.awt.font.TextAttribute;
+import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,6 +166,112 @@ public class Schedule {
 //        Schedule.scheduleIdcounter = scheduleList.size();
     }
 
+    public static String PrintOutSchedulesToUser(List<Schedule> schedules){
+        String str = "<html>";
+        int schdeuleNo=0;
+        for(Schedule curSchedule:schedules){
+            str += "<br><br>----------------------------------" +
+                            "<font face=\"verdana\" color=\"red\"><b><i>" +
+                                    "Plan #" + ++schdeuleNo +
+                            "</i></b></font>" +
+                    "--------------------------------------<br>";
+            List<ClassBundle> classBundles = curSchedule.classBundleList;
+            for(ClassBundle curClassBundle:classBundles){
+                String courseSubjectAndCatalog = curClassBundle.getCourseSubject()
+                                                    + " " + curClassBundle.getCourseCatalog();
+                str += "<br><br>" +
+                            "<font face=\"verdana\" color=\"blue\"><b><i>" +
+                                courseSubjectAndCatalog +
+                            "</i></b></font>" +
+                        ": ";
+                List<Class> classes = curClassBundle.getClassList();
+                int numClasses = classes.size();
+                String courseDescription = (classes!=null?classes.get(0).getCourseDescription():"");
+                String courseLevel = (classes!=null?classes.get(0).getCourseLevel():"");
+                String courseFaculty = (classes!=null?classes.get(0).getCourseFaculty():"");
+
+                str += "\"" +
+                                "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                    courseDescription +
+                                "</i></b></font>" +
+
+                            "\" is meant for " +
+                                "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                    courseLevel +
+                                "</i></b></font>" +
+                            " students " +  "and given by " +
+
+                                "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                    courseFaculty +
+                                "</i></b></font>" +
+                            " faculty.<br>" +
+
+                            "including " +
+                                "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                    numClasses +
+                                "</i></b></font>" +
+                            " sessions as follows:<br><br>";
+
+                int classNo = 0;
+                for(Class curClass:classes){
+                    String curClassStartTime = curClass.getStartTime();
+                    String curClassEndTime = curClass.getEndTime();
+                    String curClassComponent = curClass.getComponent();
+                    boolean curClassIsMonFlag = curClass.isMonFlag();
+                    boolean curClassIsTuesFlag = curClass.isTuesFlag();
+                    boolean curClassIsWedFlag = curClass.isWedFlag();
+                    boolean curClassIsThursFlag = curClass.isThursFlag();
+                    boolean curClassIsFriFlag = curClass.isFriFlag();
+
+                    List<String> daysList = Parser.ParseDayBooleans2List(
+                                                                        curClassIsMonFlag,
+                                                                        curClassIsTuesFlag,
+                                                                        curClassIsWedFlag,
+                                                                        curClassIsThursFlag,
+                                                                        curClassIsFriFlag);
+
+                    List<InstructorNameRolePair> curClassInstructorNameRolePairs = curClass.getInstructorNameRolePairs();
+                    str +=
+                                "&#09\u2022 Class #" +
+                                        "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                        ++classNo +
+                                        "</i></b></font>" +
+
+                                " is of type (" +
+                                        "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                        curClassComponent +
+                                        "</i></b></font>" +
+
+                                ") <br>&#09and is on " +
+                                        "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                        daysList +
+                                        "</i></b></font>" +
+
+                                " and btw. " +
+                                        "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                        curClassStartTime +
+                                        "</i></b></font>" +
+
+                                " and " +
+                                        "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                        curClassEndTime +
+                                        "</i></b></font>" +
+                                        "<br>" +
+
+                                "&#09and is given by " +
+                                        "<font face=\"verdana\" color=\"green\"><b><i>" +
+                                        curClassInstructorNameRolePairs +
+                                        "</i></b></font>" +
+
+                                 "<br><br>";
+                }
+
+            }
+        }
+        str += "</html>";
+        return str;
+    }
+
     @Override
     public boolean equals(Object obj) {
 
@@ -179,10 +290,10 @@ public class Schedule {
 
     @Override
     public String toString(){
-        return  "\n-------------------" +
-                "\n\nSchedule #" + (scheduleId+1) +
-                ",\n has the following courses: " + getCourseSubjectsAndCatalogsAsString() +
-                "\n\nDetails are as follows: \n" + classBundleList;
+        return  /*"\n-------------------" + */
+                "\n\nSchedule #" + (scheduleId+1);
+                /*+ ",\n has the following courses: " + getCourseSubjectsAndCatalogsAsString() +
+                "\n\nDetails are as follows: \n" + classBundleList;*/
     }
 
     public int getScheduleId(){

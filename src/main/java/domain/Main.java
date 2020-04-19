@@ -2,7 +2,9 @@ package domain;
 
 import DB_Utilities.*;
 
+import java.awt.*;
 import java.awt.event.*;
+import java.text.AttributedString;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -164,12 +166,15 @@ public class Main {
         JLabel lblCourseDescr = new JLabel();
         lblCourseDescr.setText("Course Description: ");
 
+        String selectedCourseSubject = (String) courseSubjectsComboBox.getSelectedItem();
+        int selectedCourseCatalog = (Integer) courseCatalogsComboBox.getSelectedItem();
+
         UpdateLabelsFromDB(
 
                 dbName,
                 sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
-                courseSubjectsComboBox,
-                courseCatalogsComboBox,
+                selectedCourseSubject,
+                selectedCourseCatalog,
                 lblCourseLevel,
                 lblCourseFaculty,
                 lblCourseDescr
@@ -240,12 +245,15 @@ public class Main {
                         courseCatalogsComboBox.addItem(curCatalog);
                     }
 
+                    String selectedCourseSubject = (String) courseSubjectsComboBox.getSelectedItem();
+                    int selectedCourseCatalog = (Integer) courseCatalogsComboBox.getSelectedItem();
+
                     UpdateLabelsFromDB(
 
                             dbName,
                             sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
-                            courseSubjectsComboBox,
-                            courseCatalogsComboBox,
+                            selectedCourseSubject,
+                            selectedCourseCatalog,
                             lblCourseLevel,
                             lblCourseFaculty,
                             lblCourseDescr
@@ -264,12 +272,15 @@ public class Main {
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     int curCourseCatalog = (int) e.getItem();
+                    String selectedCourseSubject = (String) courseSubjectsComboBox.getSelectedItem();
+                    int selectedCourseCatalog = (Integer) courseCatalogsComboBox.getSelectedItem();
+
                     UpdateLabelsFromDB(
 
                             dbName,
                             sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
-                            courseSubjectsComboBox,
-                            courseCatalogsComboBox,
+                            selectedCourseSubject,
+                            selectedCourseCatalog,
                             lblCourseLevel,
                             lblCourseFaculty,
                             lblCourseDescr
@@ -574,7 +585,7 @@ public class Main {
 //        JFormattedTextField txtFieldPriority = new JFormattedTextField(formatter);
 
 
-        JFrame frame = new JFrame("CourseScheduler v.3");
+        JFrame frame = new JFrame("CourseScheduler v.4");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1350, 805);//w:550
 
@@ -756,12 +767,19 @@ public class Main {
 
 //                System.out.println(schedules);
 
-                String message2BeDisplayed = schedules.toString();
+//                String message2BeDisplayed = schedules.toString();
+                String message2BeDisplayed = Schedule.PrintOutSchedulesToUser(schedules);
                 JTextArea textArea = new JTextArea(25, 75);
-                textArea.setText(message2BeDisplayed);
-                textArea.setEditable(false);
-                textArea.setCaretPosition(0);
-                JScrollPane scrollPane = new JScrollPane(textArea);
+//                textArea.setText(message2BeDisplayed);
+//                textArea.setEditable(false);
+//                textArea.setCaretPosition(0);
+                JEditorPane ep = new JEditorPane();
+                ep.setContentType("text/html");
+                ep.setEditable(false);
+                ep.setText(message2BeDisplayed);
+                ep.setCaretPosition(0);
+                JScrollPane scrollPane = new JScrollPane(ep);
+                scrollPane.setPreferredSize(new Dimension(1000,500));
                 JOptionPane.showMessageDialog(null, scrollPane, numSchedulesGenerated + " non-overlapping plans are found.", JOptionPane.WARNING_MESSAGE);
 
                 if (schedules != null )
@@ -933,8 +951,8 @@ public class Main {
 
     private static void UpdateLabelsFromDB(String dbName,
                                            String sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
-                                           JComboBox<String> courseSubjectsComboBox,
-                                           JComboBox<Integer> courseCatalogsComboBox,
+                                           String selectedCourseSubject,
+                                           int selectedCourseCatalog,
                                            JLabel lblCourseLevel,
                                            JLabel lblCourseFaculty,
                                            JLabel lblCourseDescr) {
@@ -946,8 +964,8 @@ public class Main {
         List<String> strListCourse_Career_AcadOrg_Descr_Descr2 = SelectFromTableInDB.SelectCourse_Career_AcadOrg_Descr_Descr2(
                 dbName,
                 sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location,
-                (String) courseSubjectsComboBox.getSelectedItem(),
-                (Integer) courseCatalogsComboBox.getSelectedItem()
+                selectedCourseSubject,
+                selectedCourseCatalog
         );
 
         String CourseCareerInfo = strListCourse_Career_AcadOrg_Descr_Descr2.get(0);
@@ -965,7 +983,7 @@ public class Main {
                 + defaultCourseFacultyLabel
                 + "<font face=\"verdana\" color=\"green\"><b><i>"
                 + CourseAcadCareerInfo
-                + "</i></b></font></hmtl>");
+                + "</i></b></font></html>");
 
         lblCourseDescr.setText("<html>"
                 + defaultCourseDescrLabel
@@ -973,7 +991,7 @@ public class Main {
                 + CourseDescrInfo
                 + "</i></b></font><br><font face=\"verdana\" color=\"green\"><b><i>"
                 + CourseDescr2Info
-                + "</i></b></font></hmtl>");
+                + "</i></b></font></html>");
     }
 
     /*
