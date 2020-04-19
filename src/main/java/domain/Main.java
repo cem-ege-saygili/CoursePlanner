@@ -636,7 +636,6 @@ public class Main {
 
                     Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
 
-
                     viewWeeklySchedule(scheduleToView, btnList);
 
 
