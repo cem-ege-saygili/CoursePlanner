@@ -471,6 +471,9 @@ public class Main {
 
                 CourseSubject_Catalog_Priority_Tuple selectedTuple = (CourseSubject_Catalog_Priority_Tuple) lstCourse2BePlanned.getSelectedValue();
 
+                if(selectedTuple == null)
+                    return;
+
                 String courseSubject = selectedTuple.getSubject();
                 int courseCatalog = selectedTuple.getCatalog();
 
