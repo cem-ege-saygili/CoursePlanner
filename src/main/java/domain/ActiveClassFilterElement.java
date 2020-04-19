@@ -19,15 +19,18 @@ public class ActiveClassFilterElement extends ClassFilterElement{
         Class c = super.getClassForClassFilterElement();
 
         return "<html>" +
-                "<font face=\"verdana\"><b><i>" +
+                    "<font face=\"verdana\"><b><i>" +
                 "Include: " +
-                "</i></b></font>" +
-                "<font face=\"verdana\"><b><i>" +
+                    "</i></b></font>" +
+                    "<font face=\"verdana\"><b><i>" +
                 "\"" +
                 c.getCourseName() +
                 " " + c.getCourseCatalog() +
                 "\" " +
-                "</i></b></font>" +
+                    "</i></b></font>" +
+                    "<font face=\"verdana\" color=\"pink\"><b><i> ("
+                + c.getComponent()
+                    + ") </i></b></font><br>" +
                 super.toString().substring(6,super.toString().length());
     }
 

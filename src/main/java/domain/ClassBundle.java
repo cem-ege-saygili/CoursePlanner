@@ -187,11 +187,12 @@ public class ClassBundle{
 
         if(id1 == id2)
             return false;
-
-        int cat1 = this.getCourseCatalog();
+        
         String subj1 = this.getCourseSubject();
+        int cat1 = this.getCourseCatalog();
+
         String subj2 = cb2.getCourseSubject();
-        int cat2 = this.getCourseCatalog();
+        int cat2 = cb2.getCourseCatalog();
 
         if(
 

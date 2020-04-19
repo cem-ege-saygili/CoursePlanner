@@ -551,8 +551,11 @@ public class Main {
                     ClassFilterElement selectedClassFilterElement = (ClassFilterElement) lstClassFiltersListModel.getElementAt(selectedClassFilterElementIndex);
                     Class selectedClass = selectedClassFilterElement.getClassForClassFilterElement();
                     ActiveClassFilterElement acfe = new ActiveClassFilterElement(selectedClass);
-                    lstAddedClassFiltersListModel.addElement(acfe);
+                    if(!lstAddedClassFiltersListModel.contains(acfe))
+                        lstAddedClassFiltersListModel.addElement(acfe);
                 }
+
+
             }
         });
 
