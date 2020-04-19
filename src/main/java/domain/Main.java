@@ -600,7 +600,7 @@ public class Main {
 
                 int numSchedulesGenerated = schedules.size();
 
-//                System.out.println(schedules);
+//               System.out.println(schedules);
 
                 String message2BeDisplayed = schedules.toString();
                 JTextArea textArea = new JTextArea(25, 75);
@@ -633,8 +633,8 @@ public class Main {
                                 JOptionPane.WARNING_MESSAGE);
                         return;
                     }
-                    Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
 
+                    Schedule scheduleToView = scheduleListToView.get(scheduleIndex2BeDisplayed);
 
 
                     viewWeeklySchedule(scheduleToView, btnList);
