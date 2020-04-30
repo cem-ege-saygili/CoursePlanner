@@ -167,13 +167,17 @@ public class ClassBundle{
             String curClassSubject = curCartesianProductList.get(0).getCourseName();
             int curClassCatalog = curCartesianProductList.get(0).getCourseCatalog();
 
-            if(Class.AreAllCompatible(curCartesianProductList)){
+//            if(Class.AreAllCompatible(curCartesianProductList)){
+//
+//                ClassBundle curClassBundle = new ClassBundle(curClassSubject, curClassCatalog, bundleIdcounter++);
+//                curClassBundle.addAll(curCartesianProductList);
+//                bundles.add(curClassBundle);
+//
+//            }
+            ClassBundle curClassBundle = new ClassBundle(curClassSubject, curClassCatalog, bundleIdcounter++);
+            curClassBundle.addAll(curCartesianProductList);
+            bundles.add(curClassBundle);
 
-                ClassBundle curClassBundle = new ClassBundle(curClassSubject, curClassCatalog, bundleIdcounter++);
-                curClassBundle.addAll(curCartesianProductList);
-                bundles.add(curClassBundle);
-
-            }
         }
 
         return bundles;
@@ -219,6 +223,14 @@ public class ClassBundle{
 
         return compatibilityFlag;
 
+    }
+
+    public boolean isCompatibleWithClassBundleList(List<ClassBundle> cbList){
+        for(ClassBundle curClassBundleFromClassBundleList:cbList){
+            if(!this.isCompatibleWith(curClassBundleFromClassBundleList))
+                return false;
+        }
+        return true;
     }
 
     public static boolean AreAllCompatible(List<ClassBundle> classBundleList){
