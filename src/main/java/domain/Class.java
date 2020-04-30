@@ -115,6 +115,14 @@ public class Class implements Comparable<domain.Class> {
 
     }
 
+    public boolean isCompatibleWithClassList(List<Class> cList){
+        for(Class curClassFromClassList:cList){
+            if(!this.isCompatibleWith(curClassFromClassList))
+                return false;
+        }
+        return true;
+    }
+
     public static boolean AreAllCompatible(List<Class> classList) {
 
         boolean flag = true;

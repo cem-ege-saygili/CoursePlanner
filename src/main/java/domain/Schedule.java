@@ -36,12 +36,14 @@ public class Schedule {
 
             for(List<ClassBundle> curCartesianProductList:cartesianProductsList) {
 
-                if(ClassBundle.AreAllCompatible(curCartesianProductList)){
-
-                    Schedule curSchedule = new Schedule(scheduleIdcounter++, curCartesianProductList);
-                    schedules.add(curSchedule);
-
-                }
+//                if(ClassBundle.AreAllCompatible(curCartesianProductList)){
+//
+//                    Schedule curSchedule = new Schedule(scheduleIdcounter++, curCartesianProductList);
+//                    schedules.add(curSchedule);
+//
+//                }
+                Schedule curSchedule = new Schedule(scheduleIdcounter++, curCartesianProductList);
+                schedules.add(curSchedule);
             }
         }
 

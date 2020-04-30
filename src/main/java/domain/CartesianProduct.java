@@ -16,9 +16,27 @@ public class CartesianProduct {
             for (T condition : firstList) {
                 for (List<T> remainingList : remainingLists) {
                     ArrayList<T> resultList = new ArrayList<T>();
-                    resultList.add(condition);
-                    resultList.addAll(remainingList);
-                    resultLists.add(resultList);
+                    if(condition instanceof Class){//For generating compatible class bundles (i.e. list of classes)
+                        Class curClass = (Class) condition;
+                        List<Class> classList2Compare = (List<Class>) remainingList;
+                        if(curClass.isCompatibleWithClassList(classList2Compare)){
+                            resultList.add(condition);
+                            resultList.addAll(remainingList);
+                            resultLists.add(resultList);
+                        }
+                    }else if(condition instanceof ClassBundle){//For generating compatible schedules (i.e. list of class bundles)
+                        ClassBundle curClassBundle = (ClassBundle) condition;
+                        List<ClassBundle> classBundleList2Compare = (List<ClassBundle>) remainingList;
+                        if(curClassBundle.isCompatibleWithClassBundleList(classBundleList2Compare)){
+                            resultList.add(condition);
+                            resultList.addAll(remainingList);
+                            resultLists.add(resultList);
+                        }
+                    }else{
+                        resultList.add(condition);
+                        resultList.addAll(remainingList);
+                        resultLists.add(resultList);
+                    }
                 }
             }
         }
