@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS Instructors(
 	                            PRIMARY KEY
 	                            AUTOINCREMENT,
 
-    InstructorName NVARCHAR(100)
+    InstructorName NVARCHAR(100) NOT NULL
 
 );
