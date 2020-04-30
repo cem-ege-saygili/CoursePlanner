@@ -5,10 +5,10 @@ CREATE TABLE IF NOT EXISTS Class_Course_Infos(
 	                        PRIMARY KEY
 	                        AUTOINCREMENT,
 
-    ClassId                     INTEGER(4),
-    CourseId                INTEGER(4),
-    ClassTotEnrl INTEGER(3),
-    ClassCapEnrl INTEGER(3),
+    ClassId                     INTEGER(4) NOT NULL,
+    CourseId                INTEGER(4) NOT NULL,
+    ClassTotEnrl INTEGER(3) NOT NULL,
+    ClassCapEnrl INTEGER(3) NOT NULL,
 
     FOREIGN KEY (
       				ClassId

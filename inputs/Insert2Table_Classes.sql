@@ -24,7 +24,11 @@ Component, Section,
        MtgStart, MtgEnd,
        Mon, Tues, Wed, Thurs, Fri,
        --TotEnrl, CapEnrl,
-       FacilID
+       --FacilID
+       CASE
+       WHEN FacilID = '' THEN 'TBA'
+       ELSE FacilID
+       END AS FacilID
 from CoursePlannerBIGGEST
 group by MtgStart, MtgEnd, Mon, Tues, Wed, Thurs, Fri, FacilID
 order by MtgStart, MtgEnd, Mon, Tues, Wed, Thurs, Fri, FacilID;

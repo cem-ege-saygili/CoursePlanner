@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS Class_Instructor_Infos(
 	                            PRIMARY KEY
 	                            AUTOINCREMENT,
 
-    ClassId                     INTEGER(4),
-    InstructorId                INTEGER(4),
-    ClassInstructorRole         NVARCHAR(2),
+    ClassId                     INTEGER(4) NOT NULL,
+    InstructorId                INTEGER(4) NOT NULL,
+    ClassInstructorRole         NVARCHAR(2) NOT NULL,
 
     FOREIGN KEY (
       				ClassId
