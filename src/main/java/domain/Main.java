@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.text.AttributedString;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 
 public class Main {
 
@@ -150,6 +152,13 @@ public class Main {
 
         JComboBox<Integer> courseCatalogsComboBox = new JComboBox<>(courseCatalogsArr);
 
+        JLabel lblProgressBar = new JLabel();
+        lblProgressBar.setText("<html>"
+                + "Status: "
+                + "<font face=\"verdana\" color=\"green\"><b><i>"
+                + "idle"
+                + "</i></b></font></html>");
+
         JLabel lblCourseSubject = new JLabel();
         lblCourseSubject.setText("Course Subject: ");
 
@@ -187,6 +196,8 @@ public class Main {
         JButton btnRemoveFromPlanningList = new JButton("Remove Selected from the Planning List");
         JButton btnGenerateNonOverlappingSchedules = new JButton("Generate non-overlapping Schedule(s)");
         JButton btnClearPlanningList = new JButton("Clear the Planning List");
+
+        JButton btnImport = new JButton("<html>Import<br>Schedules</html>");
 
         JCheckBox checkBox_Exclude_Mon = new JCheckBox("Monday");
         JCheckBox checkBox_Exclude_Tues = new JCheckBox("Tuesday");
@@ -593,6 +604,8 @@ public class Main {
 
         //int yInc = 25;
 
+
+        lblProgressBar.setBounds(100-85, 25, 300, 25);
         lblCourseSubject.setBounds(100-85, 50, 150, 25);
         courseSubjectsComboBox.setBounds(250-85, 50, 150, 25);
 
@@ -651,10 +664,14 @@ public class Main {
         lstCourse2BePlanned.setBounds(75-65, 50+500, 400, 120);
 
         btnGenerateNonOverlappingSchedules.setBounds(100-85, 50+630, 300, 25);
+
         scheduleListComboBox.setBounds(100-85, 50+655, 300, 25);;
 
         btnViewWeeklySchedule.setBounds(100-85, 50+680, 300, 25);
 
+        btnImport.setBounds(320, 50+630, 100, 75);
+
+        frame.add(lblProgressBar);
         frame.add(lblCourseSubject);
         frame.add(courseSubjectsComboBox);
         frame.add(lblPriority);
@@ -681,6 +698,7 @@ public class Main {
         frame.add(btnClearFilters);
         frame.add(lstFilters);
         frame.add(btnGenerateNonOverlappingSchedules);
+        frame.add(btnImport);
         frame.add(scheduleListComboBox);
         frame.add(btnClearPlanningList);
         frame.add(checkBox_Exclude_Mon);
@@ -722,42 +740,164 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                lblProgressBar.setText("<html>"
+                        + "Running: "
+                        + "<font face=\"verdana\" color=\"red\"><b><i>"
+                        + "Algorithm"
+                        + "</i></b></font></html>");
+                lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
+
                 Schedule.scheduleIdcounter = 0;
 
                 List<List<ClassBundle>> classBundlesList = new ArrayList<>();
 
                 scheduleListComboBox.removeAllItems();
 
+                long algorithm_startTime = System.nanoTime();
 
-                for (List<Class> curClassList : classesList) {
+                for (List<Class> curClassList : classesList) {//ALGORITHM_PART1_GenerateClassBundlesList
                     List<ClassBundle> curBundles = ClassBundle.GenerateClassBundlesFromClasses(curClassList);
                     System.out.println(curBundles);
                     classBundlesList.add(curBundles);
                 }
 //
-                List<Schedule> schedules = Schedule.GenerateSchedulesFromClassBundlesList(classBundlesList);
+                List<Schedule> schedules = Schedule.GenerateSchedulesFromClassBundlesList(classBundlesList);//ALGORITHM_PART2_GenerateSchedules
 
+                int resultSetSizeWithoutAnyFilter = schedules.size();
+                int upperLimit = 500000;
 
+                boolean canApplyFiltersAutomatically = resultSetSizeWithoutAnyFilter<=upperLimit;
 
-                if(!lstFiltersModel.isEmpty()){//Time & Day Exclusion Filter
-                    List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
-                    for(int i =0;i<lstFiltersModel.size();i++){
-                        DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
-                        dayTimeFramePairs.add(curDayTimeFramePair);
+                long lostTime = 0;
+
+                if(!canApplyFiltersAutomatically && (!lstFiltersModel.isEmpty() || !lstAddedClassFiltersListModel.isEmpty())){
+                    long lostTime_start = System.nanoTime();
+                    int dialogResult = JOptionPane.showConfirmDialog (frame,
+                            "Would You Still like to apply the chosen filter(s)?" +
+                                    "\n OK -> Apply filter. This may take a while !" +
+                                    "\n Cancel -> Clear selected filters (i.e. don't apply any filter(s)), which yields the result set faster.",
+                            "There are " + resultSetSizeWithoutAnyFilter + " schedules to be filtered !" ,
+                            JOptionPane.WARNING_MESSAGE);
+                    if(dialogResult == JOptionPane.YES_OPTION){//still want to apply filters
+
+                        lblProgressBar.setText("<html>"
+                                + "Running: "
+                                + "<font face=\"verdana\" color=\"red\"><b><i>"
+                                + "Time & Day Exclusion Filter"
+                                + "</i></b></font></html>");
+                        lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
+
+                        if(!lstFiltersModel.isEmpty()){//Apply Time & Day Exclusion Filter
+                            List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
+                            for(int i =0;i<lstFiltersModel.size();i++){
+                                DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
+                                dayTimeFramePairs.add(curDayTimeFramePair);
+                            }
+                            Schedule.FilterOutSchedulesFrom(schedules, dayTimeFramePairs);
+                        }
+
+                        lblProgressBar.setText("<html>"
+                                + "Running: "
+                                + "<font face=\"verdana\" color=\"red\"><b><i>"
+                                + "Class Inclusion Filter"
+                                + "</i></b></font></html>");
+                        lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
+
+                        if(!lstAddedClassFiltersListModel.isEmpty()){//Apply INCLUDE CLASSES filter
+                            List<Class> activeClassFilterElementClassList = new ArrayList<>();
+                            for(int i =0;i<lstAddedClassFiltersListModel.size();i++){
+                                Class curActiveClassFilterElementClass = ((ActiveClassFilterElement) lstAddedClassFiltersListModel
+                                        .getElementAt(i))
+                                        .getClassForActiveClassFilterElement();
+                                activeClassFilterElementClassList.add(curActiveClassFilterElementClass);
+                            }
+                            Schedule.ClassFilterSchedulesIncluding_ClassLists(schedules, activeClassFilterElementClassList);
+                        }
+
+                    }else{//skip applying filters
+                        lstAddedClassFiltersListModel.removeAllElements();
+                        lstFiltersModel.removeAllElements();
                     }
-                    Schedule.FilterOutSchedulesFrom(schedules, dayTimeFramePairs);
+                    long lostTime_end = System.nanoTime();
+                    lostTime = lostTime_end - lostTime_start;
+                }else{//if filters can be applied automaticlly, no need to ask to user, just apply them.
+
+                    lblProgressBar.setText("<html>"
+                            + "Running: "
+                            + "<font face=\"verdana\" color=\"red\"><b><i>"
+                            + "Time & Day Exclusion Filter"
+                            + "</i></b></font></html>");
+                    lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
+
+                    if(!lstFiltersModel.isEmpty()){//Apply Time & Day Exclusion Filter
+                        List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
+                        for(int i =0;i<lstFiltersModel.size();i++){
+                            DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
+                            dayTimeFramePairs.add(curDayTimeFramePair);
+                        }
+                        Schedule.FilterOutSchedulesFrom(schedules, dayTimeFramePairs);
+                    }
+
+                    lblProgressBar.setText("<html>"
+                            + "Running: "
+                            + "<font face=\"verdana\" color=\"red\"><b><i>"
+                            + "Class Inclusion Filter"
+                            + "</i></b></font></html>");
+                    lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
+
+                    if(!lstAddedClassFiltersListModel.isEmpty()){//Apply INCLUDE CLASSES filter
+                        List<Class> activeClassFilterElementClassList = new ArrayList<>();
+                        for(int i =0;i<lstAddedClassFiltersListModel.size();i++){
+                            Class curActiveClassFilterElementClass = ((ActiveClassFilterElement) lstAddedClassFiltersListModel
+                                    .getElementAt(i))
+                                    .getClassForActiveClassFilterElement();
+                            activeClassFilterElementClassList.add(curActiveClassFilterElementClass);
+                        }
+                        Schedule.ClassFilterSchedulesIncluding_ClassLists(schedules, activeClassFilterElementClassList);
+                    }
+
                 }
 
-                if(!lstAddedClassFiltersListModel.isEmpty()){//INCLUDE CLASSES filter
-                    List<Class> activeClassFilterElementClassList = new ArrayList<>();
-                    for(int i =0;i<lstAddedClassFiltersListModel.size();i++){
-                        Class curActiveClassFilterElementClass = ((ActiveClassFilterElement) lstAddedClassFiltersListModel
-                                .getElementAt(i))
-                                .getClassForActiveClassFilterElement();
-                        activeClassFilterElementClassList.add(curActiveClassFilterElementClass);
-                    }
-                    Schedule.ClassFilterSchedulesIncluding_ClassLists(schedules, activeClassFilterElementClassList);
+                long algorithm_endTime = System.nanoTime();
+
+                long timeElapsedInNanoseconds = algorithm_endTime - algorithm_startTime - lostTime;
+
+                if (schedules != null && schedules.size() !=0){
+
+                    scheduleListToView = schedules;
+
+                    int numSchedulesGenerated = schedules.size();
+
+                    long mins = ((timeElapsedInNanoseconds / 1000000000)/60);
+                    timeElapsedInNanoseconds -= mins*60*1000000000;
+                    long secs =  timeElapsedInNanoseconds / 1000000000;
+                    timeElapsedInNanoseconds -= secs*1000000000;
+                    long msecs = timeElapsedInNanoseconds/1000000;
+
+                    JOptionPane.showMessageDialog(frame,
+                            numSchedulesGenerated + " non-overlapping schedules are successfully generated."
+                                    + "\n\nSuccessfully Executed in "
+                                    + mins + " mins : "
+                                    + secs + " secs : "
+                                    + msecs + " msecs"
+                                    + "\n\n\tYou may find the generated schedules above the \"View Weekly Schedule\" button."
+                                    + "\n\n\tNow, saving the generated non-overlapping schedules locally to a .json file.",
+                            numSchedulesGenerated + " non-overlapping schedules are found.",
+                            JOptionPane.PLAIN_MESSAGE);
+                }else{
+                    lblProgressBar.setText("<html>"
+                            + "Status: "
+                            + "<font face=\"verdana\" color=\"green\"><b><i>"
+                            + "idle"
+                            + "</i></b></font></html>");
+                    JOptionPane.showMessageDialog(frame,
+                            "No non-overlapping schedules are found, " +
+                                    "\nTry to remove filters or courses from the planning list.",
+                            "0 non-overlapping schedules are found !",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
+
 
                 for(Schedule curSchedule:schedules){
                     scheduleListComboBox.addItem(curSchedule);
@@ -765,42 +905,136 @@ public class Main {
 
                 String serializedSchedules_recordName = "";
                 List<Schedule> schedulesIn = new ArrayList<>();
-                try {
-                    for(int i=0;i<lstCourses2BePlannedModel.getSize();i++){
-                        CourseSubject_Catalog_Priority_Tuple curTuple = (CourseSubject_Catalog_Priority_Tuple)lstCourses2BePlannedModel.getElementAt(i);
-                        serializedSchedules_recordName += curTuple.getSubject() + " " + curTuple.getCatalog() + ", ";
+                for(int i=0;i<lstCourses2BePlannedModel.getSize();i++){
+                    CourseSubject_Catalog_Priority_Tuple curTuple = (CourseSubject_Catalog_Priority_Tuple)lstCourses2BePlannedModel.getElementAt(i);
+                    serializedSchedules_recordName += curTuple.getSubject() + " " + curTuple.getCatalog() + ", ";
+                }
+
+                serializedSchedules_recordName = serializedSchedules_recordName.substring(0,serializedSchedules_recordName.length()-2);
+
+                final String finalRecordName = serializedSchedules_recordName;
+
+                Thread threadSerializeOutAndWriteHtml = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Serializer.SerializeOut(schedules, finalRecordName, lblProgressBar);//Save the resulting schedules (i.e. export schedules)
+//                            Serializer.SerializeIn(finalRecordName, schedulesIn, lblProgressBar);//Restore the saved schedules (i.e. import schedules)
+                            Schedule.PrintOutSchedulesToUser(schedules, finalRecordName, lblProgressBar);//write to .html file
+                            JEditorPane ep = new JEditorPane();
+                            ep.setContentType("text/html");
+                            File htmlFile = new File("outputs/ScheduleExports/"+ finalRecordName + "/" + finalRecordName + ".html");
+                            try {
+                                ep.setPage(htmlFile.toURI().toURL());
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+                            ep.setEditable(false);
+                            ep.setCaretPosition(0);
+                            JScrollPane scrollPane = new JScrollPane(ep);
+                            scrollPane.setPreferredSize(new Dimension(1000,500));
+
+
+                            if(htmlFile.exists() && //if supported & file exists, then open an .html file.
+                                    Desktop.isDesktopSupported())
+                                Desktop.getDesktop().open(htmlFile);
+
+
+//                            JOptionPane.showMessageDialog(null, //Prompt user .html file.
+//                                    scrollPane,
+//                                    numSchedulesGenerated + " non-overlapping plans are found.",
+//                                    JOptionPane.WARNING_MESSAGE);
+
+
+                        } catch (IOException  e1) {
+                            e1.printStackTrace();
+                        }
+
+                        lblProgressBar.setText("<html>"
+                                + "Status: "
+                                + "<font face=\"verdana\" color=\"green\"><b><i>"
+                                + "idle"
+                                + "</i></b></font></html>");
+
+                    }
+                });
+                threadSerializeOutAndWriteHtml.start();
+            }
+
+
+        });
+
+        btnImport.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+                int returnValue = jfc.showOpenDialog(null);
+                // int returnValue = jfc.showSaveDialog(null);
+
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = jfc.getSelectedFile();
+                    String fName = selectedFile.getName();
+                    String extension = "";
+
+                    int i = fName.lastIndexOf('.');
+                    if (i > 0) {
+                        extension = fName.substring(i+1);
                     }
 
-                    serializedSchedules_recordName = serializedSchedules_recordName.substring(0,serializedSchedules_recordName.length()-2);
+                    if(extension.equals("json")){
 
-                    Serializer.SerializeOut(schedules, serializedSchedules_recordName);//Save the resulting schedules (i.e. export schedules)
-                    Serializer.SerializeIn(serializedSchedules_recordName, schedulesIn);//Restore the saved schedules (i.e. import schedules)
-                } catch (IOException | ClassNotFoundException e1) {
-                    e1.printStackTrace();
-                }
-                int numSchedulesGenerated = schedules.size();
+                        lstAddedClassFiltersListModel.removeAllElements();
+                        lstCourses2BePlannedModel.removeAllElements();
+                        lstFiltersModel.removeAllElements();
 
-                try {
-                    Schedule.PrintOutSchedulesToUser(schedules, serializedSchedules_recordName);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                JEditorPane ep = new JEditorPane();
-                ep.setContentType("text/html");
-                File file = new File("outputs/ScheduleExports/"+ serializedSchedules_recordName + "/" + serializedSchedules_recordName + ".html");
-                try {
-                    ep.setPage(file.toURI().toURL());
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                ep.setEditable(false);
-                ep.setCaretPosition(0);
-                JScrollPane scrollPane = new JScrollPane(ep);
-                scrollPane.setPreferredSize(new Dimension(1000,500));
-                JOptionPane.showMessageDialog(null, scrollPane, numSchedulesGenerated + " non-overlapping plans are found.", JOptionPane.WARNING_MESSAGE);
+                        List<Schedule> schedules = new ArrayList<>();
 
-                if (schedules != null )
-                    scheduleListToView = schedules;
+                        Thread threadSerializeIn = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Serializer.SerializeIn(selectedFile, schedules, lblProgressBar);//Restore the saved schedules (i.e. import schedules)
+                                } catch (IOException e1) {
+                                    e1.printStackTrace();
+                                } catch (ClassNotFoundException e1) {
+                                    e1.printStackTrace();
+                                }
+
+                                if(schedules!=null && schedules.size()!=0){
+                                    JOptionPane.showMessageDialog(frame,
+                                            "Successfully imported " + schedules.size() + " schedules.",
+                                            "Import Succeeded",
+                                            JOptionPane.PLAIN_MESSAGE);
+                                    scheduleListComboBox.removeAllItems();
+                                    for(Schedule s:schedules)
+                                        scheduleListComboBox.addItem(s);
+                                    scheduleListToView = schedules;
+                                }
+                                lblProgressBar.setText("<html>"
+                                        + "Status: "
+                                        + "<font face=\"verdana\" color=\"green\"><b><i>"
+                                        + "idle"
+                                        + "</i></b></font></html>");
+                            }
+                        });
+                        threadSerializeIn.start();
+
+                    }else{
+                        JOptionPane.showMessageDialog(frame,
+                                "Please choose a .json file to import. ",
+                                "Wrong extension !",
+                                JOptionPane.ERROR_MESSAGE);
+                        System.out.println("\n\nWrong extension.\n\n");
+                        lblProgressBar.setText("<html>"
+                                + "Status: "
+                                + "<font face=\"verdana\" color=\"green\"><b><i>"
+                                + "idle"
+                                + "</i></b></font></html>");
+                    }
+                }
+
             }
         });
 
