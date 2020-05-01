@@ -1,7 +1,10 @@
 package domain;
 
-public class InstructorNameRolePair {
+import java.io.Serializable;
 
+public class InstructorNameRolePair implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private String instructorName;
     private String instructorRole;
 

@@ -61,8 +61,8 @@ public class CourseSubject_Catalog_Priority_Tuple {
     public String toString(){
 
         return "Subject: " + subject +
-                ", Catalog: " + catalog +
-                ", Priority: " + priority;
+                ", Catalog: " + catalog;
+               // + ", Priority: " + priority;
     }
 
 }
