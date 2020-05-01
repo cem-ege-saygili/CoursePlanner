@@ -2,6 +2,7 @@ package domain;
 
 import org.sqlite.util.StringUtils;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.io.File;
@@ -173,7 +174,7 @@ public class Schedule implements Serializable{
 //        Schedule.scheduleIdcounter = scheduleList.size();
     }
 
-    public static void PrintOutSchedulesToUser(List<Schedule> schedules, String fName) throws IOException {
+    public static void PrintOutSchedulesToUser(List<Schedule> schedules, String fName, JLabel lblProgressBar) throws IOException {
         File file = new File("outputs/ScheduleExports/"+fName + "/" + fName + ".html");
         file.delete();
         FileWriter fr = new FileWriter(file, true);
@@ -186,7 +187,18 @@ public class Schedule implements Serializable{
 
         int i=0;
         for(Schedule curSchedule:schedules){
-            System.out.println("\n\nWriting HTML:\t" + curSchedule + "\tREMAINING: " + (schedules.size() - ++i) + "\n\n");
+
+            Double percentage = Math.floor((schedules.size() - ++i)/Double.valueOf(schedules.size())*100);
+            String percentage2BeDisplayed = percentage.toString();
+            percentage2BeDisplayed = percentage2BeDisplayed.substring(0,percentage2BeDisplayed.length()-2) + "%";
+            lblProgressBar.setText("<html>"
+                    + "Building an HTML: "
+                    + "<font face=\"verdana\" color=\"red\"><b><i>"
+                    + percentage2BeDisplayed
+                    + "</i></b></font> left.</html>");
+            String str2Console = "\n\nWriting HTML:\t" + curSchedule + "\tREMAINING: " + (schedules.size() - i) + "\n\n";
+            System.out.println(str2Console);
+
 
             str += "<br><br>----------------------------------" +
                             "<font face=\"verdana\" color=\"red\"><b><i>" +
