@@ -2,11 +2,13 @@ package domain;
 
 import DB_Utilities.SelectFromTableInDB;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Class implements Comparable<domain.Class> {
+public class Class implements Comparable<domain.Class>, Serializable {
 
+    private static final long serialVersionUID = 1L;
     private int id;
     private String component;
     private String startTime;

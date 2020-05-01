@@ -1,8 +1,10 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 
 //import static java.util.Collections.emptyList;
 //import static java.util.Arrays.asList;
@@ -10,8 +12,9 @@ import java.util.List;
 //import static java.util.Optional.of;
 //import static java.util.stream.Collectors.toList;
 
-public class ClassBundle{
+public class ClassBundle implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String courseSubject;
     private int courseCatalog;
     private static int bundleIdcounter;

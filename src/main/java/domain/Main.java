@@ -4,6 +4,8 @@ import DB_Utilities.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.AttributedString;
 import java.util.*;
 import java.util.List;
@@ -720,8 +722,6 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-//                List<domain.Class> c1List = classesList.get(0);
-
                 Schedule.scheduleIdcounter = 0;
 
                 List<List<ClassBundle>> classBundlesList = new ArrayList<>();
@@ -734,7 +734,7 @@ public class Main {
                     System.out.println(curBundles);
                     classBundlesList.add(curBundles);
                 }
-
+//
                 List<Schedule> schedules = Schedule.GenerateSchedulesFromClassBundlesList(classBundlesList);
 
 
@@ -763,20 +763,37 @@ public class Main {
                     scheduleListComboBox.addItem(curSchedule);
                 }
 
+                String serializedSchedules_recordName = "";
+                List<Schedule> schedulesIn = new ArrayList<>();
+                try {
+                    for(int i=0;i<lstCourses2BePlannedModel.getSize();i++){
+                        CourseSubject_Catalog_Priority_Tuple curTuple = (CourseSubject_Catalog_Priority_Tuple)lstCourses2BePlannedModel.getElementAt(i);
+                        serializedSchedules_recordName += curTuple.getSubject() + " " + curTuple.getCatalog() + ", ";
+                    }
+
+                    serializedSchedules_recordName = serializedSchedules_recordName.substring(0,serializedSchedules_recordName.length()-2);
+
+                    Serializer.SerializeOut(schedules, serializedSchedules_recordName);//Save the resulting schedules (i.e. export schedules)
+                    Serializer.SerializeIn(serializedSchedules_recordName, schedulesIn);//Restore the saved schedules (i.e. import schedules)
+                } catch (IOException | ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                }
                 int numSchedulesGenerated = schedules.size();
 
-//                System.out.println(schedules);
-
-//                String message2BeDisplayed = schedules.toString();
-                String message2BeDisplayed = Schedule.PrintOutSchedulesToUser(schedules);
-                JTextArea textArea = new JTextArea(25, 75);
-//                textArea.setText(message2BeDisplayed);
-//                textArea.setEditable(false);
-//                textArea.setCaretPosition(0);
+                try {
+                    Schedule.PrintOutSchedulesToUser(schedules, serializedSchedules_recordName);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 JEditorPane ep = new JEditorPane();
                 ep.setContentType("text/html");
+                File file = new File("outputs/ScheduleExports/"+ serializedSchedules_recordName + "/" + serializedSchedules_recordName + ".html");
+                try {
+                    ep.setPage(file.toURI().toURL());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 ep.setEditable(false);
-                ep.setText(message2BeDisplayed);
                 ep.setCaretPosition(0);
                 JScrollPane scrollPane = new JScrollPane(ep);
                 scrollPane.setPreferredSize(new Dimension(1000,500));
@@ -784,8 +801,6 @@ public class Main {
 
                 if (schedules != null )
                     scheduleListToView = schedules;
-
-                System.out.println("hi");
             }
         });
 

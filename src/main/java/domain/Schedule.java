@@ -4,12 +4,17 @@ import org.sqlite.util.StringUtils;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Schedule {
+public class Schedule implements Serializable{
 
+    private static final long serialVersionUID = 1L;
     private List<ClassBundle> classBundleList;
     public static int scheduleIdcounter;
     private int scheduleId;
@@ -168,15 +173,30 @@ public class Schedule {
 //        Schedule.scheduleIdcounter = scheduleList.size();
     }
 
-    public static String PrintOutSchedulesToUser(List<Schedule> schedules){
+    public static void PrintOutSchedulesToUser(List<Schedule> schedules, String fName) throws IOException {
+        File file = new File("outputs/ScheduleExports/"+fName + "/" + fName + ".html");
+        file.delete();
+        FileWriter fr = new FileWriter(file, true);
+
         String str = "<html>";
         int schdeuleNo=0;
+
+        fr.write(str);
+        str = "";
+
+        int i=0;
         for(Schedule curSchedule:schedules){
+            System.out.println("\n\nWriting HTML:\t" + curSchedule + "\tREMAINING: " + (schedules.size() - ++i) + "\n\n");
+
             str += "<br><br>----------------------------------" +
                             "<font face=\"verdana\" color=\"red\"><b><i>" +
                                     "Plan #" + ++schdeuleNo +
                             "</i></b></font>" +
                     "--------------------------------------<br>";
+
+            fr.write(str);
+            str = "";
+
             List<ClassBundle> classBundles = curSchedule.classBundleList;
             for(ClassBundle curClassBundle:classBundles){
                 String courseSubjectAndCatalog = curClassBundle.getCourseSubject()
@@ -213,6 +233,9 @@ public class Schedule {
                                     numClasses +
                                 "</i></b></font>" +
                             " sessions as follows:<br><br>";
+
+                fr.write(str);
+                str = "";
 
                 int classNo = 0;
                 for(Class curClass:classes){
@@ -266,12 +289,19 @@ public class Schedule {
                                         "</i></b></font>" +
 
                                  "<br><br>";
+
+                    fr.write(str);
+                    str = "";
                 }
 
             }
         }
         str += "</html>";
-        return str;
+
+        fr.write(str);
+        str = "";
+
+        fr.close();
     }
 
     @Override
