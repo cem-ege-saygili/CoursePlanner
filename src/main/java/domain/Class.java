@@ -70,7 +70,7 @@ public class Class implements Comparable<domain.Class>, Serializable {
 //        this.instructorName = instructorName;
 //        this.instructorRole = instructorRole;
         List<String> strListCourse_Career_AcadOrg_Descr_Descr2 = SelectFromTableInDB.SelectCourse_Career_AcadOrg_Descr_Descr2(
-                "CoursePlannerDB2",
+                Main.dbName,
                 "inputs/sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog.sql",
                 (String) this.courseName,
                 (Integer) this.courseCatalog
