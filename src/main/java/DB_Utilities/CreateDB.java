@@ -31,6 +31,6 @@ public class CreateDB {
      * @param args the command line arguments
      */
 //    public static void main(String[] args) {
-//        createNewDatabase("JDBC:sqlite:CoursePlannerDB2.db");
+//        createNewDatabase("JDBC:sqlite:CoursePlannerDB.db");
 //    }
 }
