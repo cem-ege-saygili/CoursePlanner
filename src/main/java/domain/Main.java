@@ -597,7 +597,7 @@ public class Main {
 //        JFormattedTextField txtFieldPriority = new JFormattedTextField(formatter);
 
 
-        JFrame frame = new JFrame("CourseScheduler v.4");
+        JFrame frame = new JFrame("CourseScheduler v.5 - Final");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1350, 805);//w:550
 
