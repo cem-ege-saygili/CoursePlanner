@@ -363,6 +363,48 @@ public class SelectFromTableInDB {
 
     }
 
+    public static List<String> SelectAllPossibleTimeStampsOrderedAsc(String dbName, String sqlQueryLocation){
+
+        List<String> allPossibleTimeStamps = new ArrayList<>();
+
+
+        String url = "JDBC:sqlite:outputs/" + dbName + ".db";
+
+        ReadFile sqlQueryFile = new ReadFile(sqlQueryLocation);
+
+        //Statement stmt  = null;
+
+        try (Connection conn = DriverManager.getConnection(url);){
+
+            String sqlQuery =  sqlQueryFile.export2String();
+            //sqlQuery = sqlQuery.substring(1,sqlQuery.length());
+//                String str = ("SELECT DISTINCT CourseSubject\n" +
+//                        "FROM Courses\n" +
+//                        "ORDER BY CourseSubject;").substring(0,5);
+//
+//                System.out.println("\n" + sqlQuery.equals(str));
+
+            PreparedStatement pstmt = conn.prepareStatement(sqlQuery);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String curTimeOfClass = rs.getString("Time of Class");
+
+                allPossibleTimeStamps.add(curTimeOfClass);
+                //rs.getString("name") + "\t" +
+                //rs.getDouble("capacity"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return allPossibleTimeStamps;
+
+
+    }
+
     public static List<Class> SelectClassesFromCourseSubjectCatalogAndClassComponent(String courseSubject,
                                                                                                        int courseCatalog,
                                                                                                        String classComponent,

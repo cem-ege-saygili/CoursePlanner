@@ -15,7 +15,7 @@ public class UpdateTableInDB__unused {
      */
     private Connection connect() {
         // SQLite connection string
-        String url = "JDBC:sqlite:CoursePlannerDB2.db";
+        String url = "JDBC:sqlite:CoursePlannerDB.db";
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);

@@ -19,6 +19,7 @@ public class Main {
     static JFrame scheduleFrame;
     private static List<String> distinctClassComponentsList_GivenCourse;
     private static List<Class> classListForClassFilter;
+    public static String dbName = "CoursePlannerDB";
 
 //    static boolean monExclFlag;
 //    static boolean tuesExclFlag;
@@ -66,8 +67,6 @@ public class Main {
                         "inputs/Insert2Table_Class_Instructor_Infos.sql",
                         "inputs/Insert2Table_Class_Course_Infos.sql")
         );
-
-        String dbName = "CoursePlannerDB2";
 
         //run only once
 
