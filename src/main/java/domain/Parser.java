@@ -2,6 +2,12 @@ package domain;
 
 import DB_Utilities.SelectFromTableInDB;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -254,6 +260,17 @@ public class Parser {
             dayAsString.add("Friday");
 
         return dayAsString;
+    }
+
+    public static void SaveFrameAsImage(JFrame frame, int scheduleIndex, String savePath) throws IOException {
+        int frameWidth = frame.getWidth();
+        int frameHeight = frame.getHeight();
+        BufferedImage image = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics2D = image.createGraphics();
+        frame.paint(graphics2D);
+        File jpegFile = new File(savePath + "Weekly Schedule Visualizations/Plan #" + (scheduleIndex+1) + ".jpeg");
+        jpegFile.mkdirs();
+        ImageIO.write(image,"jpeg", jpegFile);
     }
 
 }

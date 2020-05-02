@@ -8,7 +8,9 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class WeeklyScheduleGUI {
 
@@ -90,8 +92,38 @@ public class WeeklyScheduleGUI {
 
     }
 
+    public void saveWeeklySchedulesAsImages(List<Schedule> schedules, String savePath) throws IOException {
+        for(Schedule curSchedule2SaveAsImage:schedules)
+            saveWeeklyScheduleAsImage(curSchedule2SaveAsImage, savePath);
+    }
+
+    public void saveWeeklyScheduleAsImage(Schedule scheduleToView, String savePath) throws IOException {
+
+        scheduleFrame = new JFrame("Weekly Schedule");
+        createWeeklySchedule(scheduleToView);
+        scheduleFrame.setVisible(true);
+        try {
+            //TimeUnit.SECONDS.sleep(1);
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        int scheduleIndex = scheduleToView.getScheduleId();
+        Parser.SaveFrameAsImage(scheduleFrame, scheduleIndex, savePath);
+        scheduleFrame.setVisible(false);
+        scheduleFrame = new JFrame("Weekly Schedule");
+
+    }
+
 
     public void createWeeklySchedule1(Schedule scheduleToView){
+
+        createWeeklySchedule(scheduleToView);
+        scheduleFrame.setVisible(true);
+    }
+
+    public void createWeeklySchedule(Schedule scheduleToView){
 
 //        JButton btnCloseBackgroundPanel = btnList.get(0);
 //        JButton btnNextSchedule = btnList.get(1);
@@ -161,9 +193,9 @@ public class WeeklyScheduleGUI {
         BackgroundPanel bgpanel = new BackgroundPanel();
         for (int i = 0; i < commands.length; i++)
             bgpanel.registerKeyboardAction(panelAction,
-                commands[i],
-                KeyStroke.getKeyStroke(commands[i]),
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
+                    commands[i],
+                    KeyStroke.getKeyStroke(commands[i]),
+                    JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         bgpanel.setVisible(true);
         scheduleFrame.add(bgpanel);
@@ -178,9 +210,9 @@ public class WeeklyScheduleGUI {
         scheduleFrame.add(buttonCloseBackgroundPanel);
         scheduleFrame.add(buttonNextSchedule);
         scheduleFrame.add(buttonPrevSchedule);
-        scheduleFrame.setVisible(true);
-
     }
+
+
 
     private void addClasstoPanel(JPanel[] panelHolder,Class currentClass){
         if (currentClass != null && currentClass.isMonFlag()) {
