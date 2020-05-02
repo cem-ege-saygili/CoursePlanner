@@ -1081,6 +1081,7 @@ public class Main {
         btnNextSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                scheduleFrame.setVisible(false);
                 int nextScheduleIndex = (scheduleListComboBox.getSelectedIndex() + 1) % scheduleListComboBox.getItemCount();
                 scheduleListComboBox.setSelectedIndex(nextScheduleIndex);
                 btnViewWeeklySchedule.doClick();
@@ -1090,6 +1091,7 @@ public class Main {
         btnPrevSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                scheduleFrame.setVisible(false);
                 int prevScheduleIndex = (scheduleListComboBox.getSelectedIndex() - 1);
                 if(prevScheduleIndex<0)
                     prevScheduleIndex += scheduleListComboBox.getItemCount();
