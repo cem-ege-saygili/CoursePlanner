@@ -923,12 +923,15 @@ public class Main {
                     @Override
                     public void run() {
                         try {
+                            String savePath = "outputs/ScheduleExports/"+ finalRecordName + "/";
                             Serializer.SerializeOut(schedules, finalRecordName, lblProgressBar);//Save the resulting schedules (i.e. export schedules)
 //                            Serializer.SerializeIn(finalRecordName, schedulesIn, lblProgressBar);//Restore the saved schedules (i.e. import schedules)
+                            WeeklyScheduleGUI wsGUI = new WeeklyScheduleGUI(btnList);
+                            wsGUI.saveWeeklySchedulesAsImages(schedules, savePath);//Save the resulting schedules as .jpeg files.
                             Schedule.PrintOutSchedulesToUser(schedules, finalRecordName, lblProgressBar);//write to .html file
                             JEditorPane ep = new JEditorPane();
                             ep.setContentType("text/html");
-                            File htmlFile = new File("outputs/ScheduleExports/"+ finalRecordName + "/" + finalRecordName + ".html");
+                            File htmlFile = new File(savePath + finalRecordName + ".html");
                             try {
                                 ep.setPage(htmlFile.toURI().toURL());
                             } catch (IOException e1) {
