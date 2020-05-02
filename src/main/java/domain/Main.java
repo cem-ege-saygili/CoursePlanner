@@ -68,14 +68,20 @@ public class Main {
                         "inputs/Insert2Table_Class_Course_Infos.sql")
         );
 
-        //run only once
+        //run only once BEGIN //////////////////////
 
-        CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
+        /*
 
-        CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
+                CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
-        CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
+                CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
 
+                CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
+
+        */
+
+
+        //run only once END ////////////////////////
 
 
         //System.out.println("after CleanStartAndFill_NormalizedTables");
