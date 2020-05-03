@@ -927,7 +927,7 @@ public class Main {
                             Serializer.SerializeOut(schedules, finalRecordName, lblProgressBar);//Save the resulting schedules (i.e. export schedules)
 //                            Serializer.SerializeIn(finalRecordName, schedulesIn, lblProgressBar);//Restore the saved schedules (i.e. import schedules)
                             WeeklyScheduleGUI wsGUI = new WeeklyScheduleGUI(btnList);
-                            wsGUI.saveWeeklySchedulesAsImages(schedules, savePath);//Save the resulting schedules as .jpeg files.
+                            wsGUI.saveWeeklySchedulesAsImages(schedules, savePath, lblProgressBar);//Save the resulting schedules as .jpeg files.
                             Schedule.PrintOutSchedulesToUser(schedules, finalRecordName, lblProgressBar);//write to .html file
                             JEditorPane ep = new JEditorPane();
                             ep.setContentType("text/html");
