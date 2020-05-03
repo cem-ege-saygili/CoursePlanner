@@ -92,12 +92,17 @@ public class WeeklyScheduleGUI {
 
     }
 
-    public void saveWeeklySchedulesAsImages(List<Schedule> schedules, String savePath) throws IOException {
-        for(Schedule curSchedule2SaveAsImage:schedules)
-            saveWeeklyScheduleAsImage(curSchedule2SaveAsImage, savePath);
+    public void saveWeeklySchedulesAsImages(List<Schedule> schedules, String savePath, JLabel lblStatusBar) throws IOException {
+        int planNo =0;
+        for(Schedule curSchedule2SaveAsImage:schedules){
+            saveWeeklyScheduleAsImage(curSchedule2SaveAsImage, ++planNo, savePath);
+            Double completeLength = Double.valueOf(schedules.size());
+            ShowImageOutProgress2User(lblStatusBar,(schedules.size() - planNo),completeLength,curSchedule2SaveAsImage);
+        }
+
     }
 
-    public void saveWeeklyScheduleAsImage(Schedule scheduleToView, String savePath) throws IOException {
+    public void saveWeeklyScheduleAsImage(Schedule scheduleToView, int planNo, String savePath) throws IOException {
 
         scheduleFrame = new JFrame("Weekly Schedule");
         createWeeklySchedule(scheduleToView);
@@ -110,10 +115,24 @@ public class WeeklyScheduleGUI {
         }
 
         int scheduleIndex = scheduleToView.getScheduleId();
-        Parser.SaveFrameAsImage(scheduleFrame, scheduleIndex, savePath);
+        Parser.SaveFrameAsImage(scheduleFrame, planNo, scheduleIndex, savePath);
         scheduleFrame.setVisible(false);
         scheduleFrame = new JFrame("Weekly Schedule");
 
+    }
+
+    private void ShowImageOutProgress2User(JLabel lblStatusBar, int remaining, Double completeLength, Schedule curSchedule) throws IOException {
+        String str2Console = "\n\nIMAGE OUT:\t" + curSchedule + "\tREMAINING: " + remaining + "\n\n";
+        Double percentage = remaining/completeLength;
+        percentage = Math.floor(percentage*100);
+        String percentage2BeDisplayed = percentage.toString();
+        percentage2BeDisplayed = percentage2BeDisplayed.substring(0,percentage2BeDisplayed.length()-2) + "%";
+        System.out.println(str2Console);
+        lblStatusBar.setText("<html>"
+                + "Saving Weekly Schedules As Image: "
+                + "<font face=\"verdana\" color=\"red\"><b><i>"
+                + percentage2BeDisplayed
+                + "</i></b></font> left.</html>");
     }
 
 
