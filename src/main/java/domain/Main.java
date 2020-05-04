@@ -15,6 +15,11 @@ import javax.swing.filechooser.FileSystemView;
 
 public class Main {
 
+    static int FILTER_DAY_X_MARGIN = 10;
+    static int FILTER_DAY_Y_MARGIN = 325;
+    static int FILTER_DAY_WIDTH = 80;
+    static int FILTER_DAY_HEIGHT = 25;
+
     static List<Schedule> scheduleListToView = null;
     static JFrame scheduleFrame;
     private static List<String> distinctClassComponentsList_GivenCourse;
@@ -644,11 +649,11 @@ public class Main {
         btnAdd2PlanningList.setBounds(100-85, 275, 300, 25);
         btnClearPlanningList.setBounds(100-85, 300, 300, 25);
 
-        checkBox_Exclude_Mon.setBounds(100-85, 325, 85, 25);
-        checkBox_Exclude_Tues.setBounds(175-85, 325, 90, 25);
-        checkBox_Exclude_Wed.setBounds(255-85, 325, 102, 25);
-        checkBox_Exclude_Thurs.setBounds(350-85, 325, 95, 25);
-        checkBox_Exclude_Fri.setBounds(435-85, 325, 80, 25);
+        checkBox_Exclude_Mon.setBounds(FILTER_DAY_X_MARGIN, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Tues.setBounds(FILTER_DAY_X_MARGIN + FILTER_DAY_WIDTH, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Wed.setBounds(FILTER_DAY_X_MARGIN + 2 * FILTER_DAY_WIDTH, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH + 10, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Thurs.setBounds(FILTER_DAY_X_MARGIN + 3 * FILTER_DAY_WIDTH + 10, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Fri.setBounds(FILTER_DAY_X_MARGIN + 4 * FILTER_DAY_WIDTH + 10, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
 
         filterStartTimeComboBox.setBounds(140-85, 350, 125, 25);
         filterEndTimeComboBox.setBounds(300-85, 350, 125, 25);
