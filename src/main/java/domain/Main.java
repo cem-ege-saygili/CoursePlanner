@@ -14,11 +14,93 @@ import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 
 public class Main {
+    static final int MAIN_FRAME_WIDTH = 1350;
+    static final int  MAIN_FRAME_HEIGHT = 805;
+    static final int PROGRESS_BAR_X_MARGIN = 15;
+    static final int PROGRESS_BAR_Y_MARGIN = 25;
+    static final int PROGRESS_BAR_WIDTH = 300;
+    static final int PROGRESS_BAR_HEIGHT = 25;
 
-    static int FILTER_DAY_X_MARGIN = 10;
-    static int FILTER_DAY_Y_MARGIN = 325;
-    static int FILTER_DAY_WIDTH = 80;
-    static int FILTER_DAY_HEIGHT = 25;
+    static final int COURSE_SELECTION_X_MARGIN = 15;
+    static final int COURSE_SELECTION_Y_MARGIN = 50;
+    static final int COURSE_SELECTION_COMBO_X_MARGIN = 165;
+    static final int COURSE_SELECTION_WIDTH = 150;
+    static final int COURSE_SELECTION_HEIGHT = 25;
+
+    static final int FILTER_CLASS_X_MARGIN = 420;
+    static final int FILTER_CLASS_TEXT_Y_MARGIN = 50;
+    static final int FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN = 350;
+    static final int FILTER_CLASS_TEXT_WIDTH = 130;
+    static final int FILTER_CLASS_TEXT_HEIGHT = 25;
+    static final int FILTER_CLASS_COMBO_WIDTH = 100;
+    static final int FILTER_CLASS_COMBO_HEIGHT = 25;
+    static final int FILTER_CLASS_BUTTON_WIDTH = 150;
+    static final int FILTER_CLASS_BUTTON_HEIGHT = 25;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_1_Y_MARGIN = 130;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_2_Y_MARGIN = 375;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_WIDTH = 900;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_HEIGHT = 200;
+
+
+    static final int COURSE_INFO_X_MARGIN = 15;
+    static final int COURSE_INFO_Y_MARGIN = 125;
+    static final int COURSE_INFO_WIDTH = 400;
+    static final int COURSE_INFO_HEIGHT = 25;
+
+    static final int COURSE_MANAGEMENT_X_MARGIN = 15;
+    static final int COURSE_MANAGEMENT_Y_MARGIN = 250;
+    static final int COURSE_MANAGEMENT_WIDTH = 300;
+    static final int COURSE_MANAGEMENT_HEIGHT = 25;
+
+    static final int FILTER_DAY_X_MARGIN = 10;
+    static final int FILTER_DAY_Y_MARGIN = 325;
+    static final int FILTER_DAY_WIDTH = 80;
+    static final int FILTER_DAY_HEIGHT = 25;
+
+    static final int FILTER_FROM_TEXT_X_MARGIN = 15;
+    static final int FILTER_FROM_AND_TO_TEXT_Y_MARGIN = 350;
+    static final int FILTER_FROM_TEXT_WIDTH = 50;
+    static final int FILTER_TO_TEXT_WIDTH = 30;
+    static final int FILTER_TEXT_HEIGHT = 25;
+
+    static final int FILTER_TIME_X_MARGIN = 55;
+    static final int FILTER_TIME_Y_MARGIN = 350;
+    static final int FILTER_TIME_WIDTH = 125;
+    static final int FILTER_TIME_HEIGHT = 25;
+    static final int FILTER_BUTTON_X_MARGIN = 15;
+    static final int FILTER_BUTTON_Y_MARGIN = 380;
+    static final int FILTER_ADD_BUTTON_WIDTH = 100;
+    static final int FILTER_REMOVE_BUTTON_WIDTH = 120;
+    static final int FILTER_CLEAR_BUTTON_WIDTH = 100;
+    static final int FILTER_BUTTON_HEIGHT = 25;
+
+    static final int ACTIVE_FILTERS_TEXT_X_MARGIN = 15;
+    static final int ACTIVE_FILTERS_TEXT_Y_MARGIN = 410;
+    static final int ACTIVE_FILTERS_TEXT_WIDTH = 200;
+    static final int ACTIVE_FILTERS_TEXT_HEIGHT = 25;
+    static final int ACTIVE_FILTERS_PANE_X_MARGIN = 10;
+    static final int ACTIVE_FILTERS_PANE_Y_MARGIN = 435;
+    static final int ACTIVE_FILTERS_PANE_WIDTH = 400;
+    static final int ACTIVE_FILTERS_PANE_HEIGHT = 75;
+
+    static final int COURSES_TO_BE_PLANNED_TEXT_X_MARGIN = 15;
+    static final int COURSES_TO_BE_PLANNED_TEXT_Y_MARGIN = 525;
+    static final int COURSES_TO_BE_PLANNED_TEXT_WIDTH = 200;
+    static final int COURSES_TO_BE_PLANNED_TEXT_HEIGHT = 25;
+    static final int COURSES_TO_BE_PLANNED_PANE_X_MARGIN = 10;
+    static final int COURSES_TO_BE_PLANNED_PANE_Y_MARGIN = 550;
+    static final int COURSES_TO_BE_PLANNED_PANE_WIDTH = 400;
+    static final int COURSES_TO_BE_PLANNED_PANE_HEIGHT = 120;
+
+    static final int SCHEDULE_MANAGEMENT_X_MARGIN = 15;
+    static final int SCHEDULE_MANAGEMENT_Y_MARGIN = 680;
+    static final int SCHEDULE_MANAGEMENT_WIDTH = 300;
+    static final int SCHEDULE_MANAGEMENT_Y_HEIGHT = 25;
+
+    static final int IMPORT_BUTTON_X_MARGIN = 320;
+    static final int IMPORT_BUTTON_Y_MARGIN = 680;
+    static final int IMPORT_BUTTON_WIDTH = 100;
+    static final int IMPORT_BUTTON_HEIGHT = 75;
 
     static List<Schedule> scheduleListToView = null;
     static JFrame scheduleFrame;
@@ -596,90 +678,67 @@ public class Main {
             }
         });
 
-
-//        NumberFormat format = NumberFormat.getInstance();
-//        NumberFormatter formatter = new NumberFormatter(format);
-//        formatter.setValueClass(Integer.class);
-//        formatter.setMinimum(0);
-//        formatter.setMaximum(5);
-//        formatter.setAllowsInvalid(false);
-//        // If you want the value to be committed on each keystroke instead of focus lost
-//        formatter.setCommitsOnValidEdit(true);
-//        JFormattedTextField txtFieldPriority = new JFormattedTextField(formatter);
-
-
         JFrame frame = new JFrame("CourseScheduler v.5 - Final");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1350, 805);//w:550
+        frame.setSize(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
 
-        //int yInc = 25;
+        lblProgressBar.setBounds(PROGRESS_BAR_X_MARGIN, PROGRESS_BAR_Y_MARGIN, PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT);
+        lblCourseSubject.setBounds(COURSE_SELECTION_X_MARGIN, COURSE_SELECTION_Y_MARGIN, COURSE_SELECTION_WIDTH, COURSE_SELECTION_HEIGHT);
+        courseSubjectsComboBox.setBounds(COURSE_SELECTION_COMBO_X_MARGIN, COURSE_SELECTION_Y_MARGIN, COURSE_SELECTION_WIDTH, COURSE_SELECTION_HEIGHT);
+        lblCourseCatalog.setBounds(COURSE_SELECTION_X_MARGIN, (COURSE_SELECTION_Y_MARGIN + COURSE_SELECTION_HEIGHT), COURSE_SELECTION_WIDTH, COURSE_SELECTION_HEIGHT);
+        courseCatalogsComboBox.setBounds(COURSE_SELECTION_COMBO_X_MARGIN, (COURSE_SELECTION_Y_MARGIN + COURSE_SELECTION_HEIGHT), COURSE_SELECTION_WIDTH, COURSE_SELECTION_HEIGHT);
+        lblPriority.setBounds(COURSE_SELECTION_X_MARGIN, (COURSE_SELECTION_Y_MARGIN + 2 * COURSE_SELECTION_HEIGHT), COURSE_SELECTION_WIDTH, COURSE_SELECTION_HEIGHT);
+        priorityValuesComboBox.setBounds(COURSE_SELECTION_COMBO_X_MARGIN, (COURSE_SELECTION_Y_MARGIN + 2 * COURSE_SELECTION_HEIGHT), COURSE_SELECTION_WIDTH, COURSE_SELECTION_HEIGHT);
 
+        lblCourseClassFilter.setBounds(FILTER_CLASS_X_MARGIN, FILTER_CLASS_TEXT_Y_MARGIN, FILTER_CLASS_TEXT_WIDTH, FILTER_CLASS_TEXT_HEIGHT);
+        lblCourseSubjectAndCatalog.setBounds(FILTER_CLASS_X_MARGIN, (FILTER_CLASS_TEXT_Y_MARGIN + FILTER_CLASS_TEXT_HEIGHT), (3 * FILTER_CLASS_TEXT_WIDTH), FILTER_CLASS_TEXT_HEIGHT);
 
-        lblProgressBar.setBounds(100-85, 25, 300, 25);
-        lblCourseSubject.setBounds(100-85, 50, 150, 25);
-        courseSubjectsComboBox.setBounds(250-85, 50, 150, 25);
+        distinctClassComponents_GivenCourse_ComboBox.setBounds(FILTER_CLASS_X_MARGIN, (FILTER_CLASS_TEXT_Y_MARGIN + 2 * FILTER_CLASS_TEXT_HEIGHT), FILTER_CLASS_COMBO_WIDTH, FILTER_CLASS_COMBO_HEIGHT);
+        btnAddClassFilter.setBounds((FILTER_CLASS_X_MARGIN + FILTER_CLASS_COMBO_WIDTH), (FILTER_CLASS_TEXT_Y_MARGIN + 2 * FILTER_CLASS_TEXT_HEIGHT), FILTER_CLASS_BUTTON_WIDTH, FILTER_CLASS_BUTTON_HEIGHT);
+        scrollablePane.setBounds(FILTER_CLASS_X_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_1_Y_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_WIDTH, FILTER_CLASS_SCROLLABLE_PANE_HEIGHT);
 
-        lblCourseCatalog.setBounds(100-85, 75, 150, 25);
-        courseCatalogsComboBox.setBounds(250-85, 75, 150, 25);
+        lblAddedClassFilters.setBounds(FILTER_CLASS_X_MARGIN, FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN, FILTER_CLASS_TEXT_WIDTH, FILTER_CLASS_TEXT_HEIGHT);
+        btnRemoveClassFilter.setBounds((FILTER_CLASS_X_MARGIN + FILTER_CLASS_TEXT_WIDTH), FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN,FILTER_CLASS_BUTTON_WIDTH,FILTER_CLASS_BUTTON_HEIGHT);
+        btnClearClassFilters.setBounds((FILTER_CLASS_X_MARGIN + FILTER_CLASS_TEXT_WIDTH + FILTER_CLASS_BUTTON_WIDTH), FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN,FILTER_CLASS_BUTTON_WIDTH,FILTER_CLASS_BUTTON_HEIGHT);
+        scrollablePaneAddedClassFilters.setBounds(FILTER_CLASS_X_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_2_Y_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_WIDTH, FILTER_CLASS_SCROLLABLE_PANE_HEIGHT);
 
-        lblPriority.setBounds(100-85, 100, 100, 25);
-        priorityValuesComboBox.setBounds(250-85, 100, 150, 25);
-
-        lblCourseClassFilter.setBounds(400+20, 50, 200, 25); ///////////////////////
-        lblCourseSubjectAndCatalog.setBounds(400+20, 75, 500, 25);
-
-        distinctClassComponents_GivenCourse_ComboBox.setBounds(400+25, 100, 100, 25);
-
-        btnAddClassFilter.setBounds(500+25, 100, 130, 25);
-        //lstClassFiltersList.setBounds(400, 125, 800, 200);
-        scrollablePane.setBounds(400+25, 130, 900, 200);
-
-        lblAddedClassFilters.setBounds(400+25, 350, 130, 25);
-        btnRemoveClassFilter.setBounds(560, 350,150,25);
-        btnClearClassFilters.setBounds(710, 350,150,25);
-        scrollablePaneAddedClassFilters.setBounds(400+25, 375, 900, 200);
-
-        lblCourseFaculty.setBounds(100-85, 125, 400, 25);
-        lblCourseLevel.setBounds(100-85, 150, 400, 25);
-        lblCourseDescr.setBounds(100-85, 175, 400, 75);
+        lblCourseFaculty.setBounds(COURSE_INFO_X_MARGIN, COURSE_INFO_Y_MARGIN, COURSE_INFO_WIDTH, COURSE_INFO_HEIGHT);
+        lblCourseLevel.setBounds(COURSE_INFO_X_MARGIN, (COURSE_INFO_Y_MARGIN + COURSE_INFO_HEIGHT), COURSE_INFO_WIDTH, COURSE_INFO_HEIGHT);
+        lblCourseDescr.setBounds(COURSE_INFO_X_MARGIN, (COURSE_INFO_Y_MARGIN + 2 * COURSE_INFO_HEIGHT), COURSE_INFO_WIDTH, (3 * COURSE_INFO_HEIGHT));
         lblCourseDescr.setVerticalAlignment(JLabel.TOP);
 
 
-        btnRemoveFromPlanningList.setBounds(100-85, 250, 300, 25);
-        btnAdd2PlanningList.setBounds(100-85, 275, 300, 25);
-        btnClearPlanningList.setBounds(100-85, 300, 300, 25);
+        btnRemoveFromPlanningList.setBounds(COURSE_MANAGEMENT_X_MARGIN, COURSE_MANAGEMENT_Y_MARGIN, COURSE_MANAGEMENT_WIDTH, COURSE_MANAGEMENT_HEIGHT);
+        btnAdd2PlanningList.setBounds(COURSE_MANAGEMENT_X_MARGIN, (COURSE_MANAGEMENT_Y_MARGIN + COURSE_MANAGEMENT_HEIGHT), COURSE_MANAGEMENT_WIDTH, COURSE_MANAGEMENT_HEIGHT);
+        btnClearPlanningList.setBounds(COURSE_MANAGEMENT_X_MARGIN, (COURSE_MANAGEMENT_Y_MARGIN + 2 * COURSE_MANAGEMENT_HEIGHT), COURSE_MANAGEMENT_WIDTH, COURSE_MANAGEMENT_HEIGHT);
 
         checkBox_Exclude_Mon.setBounds(FILTER_DAY_X_MARGIN, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
-        checkBox_Exclude_Tues.setBounds(FILTER_DAY_X_MARGIN + FILTER_DAY_WIDTH, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
-        checkBox_Exclude_Wed.setBounds(FILTER_DAY_X_MARGIN + 2 * FILTER_DAY_WIDTH, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH + 10, FILTER_DAY_HEIGHT);
-        checkBox_Exclude_Thurs.setBounds(FILTER_DAY_X_MARGIN + 3 * FILTER_DAY_WIDTH + 10, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
-        checkBox_Exclude_Fri.setBounds(FILTER_DAY_X_MARGIN + 4 * FILTER_DAY_WIDTH + 10, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Tues.setBounds((FILTER_DAY_X_MARGIN + FILTER_DAY_WIDTH), FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Wed.setBounds((FILTER_DAY_X_MARGIN + 2 * FILTER_DAY_WIDTH), FILTER_DAY_Y_MARGIN, (FILTER_DAY_WIDTH + 10), FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Thurs.setBounds((FILTER_DAY_X_MARGIN + 3 * FILTER_DAY_WIDTH + 10), FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Fri.setBounds((FILTER_DAY_X_MARGIN + 4 * FILTER_DAY_WIDTH + 10), FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
 
-        filterStartTimeComboBox.setBounds(140-85, 350, 125, 25);
-        filterEndTimeComboBox.setBounds(300-85, 350, 125, 25);
 
-        fromLabel.setBounds(100-85, 350, 50, 25);
-        toLabel.setBounds(275-85, 350, 50, 25);
+        fromLabel.setBounds(FILTER_FROM_TEXT_X_MARGIN, FILTER_FROM_AND_TO_TEXT_Y_MARGIN, FILTER_FROM_TEXT_WIDTH, FILTER_TEXT_HEIGHT);
+        toLabel.setBounds((FILTER_FROM_TEXT_X_MARGIN + FILTER_FROM_TEXT_WIDTH + FILTER_TIME_WIDTH), FILTER_FROM_AND_TO_TEXT_Y_MARGIN, FILTER_TO_TEXT_WIDTH, FILTER_TEXT_HEIGHT);
+        filterStartTimeComboBox.setBounds(FILTER_TIME_X_MARGIN, FILTER_TIME_Y_MARGIN, FILTER_TIME_WIDTH, FILTER_TIME_HEIGHT);
+        filterEndTimeComboBox.setBounds((FILTER_FROM_TEXT_X_MARGIN + FILTER_FROM_TEXT_WIDTH + FILTER_TIME_WIDTH + FILTER_TO_TEXT_WIDTH), FILTER_TIME_Y_MARGIN, FILTER_TIME_WIDTH, FILTER_TIME_HEIGHT);
 
-        btnAddFilter.setBounds(100-85, 375, 100, 25);
-        btnRemoveFilter.setBounds(190-85, 375, 120, 25);
-        btnClearFilters.setBounds(300-85, 375, 100, 25);
+        btnAddFilter.setBounds(FILTER_BUTTON_X_MARGIN, FILTER_BUTTON_Y_MARGIN, FILTER_ADD_BUTTON_WIDTH, FILTER_BUTTON_HEIGHT);
+        btnRemoveFilter.setBounds(FILTER_BUTTON_X_MARGIN + FILTER_ADD_BUTTON_WIDTH, FILTER_BUTTON_Y_MARGIN, FILTER_REMOVE_BUTTON_WIDTH, FILTER_BUTTON_HEIGHT);
+        btnClearFilters.setBounds(FILTER_BUTTON_X_MARGIN + FILTER_ADD_BUTTON_WIDTH + FILTER_REMOVE_BUTTON_WIDTH, FILTER_BUTTON_Y_MARGIN, FILTER_CLEAR_BUTTON_WIDTH, FILTER_BUTTON_HEIGHT);
 
-        activeFiltersLabel.setBounds(100-85, 410, 200, 25);
+        activeFiltersLabel.setBounds(ACTIVE_FILTERS_TEXT_X_MARGIN, ACTIVE_FILTERS_TEXT_Y_MARGIN, ACTIVE_FILTERS_TEXT_WIDTH, ACTIVE_FILTERS_TEXT_HEIGHT);
+        lstFilters.setBounds(ACTIVE_FILTERS_PANE_X_MARGIN, ACTIVE_FILTERS_PANE_Y_MARGIN, ACTIVE_FILTERS_PANE_WIDTH, ACTIVE_FILTERS_PANE_HEIGHT);
 
-        lstFilters.setBounds(75-65, 30+405, 400, 75);
+        courses2BePlannedLabel.setBounds(COURSES_TO_BE_PLANNED_TEXT_X_MARGIN, COURSES_TO_BE_PLANNED_TEXT_Y_MARGIN, COURSES_TO_BE_PLANNED_TEXT_WIDTH, COURSES_TO_BE_PLANNED_TEXT_HEIGHT);
+        lstCourse2BePlanned.setBounds(COURSES_TO_BE_PLANNED_PANE_X_MARGIN, COURSES_TO_BE_PLANNED_PANE_Y_MARGIN, COURSES_TO_BE_PLANNED_PANE_WIDTH, COURSES_TO_BE_PLANNED_PANE_HEIGHT);
 
-        courses2BePlannedLabel.setBounds(100-85, 525, 200, 25);
+        btnGenerateNonOverlappingSchedules.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, SCHEDULE_MANAGEMENT_Y_MARGIN, SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);
+        scheduleListComboBox.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, (SCHEDULE_MANAGEMENT_Y_MARGIN + SCHEDULE_MANAGEMENT_Y_HEIGHT), SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);;
+        btnViewWeeklySchedule.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, (SCHEDULE_MANAGEMENT_Y_MARGIN + 2 * SCHEDULE_MANAGEMENT_Y_HEIGHT), SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);
 
-        lstCourse2BePlanned.setBounds(75-65, 50+500, 400, 120);
-
-        btnGenerateNonOverlappingSchedules.setBounds(100-85, 50+630, 300, 25);
-
-        scheduleListComboBox.setBounds(100-85, 50+655, 300, 25);;
-
-        btnViewWeeklySchedule.setBounds(100-85, 50+680, 300, 25);
-
-        btnImport.setBounds(320, 50+630, 100, 75);
+        btnImport.setBounds(IMPORT_BUTTON_X_MARGIN, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
 
         frame.add(lblProgressBar);
         frame.add(lblCourseSubject);
