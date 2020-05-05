@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.List;
 
@@ -72,27 +70,29 @@ public class WeeklyScheduleGUI {
         buttonPrevSchedule = btnList.get(2);
     }
 
-    public void saveWeeklySchedulesAsImages(List<Schedule> schedules, String savePath, JLabel lblStatusBar) throws IOException {
+    public void saveWeeklySchedulesAsImages(List<Schedule> schedules, String savePath, JLabel lblStatusBar) throws IOException, AWTException {
         int planNo =0;
         for(Schedule curSchedule2SaveAsImage:schedules){
             saveWeeklyScheduleAsImage(curSchedule2SaveAsImage, ++planNo, savePath);
             Double completeLength = Double.valueOf(schedules.size());
-            ShowImageOutProgress2User(lblStatusBar,(schedules.size() - planNo),completeLength,curSchedule2SaveAsImage);
+            showImageOutProgress2User(lblStatusBar,(schedules.size() - planNo),completeLength,curSchedule2SaveAsImage);
         }
 
     }
 
-    public void saveWeeklyScheduleAsImage(Schedule scheduleToView, int planNo, String savePath) throws IOException {
+    public void saveWeeklyScheduleAsImage(Schedule scheduleToView, int planNo, String savePath) throws IOException, AWTException {
 
         scheduleFrame = new JFrame("Weekly Schedule");
         createWeeklySchedule(scheduleToView);
-        scheduleFrame.setVisible(true);
-        try {
-            //TimeUnit.SECONDS.sleep(1);
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        scheduleFrame.setVisible(true);
+//        try {
+//            //TimeUnit.SECONDS.sleep(1);
+//            Thread.sleep(200);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+
 
         int scheduleIndex = scheduleToView.getScheduleId();
         Parser.SaveFrameAsImage(scheduleFrame, planNo, scheduleIndex, savePath);
@@ -101,7 +101,7 @@ public class WeeklyScheduleGUI {
 
     }
 
-    private void ShowImageOutProgress2User(JLabel lblStatusBar, int remaining, Double completeLength, Schedule curSchedule) throws IOException {
+    private void showImageOutProgress2User(JLabel lblStatusBar, int remaining, Double completeLength, Schedule curSchedule) throws IOException {
         String str2Console = "\n\nIMAGE OUT:\t" + curSchedule + "\tREMAINING: " + remaining + "\n\n";
         Double percentage = remaining/completeLength;
         percentage = Math.floor(percentage*100);
@@ -193,7 +193,7 @@ public class WeeklyScheduleGUI {
         scheduleFrame.add(buttonNextSchedule);
         scheduleFrame.add(buttonPrevSchedule);
 
-        scheduleFrame.setVisible(true);
+//        scheduleFrame.setVisible(true);
     }
 
     public static void addClassPanels(JFrame scheduleFrame, Class currentClass) {

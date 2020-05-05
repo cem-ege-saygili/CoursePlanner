@@ -6,10 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.text.AttributedString;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 
@@ -17,9 +15,9 @@ public class Main {
     static final int MAIN_FRAME_WIDTH = 1350;
     static final int  MAIN_FRAME_HEIGHT = 805;
     static final int PROGRESS_BAR_X_MARGIN = 15;
-    static final int PROGRESS_BAR_Y_MARGIN = 25;
-    static final int PROGRESS_BAR_WIDTH = 300;
-    static final int PROGRESS_BAR_HEIGHT = 25;
+    static final int PROGRESS_BAR_Y_MARGIN = 15;
+    static final int PROGRESS_BAR_WIDTH = 400;
+    static final int PROGRESS_BAR_HEIGHT = 35;
 
     static final int COURSE_SELECTION_X_MARGIN = 15;
     static final int COURSE_SELECTION_Y_MARGIN = 50;
@@ -290,6 +288,8 @@ public class Main {
         JButton btnClearPlanningList = new JButton("Clear the Planning List");
 
         JButton btnImport = new JButton("<html>Import<br>Schedules</html>");
+        JButton btnExport = new JButton("<html>Export<br>Schedules</html>");
+        JButton btnClearAll = new JButton("<html>Clear<br>All</html>");
 
         JCheckBox checkBox_Exclude_Mon = new JCheckBox("Monday");
         JCheckBox checkBox_Exclude_Tues = new JCheckBox("Tuesday");
@@ -439,7 +439,7 @@ public class Main {
 
                     List<domain.Class> classListForTuple = new ArrayList<>();
 
-                    PutClassesFromDB2cList(courseTuple2BeAdded, classListForTuple, dbName, sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location);
+                    SelectFromTableInDB.PutClassesFromDB2cList(courseTuple2BeAdded, classListForTuple, dbName, sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location);
 
 
                     for (int i = 0; i < classesList.size(); i++) {// CHECKING for ELEC317 vs. COMP317 case. (i.e. courses with same classes)
@@ -492,19 +492,7 @@ public class Main {
         btnClearPlanningList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                for (CourseSubject_Catalog_Priority_Tuple curTuple : tupleList) {
-                    System.out.println(curTuple);
-                }
-
-                System.out.println("\n Has been cleared from the planning list!");
-
-                tupleList.clear();
-                classesList.clear();
-                lstCourses2BePlannedModel.clear();
-                scheduleListComboBox.removeAllItems();
-
-                System.out.println("Course Planning list has been cleared!");
+                ClearPlanningList(tupleList, classesList, lstCourses2BePlannedModel, scheduleListComboBox);
             }
         });
 
@@ -636,7 +624,7 @@ public class Main {
         btnClearClassFilters.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                lstAddedClassFiltersListModel.removeAllElements();
+                ClearClassFilters(lstAddedClassFiltersListModel, lblCourseSubjectAndCatalog, lblCourseClassFilter, distinctClassComponents_GivenCourse_ComboBox, lstClassFiltersListModel);
             }
         });
 
@@ -740,6 +728,9 @@ public class Main {
 
         btnImport.setBounds(IMPORT_BUTTON_X_MARGIN, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
 
+        btnExport.setBounds(IMPORT_BUTTON_X_MARGIN + 100, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnClearAll.setBounds(IMPORT_BUTTON_X_MARGIN + 200, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+
         frame.add(lblProgressBar);
         frame.add(lblCourseSubject);
         frame.add(courseSubjectsComboBox);
@@ -768,6 +759,8 @@ public class Main {
         frame.add(lstFilters);
         frame.add(btnGenerateNonOverlappingSchedules);
         frame.add(btnImport);
+        frame.add(btnExport);
+        frame.add(btnClearAll);
         frame.add(scheduleListComboBox);
         frame.add(btnClearPlanningList);
         frame.add(checkBox_Exclude_Mon);
@@ -804,17 +797,13 @@ public class Main {
 
 //        Scheduler s1 = new Scheduler(cList);
 //        s1.generateOptimumCoursePlan();
+        String savePath = "";
 
         btnGenerateNonOverlappingSchedules.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                lblProgressBar.setText("<html>"
-                        + "Running: "
-                        + "<font face=\"verdana\" color=\"red\"><b><i>"
-                        + "Algorithm"
-                        + "</i></b></font></html>");
-                lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
+                SetProgressBarText(lblProgressBar, "Algorithm");
 
                 Schedule.scheduleIdcounter = 0;
 
@@ -849,39 +838,7 @@ public class Main {
                             JOptionPane.WARNING_MESSAGE);
                     if(dialogResult == JOptionPane.YES_OPTION){//still want to apply filters
 
-                        lblProgressBar.setText("<html>"
-                                + "Running: "
-                                + "<font face=\"verdana\" color=\"red\"><b><i>"
-                                + "Time & Day Exclusion Filter"
-                                + "</i></b></font></html>");
-                        lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
-
-                        if(!lstFiltersModel.isEmpty()){//Apply Time & Day Exclusion Filter
-                            List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
-                            for(int i =0;i<lstFiltersModel.size();i++){
-                                DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
-                                dayTimeFramePairs.add(curDayTimeFramePair);
-                            }
-                            Schedule.FilterOutSchedulesFrom(schedules, dayTimeFramePairs);
-                        }
-
-                        lblProgressBar.setText("<html>"
-                                + "Running: "
-                                + "<font face=\"verdana\" color=\"red\"><b><i>"
-                                + "Class Inclusion Filter"
-                                + "</i></b></font></html>");
-                        lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
-
-                        if(!lstAddedClassFiltersListModel.isEmpty()){//Apply INCLUDE CLASSES filter
-                            List<Class> activeClassFilterElementClassList = new ArrayList<>();
-                            for(int i =0;i<lstAddedClassFiltersListModel.size();i++){
-                                Class curActiveClassFilterElementClass = ((ActiveClassFilterElement) lstAddedClassFiltersListModel
-                                        .getElementAt(i))
-                                        .getClassForActiveClassFilterElement();
-                                activeClassFilterElementClassList.add(curActiveClassFilterElementClass);
-                            }
-                            Schedule.ClassFilterSchedulesIncluding_ClassLists(schedules, activeClassFilterElementClassList);
-                        }
+                        ApplyFilters(schedules, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
 
                     }else{//skip applying filters
                         lstAddedClassFiltersListModel.removeAllElements();
@@ -889,41 +846,9 @@ public class Main {
                     }
                     long lostTime_end = System.nanoTime();
                     lostTime = lostTime_end - lostTime_start;
-                }else{//if filters can be applied automaticlly, no need to ask to user, just apply them.
+                }else{//if filters can be applied automatically, no need to ask to user, just apply them.
 
-                    lblProgressBar.setText("<html>"
-                            + "Running: "
-                            + "<font face=\"verdana\" color=\"red\"><b><i>"
-                            + "Time & Day Exclusion Filter"
-                            + "</i></b></font></html>");
-                    lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
-
-                    if(!lstFiltersModel.isEmpty()){//Apply Time & Day Exclusion Filter
-                        List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
-                        for(int i =0;i<lstFiltersModel.size();i++){
-                            DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
-                            dayTimeFramePairs.add(curDayTimeFramePair);
-                        }
-                        Schedule.FilterOutSchedulesFrom(schedules, dayTimeFramePairs);
-                    }
-
-                    lblProgressBar.setText("<html>"
-                            + "Running: "
-                            + "<font face=\"verdana\" color=\"red\"><b><i>"
-                            + "Class Inclusion Filter"
-                            + "</i></b></font></html>");
-                    lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
-
-                    if(!lstAddedClassFiltersListModel.isEmpty()){//Apply INCLUDE CLASSES filter
-                        List<Class> activeClassFilterElementClassList = new ArrayList<>();
-                        for(int i =0;i<lstAddedClassFiltersListModel.size();i++){
-                            Class curActiveClassFilterElementClass = ((ActiveClassFilterElement) lstAddedClassFiltersListModel
-                                    .getElementAt(i))
-                                    .getClassForActiveClassFilterElement();
-                            activeClassFilterElementClassList.add(curActiveClassFilterElementClass);
-                        }
-                        Schedule.ClassFilterSchedulesIncluding_ClassLists(schedules, activeClassFilterElementClassList);
-                    }
+                    ApplyFilters(schedules, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
 
                 }
 
@@ -972,26 +897,15 @@ public class Main {
                     scheduleListComboBox.addItem(curSchedule);
                 }
 
-                String serializedSchedules_recordName = "";
-                List<Schedule> schedulesIn = new ArrayList<>();
-                for(int i=0;i<lstCourses2BePlannedModel.getSize();i++){
-                    CourseSubject_Catalog_Priority_Tuple curTuple = (CourseSubject_Catalog_Priority_Tuple)lstCourses2BePlannedModel.getElementAt(i);
-                    serializedSchedules_recordName += curTuple.getSubject() + " " + curTuple.getCatalog() + ", ";
-                }
-
-                serializedSchedules_recordName = serializedSchedules_recordName.substring(0,serializedSchedules_recordName.length()-2);
-
-                final String finalRecordName = serializedSchedules_recordName;
-
                 Thread threadSerializeOutAndWriteHtml = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            String savePath = "outputs/ScheduleExports/"+ finalRecordName + "/";
-                            Serializer.SerializeOut(schedules, finalRecordName, lblProgressBar);//Save the resulting schedules (i.e. export schedules)
+                            final String finalRecordName = GetFinalRecordName(lstCourses2BePlannedModel);
+                            final String savePath = GetSavePath(lstCourses2BePlannedModel);
+                            Serializer.SerializeOut(schedules, tupleList, lstAddedClassFiltersListModel, lstFiltersModel, finalRecordName, lblProgressBar);//Save the resulting schedules (i.e. export schedules)
 //                            Serializer.SerializeIn(finalRecordName, schedulesIn, lblProgressBar);//Restore the saved schedules (i.e. import schedules)
-                            WeeklyScheduleGUI wsGUI = new WeeklyScheduleGUI(btnList);
-                            wsGUI.saveWeeklySchedulesAsImages(schedules, savePath, lblProgressBar);//Save the resulting schedules as .jpeg files.
+//                            ExportSchedulesAsImages(savePath, btnList, schedules, lblProgressBar);//Save the resulting schedules as .jpeg files.
                             Schedule.PrintOutSchedulesToUser(schedules, finalRecordName, lblProgressBar);//write to .html file
                             JEditorPane ep = new JEditorPane();
                             ep.setContentType("text/html");
@@ -1018,7 +932,7 @@ public class Main {
 //                                    JOptionPane.WARNING_MESSAGE);
 
 
-                        } catch (IOException  e1) {
+                        } catch (IOException e1) {
                             e1.printStackTrace();
                         }
 
@@ -1057,17 +971,23 @@ public class Main {
 
                     if(extension.equals("json")){
 
-                        lstAddedClassFiltersListModel.removeAllElements();
-                        lstCourses2BePlannedModel.removeAllElements();
-                        lstFiltersModel.removeAllElements();
-
-                        List<Schedule> schedules = new ArrayList<>();
+                        ClearAll(lstAddedClassFiltersListModel, lblCourseSubjectAndCatalog, lblCourseClassFilter, distinctClassComponents_GivenCourse_ComboBox, lstClassFiltersListModel, lstFiltersModel, tupleList, classesList, lstCourses2BePlannedModel, scheduleListComboBox);
 
                         Thread threadSerializeIn = new Thread(new Runnable() {
+
                             @Override
                             public void run() {
+                                List<Schedule> schedules = new ArrayList<>();
+
                                 try {
-                                    Serializer.SerializeIn(selectedFile, schedules, lblProgressBar);//Restore the saved schedules (i.e. import schedules)
+                                    Serializer.SerializeIn(selectedFile,
+                                                            schedules,
+                                                            classesList,
+                                                            tupleList,
+                                                            lstCourses2BePlannedModel,
+                                                            lstAddedClassFiltersListModel,
+                                                            lstFiltersModel,
+                                                            lblProgressBar);//Restore the saved schedules (i.e. import schedules)
                                 } catch (IOException e1) {
                                     e1.printStackTrace();
                                 } catch (ClassNotFoundException e1) {
@@ -1110,6 +1030,49 @@ public class Main {
             }
         });
 
+        btnExport.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Thread threadExportSchedulesAsImages = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List < Schedule > schedules = scheduleListToView;
+
+                        if(schedules !=null && !schedules.isEmpty()){
+                            String savePath = GetSavePath(lstCourses2BePlannedModel);
+                            try {
+                                ExportSchedulesAsImages(savePath, btnList, schedules, lblProgressBar);//Save the resulting schedules as .jpeg files.
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            } catch (AWTException e1) {
+                                e1.printStackTrace();
+                            }
+                        }else{
+                            JOptionPane.showMessageDialog(frame,
+                                    "There is no schedule to export. ",
+                                    "Schedule list is empty !",
+                                    JOptionPane.ERROR_MESSAGE);
+                            System.out.println("\n\n!!! There is no schedule to export !!!\n\n");
+                        }
+                        lblProgressBar.setText("<html>"
+                                + "Status: "
+                                + "<font face=\"verdana\" color=\"green\"><b><i>"
+                                + "idle"
+                                + "</i></b></font></html>");
+
+                    }
+                    });
+                threadExportSchedulesAsImages.start();
+                }
+        });
+
+        btnClearAll.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ClearAll(lstAddedClassFiltersListModel, lblCourseSubjectAndCatalog, lblCourseClassFilter, distinctClassComponents_GivenCourse_ComboBox, lstClassFiltersListModel, lstFiltersModel, tupleList, classesList, lstCourses2BePlannedModel, scheduleListComboBox);
+            }
+        });
+
 
         btnViewWeeklySchedule.addActionListener(new ActionListener() {
             @Override
@@ -1130,7 +1093,7 @@ public class Main {
 
 
 
-                    viewWeeklySchedule(scheduleToView, btnList);
+                    ViewWeeklySchedule(scheduleToView, btnList);
 
 
 
@@ -1167,6 +1130,102 @@ public class Main {
             }
         });
 
+    }
+
+    private static void ClearAll(DefaultListModel lstAddedClassFiltersListModel, JLabel lblCourseSubjectAndCatalog, JLabel lblCourseClassFilter, JComboBox<String> distinctClassComponents_GivenCourse_ComboBox, DefaultListModel lstClassFiltersListModel, DefaultListModel lstFiltersModel, List<CourseSubject_Catalog_Priority_Tuple> tupleList, List<List<Class>> classesList, DefaultListModel lstCourses2BePlannedModel, JComboBox<Schedule> scheduleListComboBox) {
+        ClearClassFilters(lstAddedClassFiltersListModel,lblCourseSubjectAndCatalog,lblCourseClassFilter,distinctClassComponents_GivenCourse_ComboBox,lstClassFiltersListModel);
+        lstFiltersModel.removeAllElements();//clear day & time filters
+        ClearPlanningList(tupleList, classesList, lstCourses2BePlannedModel, scheduleListComboBox);
+    }
+
+    private static void ClearPlanningList(List<CourseSubject_Catalog_Priority_Tuple> tupleList, List<List<Class>> classesList, DefaultListModel lstCourses2BePlannedModel, JComboBox<Schedule> scheduleListComboBox) {
+        for (CourseSubject_Catalog_Priority_Tuple curTuple : tupleList) {
+            System.out.println(curTuple);
+        }
+
+        System.out.println("\n Has been cleared from the planning list!");
+
+        tupleList.clear();
+        classesList.clear();
+        lstCourses2BePlannedModel.clear();
+        scheduleListComboBox.removeAllItems();
+
+        System.out.println("Course Planning list has been cleared!");
+    }
+
+    private static void ClearClassFilters(DefaultListModel lstAddedClassFiltersListModel, JLabel lblCourseSubjectAndCatalog, JLabel lblCourseClassFilter, JComboBox<String> distinctClassComponents_GivenCourse_ComboBox, DefaultListModel lstClassFiltersListModel) {
+        lstAddedClassFiltersListModel.removeAllElements();
+        lblCourseSubjectAndCatalog.setText("Please double click to a course in \"Courses to be planned\" pane");
+        lblCourseClassFilter.setText("Course Class Filter: ");
+        distinctClassComponents_GivenCourse_ComboBox.removeAllItems();
+        lstClassFiltersListModel.removeAllElements();
+    }
+
+    private static String GetSavePath(DefaultListModel lstCourses2BePlannedModel) {
+
+        String finalRecordName = GetFinalRecordName(lstCourses2BePlannedModel);
+
+        String savePath = "outputs/ScheduleExports/"+ (finalRecordName.equals("")?"Exported ":finalRecordName + "/");
+
+        return savePath;
+    }
+
+    private static String GetFinalRecordName(DefaultListModel lstCourses2BePlannedModel) {
+        if(lstCourses2BePlannedModel.isEmpty())
+            return "";
+        String serializedSchedules_recordName = "";
+        List<Schedule> schedulesIn = new ArrayList<>();
+        for(int i=0;i<lstCourses2BePlannedModel.getSize();i++){
+            CourseSubject_Catalog_Priority_Tuple curTuple = (CourseSubject_Catalog_Priority_Tuple)lstCourses2BePlannedModel.getElementAt(i);
+            serializedSchedules_recordName += curTuple.getSubject() + " " + curTuple.getCatalog() + ", ";
+        }
+
+        serializedSchedules_recordName = serializedSchedules_recordName.substring(0,serializedSchedules_recordName.length()-2);
+
+        return serializedSchedules_recordName;
+    }
+
+    private static void ExportSchedulesAsImages(String savePath, List<JButton> btnList, List<Schedule> schedules, JLabel lblProgressBar) throws IOException, AWTException {
+        WeeklyScheduleGUI wsGUI = new WeeklyScheduleGUI(btnList);
+        wsGUI.saveWeeklySchedulesAsImages(schedules, savePath, lblProgressBar);//Save the resulting schedules as .jpeg files.
+
+    }
+
+    private static void SetProgressBarText(JLabel lblProgressBar,
+                                           String progressBarStr) {
+        lblProgressBar.setText("<html>"
+                + "Running: "
+                + "<font face=\"verdana\" color=\"red\"><b><i>"
+                + progressBarStr
+                + "</i></b></font></html>");
+        lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
+    }
+
+    private static void ApplyFilters(List<Schedule> schedules, JLabel lblProgressBar, DefaultListModel lstFiltersModel, DefaultListModel lstAddedClassFiltersListModel) {
+
+        if (!lstFiltersModel.isEmpty()) {//Apply Time & Day Exclusion Filter
+            List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
+            for (int i = 0; i < lstFiltersModel.size();i++) {
+                DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
+                dayTimeFramePairs.add(curDayTimeFramePair);
+            }
+            Schedule.FilterOutSchedulesFrom(schedules,
+                                            dayTimeFramePairs,
+                                            lblProgressBar);
+        }
+
+        if (!lstAddedClassFiltersListModel.isEmpty()) {//Apply INCLUDE CLASSES filter
+            List<Class> activeClassFilterElementClassList = new ArrayList<>();
+            for (int i = 0; i < lstAddedClassFiltersListModel.size(); i++) {
+                Class curActiveClassFilterElementClass = ((ActiveClassFilterElement) lstAddedClassFiltersListModel
+                        .getElementAt(i))
+                        .getClassForActiveClassFilterElement();
+                activeClassFilterElementClassList.add(curActiveClassFilterElementClass);
+            }
+            Schedule.ClassFilterSchedulesIncluding_ClassLists(schedules,
+                                                            activeClassFilterElementClassList,
+                                                            lblProgressBar);
+        }
     }
 
     private static void ReFillClassFilterList(String courseSubject,
@@ -1214,38 +1273,6 @@ public class Main {
 
             System.out.println("\nCLASS LIST:" + ++i + " \n\n" + cList);
         }
-    }
-
-    private static void PutClassesFromDB2cList(CourseSubject_Catalog_Priority_Tuple tuple, List<Class> classList, String dbName, String sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location) {
-
-        classList.clear();
-
-
-        String tupleCourseSubject = tuple.getSubject();
-        int tupleCourseCatalog = tuple.getCatalog();
-
-        SelectFromTableInDB.SelectClassesOfOneCourse(
-                dbName,
-                sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location,
-                tupleCourseSubject,
-                tupleCourseCatalog,
-                classList
-        );
-//                    Scheduler s1 = new Scheduler(cList);
-//                    s1.generateOptimumCoursePlan();
-//                    cList.clear();
-//                    //JOptionPane.showMessageDialog(null,s1.getOutput(),s1.getNumPlans() +" non-overlapping plans are found.", ModifiableJOptionPane.WARNING_MESSAGE);
-//                    String message2BeDisplayed = s1.getOutput();
-//                    JTextArea textArea = new JTextArea(25, 75);
-//                    textArea.setText(message2BeDisplayed);
-//                    textArea.setEditable(false);
-//                    textArea.setCaretPosition(0);
-//                    JScrollPane scrollPane = new JScrollPane(textArea);
-//                    JOptionPane.showMessageDialog(null,scrollPane,s1.getNumPlans() +" non-overlapping plans are found.",JOptionPane.WARNING_MESSAGE);
-
-//            for(Class curClass:classList){
-//                System.out.println(curClass);
-//            }
     }
 
     private static void CreateAndFill_DB_from_CSV(List<ClassInfo> classInfoList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, String dbName) {
@@ -1318,23 +1345,24 @@ public class Main {
     }
 
     /*
-    private static void viewWeeklySchedule(Schedule scheduleToView, JFrame scheduleFrame, List<JButton> btnList){
+    private static void ViewWeeklySchedule(Schedule scheduleToView, JFrame scheduleFrame, List<JButton> btnList){
         WeeklyScheduleGUI weeklyScheduleView = new WeeklyScheduleGUI( btnList);
         weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame);
     }
 
 
      */
-    private static void viewWeeklySchedule(Schedule scheduleToView,List<JButton> btnList){
+    private static void ViewWeeklySchedule(Schedule scheduleToView, List<JButton> btnList){
         WeeklyScheduleGUI weeklyScheduleView= new WeeklyScheduleGUI(btnList);
         scheduleFrame=weeklyScheduleView.getScheduleFrame();
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
         weeklyScheduleView.createWeeklySchedule(scheduleToView);
+        scheduleFrame.setVisible(true);
         //weeklyScheduleView.createWeeklySchedule2(scheduleToView);
-
-
     }
+
+
 
     /*
     private static int getStartTime(Class currentClass) {
