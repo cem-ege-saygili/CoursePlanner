@@ -17,7 +17,7 @@ public class Parser {
 
     static String sqlQuery_location = "inputs/sqlQuery_SelectAllPossibleTimeStamps.sql";
 
-    static List<String> allPossibleTimeStamps = SelectFromTableInDB.SelectAllPossibleTimeStampsOrderedAsc(parserDBName, sqlQuery_location);
+    static List<String> AllPossibleTimeStamps = SelectFromTableInDB.SelectAllPossibleTimeStampsOrderedAsc(parserDBName, sqlQuery_location);
 
     public static int ParseMtgTimeStr2IntegerTimeStamp(String mtgTime){
 
@@ -125,7 +125,7 @@ public class Parser {
 //                return -1; //failed to convert mtg. time str. to integer time stamp :(
 //        }
 
-        return allPossibleTimeStamps.indexOf(mtgTime);
+        return AllPossibleTimeStamps.indexOf(mtgTime);
 
     }
 
@@ -235,7 +235,7 @@ public class Parser {
 //                return ""; //failed to convert integer time stamp to mtg. time str :(
 //        }
 
-        return allPossibleTimeStamps.get(integerTimeStamp);
+        return AllPossibleTimeStamps.get(integerTimeStamp);
 
     }
 
@@ -262,18 +262,57 @@ public class Parser {
         return dayAsString;
     }
 
-    public static void SaveFrameAsImage(JFrame frame, int planNo, int scheduleIndex, String savePath) throws IOException {
+    public static void SaveFrameAsImage(JFrame frame, int planNo, int scheduleIndex, String savePath) throws IOException, AWTException {
+//
+//        JPanel panel = new JPanel ();
+//        panel.setLayout(new FlowLayout());
+//        panel.setBackground(Color.WHITE);
+//        panel.add(vv);
+//
+//        Properties p = new Properties();
+//        p.setProperty("PageSize","A4");
+//
+//// vv is the VirtualizationViewer
+//
+//        VectorGraphics g = new GIFGraphics2D(new File("Network.gif"), vv);
+//
+//        g.setProperties(p);
+//        g.startExport();
+//        panel.print(g);
+//        g.endExport();
+
+
         int frameWidth = frame.getWidth();
         int frameHeight = frame.getHeight();
-        BufferedImage image = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics2D = image.createGraphics();
-        frame.paint(graphics2D);
+
+//        Dimension dim = new Dimension(frameWidth, frameHeight);
+//        frame.setPreferredSize(dim);
+
+
+//        Rectangle bounds = new Rectangle(frame.getBounds());
+
+
+        BufferedImage image = new BufferedImage(frameWidth,frameHeight,BufferedImage.TYPE_INT_RGB);
+//        frame.setLocation(-100000000,-100000000);
+//        frame.setOpacity(0);
+//        frame.dispose();
+        frame.setVisible(true);
+//        frame.setUndecorated(true);
+
+        frame.printAll(image.getGraphics());
+        frame.setVisible(false);
+        frame.dispose();
+//        BufferedImage image = ScreenImage.createImage(frame);
+//        Graphics2D graphics2D = image.createGraphics();
+//        Container frameContent = frame.getContentPane();
+//        frame.paint(graphics2D);
+//        graphics2D.dispose();
+        new File(savePath + "Weekly Schedule Visualizations/").mkdirs();
         File jpegFile = new File(
                 savePath
                 + "Weekly Schedule Visualizations/Plan #" + planNo
                         + "_AsIn_Schedule #" + (scheduleIndex + 1)
                 + ".jpeg");
-        jpegFile.mkdirs();
         ImageIO.write(image,"jpeg", jpegFile);
     }
 

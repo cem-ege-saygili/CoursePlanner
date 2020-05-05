@@ -1,6 +1,7 @@
 package DB_Utilities;
 
 import domain.Class;
+import domain.CourseSubject_Catalog_Priority_Tuple;
 import domain.EnrollmentDetailsPair;
 import domain.InstructorNameRolePair;
 
@@ -490,6 +491,23 @@ public class SelectFromTableInDB {
 
         return classList;
 
+    }
+
+    public static void PutClassesFromDB2cList(CourseSubject_Catalog_Priority_Tuple tuple, List<Class> classList, String dbName, String sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location) {
+
+        classList.clear();
+
+
+        String tupleCourseSubject = tuple.getSubject();
+        int tupleCourseCatalog = tuple.getCatalog();
+
+        SelectClassesOfOneCourse(
+                dbName,
+                sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location,
+                tupleCourseSubject,
+                tupleCourseCatalog,
+                classList
+        );
     }
 
 

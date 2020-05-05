@@ -1,6 +1,8 @@
 package domain;
 
-public class CourseSubject_Catalog_Priority_Tuple {
+import java.io.Serializable;
+
+public class CourseSubject_Catalog_Priority_Tuple implements Serializable {
 
     String subject;
     int catalog;

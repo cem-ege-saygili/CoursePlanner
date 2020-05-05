@@ -1,14 +1,9 @@
 package domain;
 
-import org.sqlite.util.StringUtils;
-
 import javax.swing.*;
-import java.awt.*;
-import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
@@ -78,13 +73,46 @@ public class Schedule implements Serializable{
         return str;
     }
 
-    public static void FilterOutSchedulesFrom(List<Schedule> scheduleList, List<DayTimeFramePair> dayTimeFramePairs){
+    private static void SetProgressBarText(JLabel lblProgressBar,
+                                           String progressBarStr,
+                                           Double percentage) {
+        String str2Display = "<html>"
+                + "Running: "
+                    + "<br><font face=\"verdana\" color=\"blue\"><b><i>"
+                + progressBarStr
+                    + ": </i></b></font>"
+                + "<font face=\"verdana\" color=\"red\"><b><i>"
+                + percentage + "%"
+                    + "</i></b></font>"
+                + " left.</html>";
+        String str2Console = "Running: "
+                            + progressBarStr + ": "
+                            + percentage + "%" + " left.";
+        System.out.println(str2Console);
+        lblProgressBar.setText(str2Display);
+        lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
+
+
+    }
+
+    public static void FilterOutSchedulesFrom(List<Schedule> scheduleList,
+                                              List<DayTimeFramePair> dayTimeFramePairs,
+                                              JLabel lblProgressBar){
+
+        int i = 1;
         for(DayTimeFramePair curDayTimeFramePair:dayTimeFramePairs){
-            FilterOutSchedulesFrom_forOneDayTimepair(scheduleList, curDayTimeFramePair);
+            String progressBarStr= "Time & Day Exclusion Filter #" + i++;
+            FilterOutSchedulesFrom_forOneDayTimepair(scheduleList,
+                                                    curDayTimeFramePair,
+                                                    progressBarStr,
+                                                    lblProgressBar);
         }
     }
 
-    public static void FilterOutSchedulesFrom_forOneDayTimepair(List<Schedule> scheduleList, DayTimeFramePair dayTimeFramePair){
+    public static void FilterOutSchedulesFrom_forOneDayTimepair(List<Schedule> scheduleList,
+                                                                DayTimeFramePair dayTimeFramePair,
+                                                                String progressBarStr,
+                                                                JLabel lblProgressBar){
         boolean monFlag = dayTimeFramePair.getMonFlag();
         boolean tuesFlag = dayTimeFramePair.getTuesFlag();
         boolean wedFlag = dayTimeFramePair.getWedFlag();
@@ -94,9 +122,15 @@ public class Schedule implements Serializable{
         int startTimeStamp2Exclude = Parser.ParseMtgTimeStr2IntegerTimeStamp(dayTimeFramePair.getStartTime());
         int endTimeStamp2Exclude = Parser.ParseMtgTimeStr2IntegerTimeStamp(dayTimeFramePair.getEndTime());
 
-        List<Schedule> schedules2BeRemoved = new ArrayList<>();
+//        List<Integer> indices2BeRemoved = new ArrayList<>();
 
-        for(Schedule curSchedule:scheduleList){
+        int curIndex = 0;
+        if(scheduleList == null || scheduleList.size() == 0)
+            return;
+        while(true){
+            if(curIndex == scheduleList.size())
+                break;
+            Schedule curSchedule = scheduleList.get(curIndex);
             nextSchedule:{
                 for(ClassBundle curClassBundle:curSchedule.getClassBundleList()){
                     for(Class curClass:curClassBundle.getClassList()){
@@ -115,33 +149,63 @@ public class Schedule implements Serializable{
                                 (friFlag && curClassFriFlag) ){//if the curClass takes place on a day that is to be excluded.
                             if(!(endTimeStamp2Exclude <=  curClassStartTimeStamp ||
                                     curClassEndTimeStamp <= startTimeStamp2Exclude)){//if they are overlapping
-                                schedules2BeRemoved.add(curSchedule);
+//                                indices2BeRemoved.add(curIndex);
+                                scheduleList.remove(curIndex);
+                                curIndex--;
                                 break nextSchedule;
                             }
                         }else if(!monFlag && !tuesFlag && !wedFlag && !thursFlag && !friFlag){//filter out the entire week
                             if(!(endTimeStamp2Exclude <=  curClassStartTimeStamp ||
                                     curClassEndTimeStamp <= startTimeStamp2Exclude)){//if they are overlapping
-                                schedules2BeRemoved.add(curSchedule);
+
+//                                indices2BeRemoved.add(curIndex);
+                                scheduleList.remove(curIndex);
+                                curIndex--;
                                 break nextSchedule;
                             }
                         }
                     }
                 }
             }
+            curIndex++;
+
+            UpdateProgressbarWithPercentage(scheduleList, progressBarStr, lblProgressBar, curIndex);
         }
 
-        scheduleList.removeAll(schedules2BeRemoved);
+//        for(Integer index:indices2BeRemoved)
+//            scheduleList.remove(index);
 
 //        Schedule.scheduleIdcounter = scheduleList.size();
     }
 
-    public static void ClassFilterSchedulesIncluding_ClassLists (List<Schedule> scheduleList, List<Class> classListToInclude){
+    private static void UpdateProgressbarWithPercentage(List<Schedule> scheduleList,
+                                                        String progressBarStr,
+                                                        JLabel lblProgressBar,
+                                                        int curIndex) {
+        Double size = Double.valueOf(scheduleList.size());
+
+        Double percentage = Math.floor((size - curIndex)/size*1000)/10;
+
+        SetProgressBarText(lblProgressBar, progressBarStr, percentage);
+    }
+
+    public static void ClassFilterSchedulesIncluding_ClassLists (List<Schedule> scheduleList,
+                                                                 List<Class> classListToInclude,
+                                                                 JLabel lblProgressBar){
+        int i = 1;
         for(Class curClassToInclude:classListToInclude){
-            ClassFilterSchedulesIncluding_OneClass(scheduleList, curClassToInclude);
+            String progressBarStr= "Active Classes Filter #" + i++;
+            ClassFilterSchedulesIncluding_OneClass(scheduleList,
+                                                    curClassToInclude,
+                                                    progressBarStr,
+                                                    lblProgressBar);
         }
     }
 
-    public static void ClassFilterSchedulesIncluding_OneClass(List<Schedule> scheduleList, Class classToInclude){
+    public static void ClassFilterSchedulesIncluding_OneClass(List<Schedule> scheduleList,
+                                                              Class classToInclude,
+                                                              String progressBarStr,
+                                                              JLabel lblProgressBar){
         boolean monFlag = classToInclude.isMonFlag();
         boolean tuesFlag = classToInclude.isTuesFlag();
         boolean wedFlag = classToInclude.isWedFlag();
@@ -151,9 +215,14 @@ public class Schedule implements Serializable{
         int startTimeStamp2Include = Parser.ParseMtgTimeStr2IntegerTimeStamp(classToInclude.getStartTime());
         int endTimeStamp2Include = Parser.ParseMtgTimeStr2IntegerTimeStamp(classToInclude.getEndTime());
 
-        List<Schedule> schedules2BeExcluded = new ArrayList<>();
-
-        for(Schedule curSchedule:scheduleList){
+//        List<Integer> indices2BeRemoved = new ArrayList<>();
+        int curIndex = 0;
+        if(scheduleList == null || scheduleList.size() == 0)
+            return;
+        while(true){
+            if(curIndex == scheduleList.size())
+                break;
+            Schedule curSchedule = scheduleList.get(curIndex);
             boolean flag = false;
             nextSchedule:{
                 for(ClassBundle curClassBundle:curSchedule.getClassBundleList()){
@@ -165,11 +234,18 @@ public class Schedule implements Serializable{
                     }
                 }
             }
-            if(!flag)
-                schedules2BeExcluded.add(curSchedule);
+            if(!flag){
+//                indices2BeRemoved.add(curIndex);
+                scheduleList.remove(curIndex);
+                curIndex--;
+            }
+            curIndex++;
+
+            UpdateProgressbarWithPercentage(scheduleList, progressBarStr, lblProgressBar, curIndex);
         }
 
-        scheduleList.removeAll(schedules2BeExcluded);
+//        for(Integer index:indices2BeRemoved)
+//            scheduleList.remove(index);
 
 //        Schedule.scheduleIdcounter = scheduleList.size();
     }

@@ -1,9 +1,10 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActiveClassFilterElement extends ClassFilterElement{
+public class ActiveClassFilterElement extends ClassFilterElement implements Serializable {
 
     public ActiveClassFilterElement(Class c) {
         super(c);
