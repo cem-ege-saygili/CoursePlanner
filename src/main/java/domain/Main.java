@@ -245,11 +245,7 @@ public class Main {
         JComboBox<Integer> courseCatalogsComboBox = new JComboBox<>(courseCatalogsArr);
 
         JLabel lblProgressBar = new JLabel();
-        lblProgressBar.setText("<html>"
-                + "Status: "
-                + "<font face=\"verdana\" color=\"green\"><b><i>"
-                + "idle"
-                + "</i></b></font></html>");
+        SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
 
         JLabel lblCourseSubject = new JLabel();
         lblCourseSubject.setText("Course Subject: ");
@@ -901,11 +897,7 @@ public class Main {
                             numSchedulesGenerated + " non-overlapping schedules are found.",
                             JOptionPane.PLAIN_MESSAGE);
                 }else{
-                    lblProgressBar.setText("<html>"
-                            + "Status: "
-                            + "<font face=\"verdana\" color=\"green\"><b><i>"
-                            + "idle"
-                            + "</i></b></font></html>");
+                    SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
                     JOptionPane.showMessageDialog(frame,
                             "No non-overlapping schedules are found, " +
                                     "\nTry to remove filters or courses from the planning list.",
@@ -923,27 +915,25 @@ public class Main {
                         try {
                             final String finalRecordName = GetFinalRecordName(lstCourses2BePlannedModel);
                             final String savePath = GetSavePath(lstCourses2BePlannedModel);
-                            Serializer.SerializeOut(scheduleListToView, tupleList, lstAddedClassFiltersListModel, lstFiltersModel, finalRecordName, lblProgressBar);//Save the resulting schedules as a serializable .json file (i.e. export schedules)
+                            ExportAsJson(finalRecordName, tupleList, lstAddedClassFiltersListModel, lstFiltersModel, lblProgressBar);
 //                            Serializer.SerializeIn(finalRecordName, schedulesIn, lblProgressBar);//Restore the saved schedules (i.e. import schedules)
 //                            ExportSchedulesAsImages(savePath, btnList, schedules, lblProgressBar);//Save the resulting schedules as .jpeg files.
-                            Schedule.PrintOutSchedulesToUser(scheduleListToView, finalRecordName, lblProgressBar);//write to .html file
-                            JEditorPane ep = new JEditorPane();
-                            ep.setContentType("text/html");
+                            ExportAsHTML(finalRecordName, lblProgressBar);
+//                            JEditorPane ep = new JEditorPane();
+//                            ep.setContentType("text/html");
                             File htmlFile = new File(savePath + finalRecordName + ".html");
-                            try {
-                                ep.setPage(htmlFile.toURI().toURL());
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
-                            }
-                            ep.setEditable(false);
-                            ep.setCaretPosition(0);
-                            JScrollPane scrollPane = new JScrollPane(ep);
-                            scrollPane.setPreferredSize(new Dimension(1000,500));
+//                            try {
+//                                ep.setPage(htmlFile.toURI().toURL());
+//                            } catch (IOException e1) {
+//                                e1.printStackTrace();
+//                            }
+//                            ep.setEditable(false);
+//                            ep.setCaretPosition(0);
+//                            JScrollPane scrollPane = new JScrollPane(ep);
+//                            scrollPane.setPreferredSize(new Dimension(1000,500));
 
 
-                            if(htmlFile.exists() && //if supported & file exists, then open an .html file.
-                                    Desktop.isDesktopSupported())
-                                Desktop.getDesktop().open(htmlFile);
+                            OpenHTML(htmlFile);
 
 
 //                            JOptionPane.showMessageDialog(null, //Prompt user .html file.
@@ -956,11 +946,7 @@ public class Main {
                             e1.printStackTrace();
                         }
 
-                        lblProgressBar.setText("<html>"
-                                + "Status: "
-                                + "<font face=\"verdana\" color=\"green\"><b><i>"
-                                + "idle"
-                                + "</i></b></font></html>");
+                        SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
 
                     }
                 });
@@ -1024,11 +1010,7 @@ public class Main {
                                         scheduleListComboBox.addItem(s);
                                     scheduleListToView = schedules;
                                 }
-                                lblProgressBar.setText("<html>"
-                                        + "Status: "
-                                        + "<font face=\"verdana\" color=\"green\"><b><i>"
-                                        + "idle"
-                                        + "</i></b></font></html>");
+                                SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
                             }
                         });
                         threadSerializeIn.start();
@@ -1039,11 +1021,7 @@ public class Main {
                                 "Wrong extension !",
                                 JOptionPane.ERROR_MESSAGE);
                         System.out.println("\n\nWrong extension.\n\n");
-                        lblProgressBar.setText("<html>"
-                                + "Status: "
-                                + "<font face=\"verdana\" color=\"green\"><b><i>"
-                                + "idle"
-                                + "</i></b></font></html>");
+                        SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
                     }
                 }
 
@@ -1056,7 +1034,7 @@ public class Main {
                 Thread threadExportSchedulesAsImages = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        List < Schedule > schedules = scheduleListToView;
+                        List<Schedule> schedules = scheduleListToView;
 
                         if(schedules !=null && !schedules.isEmpty()){
                             String savePath = GetSavePath(lstCourses2BePlannedModel);
@@ -1074,11 +1052,7 @@ public class Main {
                                     JOptionPane.ERROR_MESSAGE);
                             System.out.println("\n\n!!! There is no schedule to export !!!\n\n");
                         }
-                        lblProgressBar.setText("<html>"
-                                + "Status: "
-                                + "<font face=\"verdana\" color=\"green\"><b><i>"
-                                + "idle"
-                                + "</i></b></font></html>");
+                        SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
 
                     }
                     });
@@ -1089,14 +1063,43 @@ public class Main {
         btnExportAsJson.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                Thread threadExportAsJson = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (CheckNotDoable()) return;
+                        final String finalRecordName = GetFinalRecordName(lstCourses2BePlannedModel);
+                        try {
+                            ExportAsJson(finalRecordName, tupleList, lstAddedClassFiltersListModel, lstFiltersModel, lblProgressBar);
+                            SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+                threadExportAsJson.start();;
             }
         });
 
         btnExportAsHtml.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                Thread threadExportAsHtml = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (CheckNotDoable()) return;
+                        final String finalRecordName = GetFinalRecordName(lstCourses2BePlannedModel);
+                        final String savePath = GetSavePath(lstCourses2BePlannedModel);
+                        try {
+                            ExportAsHTML(finalRecordName, lblProgressBar);
+                            SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
+                            File htmlFile = new File(savePath + finalRecordName + ".html");
+                            OpenHTML(htmlFile);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+                threadExportAsHtml.start();
             }
         });
 
@@ -1171,6 +1174,39 @@ public class Main {
             }
         });
 
+    }
+
+    private static boolean CheckNotDoable() {
+        List<Schedule> schedules = scheduleListToView;
+
+        if (schedules == null || schedules.isEmpty()) {
+            System.out.println("\n\nNothing to do !\n\n");
+            ShowMessage("Schedule list is currently empty !", "There is nothing to do !", JOptionPane.ERROR_MESSAGE);
+            return true;
+        }
+        return false;
+    }
+
+    private static void SetProgressBarLabelTxt(JLabel lblProgressBar, String s, String s2, String idle) {
+        lblProgressBar.setText("<html>"
+                + s
+                + s2
+                + idle
+                + "</i></b></font></html>");
+    }
+
+    private static void OpenHTML(File htmlFile) throws IOException {
+        if(htmlFile.exists() && //if supported & file exists, then open an .html file.
+                Desktop.isDesktopSupported())
+            Desktop.getDesktop().open(htmlFile);
+    }
+
+    private static void ExportAsHTML(String finalRecordName, JLabel lblProgressBar) throws IOException {
+        Schedule.PrintOutSchedulesToUser(scheduleListToView, finalRecordName, lblProgressBar);//write to .html file
+    }
+
+    private static void ExportAsJson(String finalRecordName, List<CourseSubject_Catalog_Priority_Tuple> tupleList, DefaultListModel lstAddedClassFiltersListModel, DefaultListModel lstFiltersModel, JLabel lblProgressBar) throws IOException {
+        Serializer.SerializeOut(scheduleListToView, tupleList, lstAddedClassFiltersListModel, lstFiltersModel, finalRecordName, lblProgressBar);//Save the resulting schedules as a serializable .json file (i.e. export schedules)
     }
 
     private static Thread ExecuteAlgorithm(List<List<ClassBundle>> classBundlesList, List<List<Class>> classesList) {
@@ -1260,11 +1296,7 @@ public class Main {
 
     private static void SetProgressBarText(JLabel lblProgressBar,
                                            String progressBarStr) {
-        lblProgressBar.setText("<html>"
-                + "Running: "
-                + "<font face=\"verdana\" color=\"red\"><b><i>"
-                + progressBarStr
-                + "</i></b></font></html>");
+        SetProgressBarLabelTxt(lblProgressBar, "Running: ", "<font face=\"verdana\" color=\"red\"><b><i>", progressBarStr);
         lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
     }
 
@@ -1276,6 +1308,7 @@ public class Main {
         Thread threadApplyFilters = new Thread(new Runnable() {
             @Override
             public void run() {
+                if(CheckNotDoable()) return;
                 int beforeFilter_scheduleCount = schedules.size();
                 ApplyFiltersAlgorithm(lstFiltersModel, schedules, lblProgressBar, lstAddedClassFiltersListModel);
                 int dtfCount = lstFiltersModel.getSize();
@@ -1290,12 +1323,8 @@ public class Main {
                         + afterFilter_scheduleCount
                         + " schedules are obtained after filtering.";
                 System.out.println("\n\n" + message + "\n\n");
-                lblProgressBar.setText("<html>"
-                        + "Status: "
-                        + "<font face=\"verdana\" color=\"green\"><b><i>"
-                        + "idle"
-                        + "</i></b></font></html>");
-                ShowMessage(message);
+                SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
+                ShowMessage(message, "Filtering successful !");
                 RefreshScheduleListComboBox(schedules);
             }
         });
@@ -1303,14 +1332,18 @@ public class Main {
         return threadApplyFilters;
     }
 
-    private static void ShowMessage(String message) {
+    private static void ShowMessage(String message, String title) {
+        ShowMessage(message, title, JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private static void ShowMessage(String message, String title, int messageType) {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 JOptionPane.showMessageDialog(frame,
-                                            message,
-                                            "Filter(s) have been applied successfully.",
-                                            JOptionPane.PLAIN_MESSAGE);
+                        message,
+                        title,
+                        messageType);
             }
         });
     }
@@ -1437,17 +1470,9 @@ public class Main {
         String CourseDescrInfo = strListCourse_Career_AcadOrg_Descr_Descr2.get(2);
         String CourseDescr2Info = strListCourse_Career_AcadOrg_Descr_Descr2.get(3);
 
-        lblCourseLevel.setText("<html>"
-                + defaultCourseLevelLabel
-                + "<font face=\"verdana\" color=\"green\"><b><i>"
-                + CourseCareerInfo
-                + "</i></b></font></html>");
+        SetProgressBarLabelTxt(lblCourseLevel, defaultCourseLevelLabel, "<font face=\"verdana\" color=\"green\"><b><i>", CourseCareerInfo);
 
-        lblCourseFaculty.setText("<html>"
-                + defaultCourseFacultyLabel
-                + "<font face=\"verdana\" color=\"green\"><b><i>"
-                + CourseAcadCareerInfo
-                + "</i></b></font></html>");
+        SetProgressBarLabelTxt(lblCourseFaculty, defaultCourseFacultyLabel, "<font face=\"verdana\" color=\"green\"><b><i>", CourseAcadCareerInfo);
 
         lblCourseDescr.setText("<html>"
                 + defaultCourseDescrLabel
