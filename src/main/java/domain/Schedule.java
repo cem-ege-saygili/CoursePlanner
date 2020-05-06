@@ -27,7 +27,7 @@ public class Schedule implements Serializable{
     }
 
 
-    public static List<Schedule> GenerateSchedulesFromClassBundlesList(List<List<ClassBundle>> classBundlesList){
+    public static List<Schedule> GenerateSchedulesFromClassBundlesList(List<List<ClassBundle>> classBundlesList){//algo. part 2
 
         List<Schedule> schedules = new ArrayList<>();
 
@@ -178,11 +178,11 @@ public class Schedule implements Serializable{
 //        Schedule.scheduleIdcounter = scheduleList.size();
     }
 
-    private static void UpdateProgressbarWithPercentage(List<Schedule> scheduleList,
+    private static <T> void UpdateProgressbarWithPercentage(List<T> objList,
                                                         String progressBarStr,
                                                         JLabel lblProgressBar,
                                                         int curIndex) {
-        Double size = Double.valueOf(scheduleList.size());
+        Double size = Double.valueOf(objList.size());
 
         Double percentage = Math.floor((size - curIndex)/size*1000)/10;
 

@@ -12,6 +12,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 
 public class Main {
+    final static int upperLimit = 500000;//SET # of max. result set size of the core scheduling algorithm. (500K)
+
     static final int MAIN_FRAME_WIDTH = 1350;
     static final int  MAIN_FRAME_HEIGHT = 805;
     static final int PROGRESS_BAR_X_MARGIN = 15;
@@ -100,7 +102,7 @@ public class Main {
     static final int IMPORT_BUTTON_WIDTH = 100;
     static final int IMPORT_BUTTON_HEIGHT = 75;
 
-    static List<Schedule> scheduleListToView = null;
+    static List<Schedule> scheduleListToView;
     static JFrame scheduleFrame;
     private static List<String> distinctClassComponentsList_GivenCourse;
     private static List<Class> classListForClassFilter;
@@ -814,20 +816,24 @@ public class Main {
 
                 scheduleListComboBox.removeAllItems();
 
+                scheduleListToView = new ArrayList<>();
+
                 long algorithm_startTime = System.nanoTime();
 
-                for (List<Class> curClassList : classesList) {//ALGORITHM_PART1_GenerateClassBundlesList
-                    List<ClassBundle> curBundles = ClassBundle.GenerateClassBundlesFromClasses(curClassList);
-                    System.out.println(curBundles);
-                    classBundlesList.add(curBundles);
+                //############################## BEGIN ######################################################## : ALGORITHM to generate all possible schedules from classes list
+
+                Thread threadAExecuteAlgorithm = ExecuteAlgorithm(classBundlesList, classesList);//it runs on a separate thread.
+
+                try {
+                    threadAExecuteAlgorithm.join();//wait for algorithm to finish.
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
                 }
-//
-                List<Schedule> schedules = Schedule.GenerateSchedulesFromClassBundlesList(classBundlesList);//ALGORITHM_PART2_GenerateSchedules
+                //############################## END ######################################################## : ALGORITHM to generate all possible schedules from classes list
 
-                int resultSetSizeWithoutAnyFilter = schedules.size();
-                int upperLimit = 500000;
+                int resultSetSizeWithoutAnyFilter = scheduleListToView.size();
 
-                boolean canApplyFiltersAutomatically = resultSetSizeWithoutAnyFilter<=upperLimit;
+                boolean canApplyFiltersAutomatically = (resultSetSizeWithoutAnyFilter<=upperLimit);
 
                 long lostTime = 0;
                 Thread threadApplyFilter = null;
@@ -842,7 +848,7 @@ public class Main {
                             JOptionPane.WARNING_MESSAGE);
                     if(dialogResult == JOptionPane.YES_OPTION){//still want to apply filters
 
-                        threadApplyFilter = ApplyFilters(schedules, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
+                        threadApplyFilter = ApplyFilters(scheduleListToView, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
 
                     }else{//skip applying filters
                         lstAddedClassFiltersListModel.removeAllElements();
@@ -852,7 +858,7 @@ public class Main {
                     lostTime = lostTime_end - lostTime_start;
                 }else{//if filters can be applied automatically, no need to ask to user, just apply them.
 
-                    threadApplyFilter = ApplyFilters(schedules, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
+                    threadApplyFilter = ApplyFilters(scheduleListToView, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
 
                 }
 
@@ -868,11 +874,9 @@ public class Main {
 
                 long timeElapsedInNanoseconds = algorithm_endTime - algorithm_startTime - lostTime;
 
-                if (schedules != null && schedules.size() !=0){
+                if (scheduleListToView != null && scheduleListToView.size() !=0){
 
-                    scheduleListToView = schedules;
-
-                    int numSchedulesGenerated = schedules.size();
+                    int numSchedulesGenerated = scheduleListToView.size();
 
                     long mins = ((timeElapsedInNanoseconds / 1000000000)/60);
                     timeElapsedInNanoseconds -= mins*60*1000000000;
@@ -905,9 +909,7 @@ public class Main {
                 }
 
 
-                for(Schedule curSchedule:schedules){
-                    scheduleListComboBox.addItem(curSchedule);
-                }
+                RefreshScheduleListComboBox(scheduleListToView);
 
                 Thread threadSerializeOutAndWriteHtml = new Thread(new Runnable() {
                     @Override
@@ -915,10 +917,10 @@ public class Main {
                         try {
                             final String finalRecordName = GetFinalRecordName(lstCourses2BePlannedModel);
                             final String savePath = GetSavePath(lstCourses2BePlannedModel);
-                            Serializer.SerializeOut(schedules, tupleList, lstAddedClassFiltersListModel, lstFiltersModel, finalRecordName, lblProgressBar);//Save the resulting schedules (i.e. export schedules)
+                            Serializer.SerializeOut(scheduleListToView, tupleList, lstAddedClassFiltersListModel, lstFiltersModel, finalRecordName, lblProgressBar);//Save the resulting schedules as a serializable .json file (i.e. export schedules)
 //                            Serializer.SerializeIn(finalRecordName, schedulesIn, lblProgressBar);//Restore the saved schedules (i.e. import schedules)
 //                            ExportSchedulesAsImages(savePath, btnList, schedules, lblProgressBar);//Save the resulting schedules as .jpeg files.
-                            Schedule.PrintOutSchedulesToUser(schedules, finalRecordName, lblProgressBar);//write to .html file
+                            Schedule.PrintOutSchedulesToUser(scheduleListToView, finalRecordName, lblProgressBar);//write to .html file
                             JEditorPane ep = new JEditorPane();
                             ep.setContentType("text/html");
                             File htmlFile = new File(savePath + finalRecordName + ".html");
@@ -1151,6 +1153,32 @@ public class Main {
 
     }
 
+    private static Thread ExecuteAlgorithm(List<List<ClassBundle>> classBundlesList, List<List<Class>> classesList) {
+        Thread threadExecuteAlgorithm = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AlgorithmPart_1_Call_GenerateClassBundles(classBundlesList, classesList);
+                AlgorithmPart_2_Call_GenerateSchedulesFromClassBundlesList(classBundlesList);
+            }
+        });
+        threadExecuteAlgorithm.start();
+        return  threadExecuteAlgorithm;
+    }
+
+    private static void AlgorithmPart_1_Call_GenerateClassBundles(List<List<ClassBundle>> classBundlesList, List<List<Class>> classesList) {
+        for (List<Class> curClassList : classesList) {//ALGORITHM_PART1_GenerateClassBundlesList
+            List<ClassBundle> curBundles = ClassBundle.GenerateClassBundlesFromClasses(curClassList);
+            System.out.println(curBundles);
+            classBundlesList.add(curBundles);
+        }
+    }
+
+    private static void AlgorithmPart_2_Call_GenerateSchedulesFromClassBundlesList(List<List<ClassBundle>> classBundlesList){
+        scheduleListToView = Schedule.GenerateSchedulesFromClassBundlesList(classBundlesList);//ALGORITHM_PART2_GenerateSchedules;
+    }
+
+
+
     private static void ClearAll(DefaultListModel lstAddedClassFiltersListModel, JLabel lblCourseSubjectAndCatalog, JLabel lblCourseClassFilter, JComboBox<String> distinctClassComponents_GivenCourse_ComboBox, DefaultListModel lstClassFiltersListModel, DefaultListModel lstFiltersModel, List<CourseSubject_Catalog_Priority_Tuple> tupleList, List<List<Class>> classesList, DefaultListModel lstCourses2BePlannedModel, JComboBox<Schedule> scheduleListComboBox) {
         ClearClassFilters(lstAddedClassFiltersListModel,lblCourseSubjectAndCatalog,lblCourseClassFilter,distinctClassComponents_GivenCourse_ComboBox,lstClassFiltersListModel);
         lstFiltersModel.removeAllElements();//clear day & time filters
@@ -1248,7 +1276,7 @@ public class Main {
                         + "idle"
                         + "</i></b></font></html>");
                 ShowMessage(message);
-                RefreshScheduleList();
+                RefreshScheduleListComboBox(schedules);
             }
         });
         threadApplyFilters.start();
@@ -1428,9 +1456,9 @@ public class Main {
         //weeklyScheduleView.createWeeklySchedule2(scheduleToView);
     }
 
-    private static void RefreshScheduleList(){
+    private static void RefreshScheduleListComboBox(List<Schedule> schedules){
         scheduleListComboBox.removeAllItems();
-        for(Schedule curSchedule:scheduleListToView){
+        for(Schedule curSchedule:schedules){
             scheduleListComboBox.addItem(curSchedule);
         }
     }
