@@ -134,7 +134,7 @@ public class DayTimeFramePair implements Serializable {
 
         return ("<html>"
 
-                + "Filter: "
+                + "Filter Out: "
                 //"is for the following days: " +
                     + "<font face=\"verdana\" color=\"green\"><b><i>"
                 + filterDaysStr

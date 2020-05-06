@@ -187,6 +187,7 @@ public class Schedule implements Serializable{
         Double percentage = Math.floor((size - curIndex)/size*1000)/10;
 
         SetProgressBarText(lblProgressBar, progressBarStr, percentage);
+
     }
 
     public static void ClassFilterSchedulesIncluding_ClassLists (List<Schedule> scheduleList,

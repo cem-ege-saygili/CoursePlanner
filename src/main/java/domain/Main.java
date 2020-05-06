@@ -829,6 +829,7 @@ public class Main {
                 boolean canApplyFiltersAutomatically = resultSetSizeWithoutAnyFilter<=upperLimit;
 
                 long lostTime = 0;
+                Thread threadApplyFilter = null;
 
                 if(!canApplyFiltersAutomatically && (!lstFiltersModel.isEmpty() || !lstAddedClassFiltersListModel.isEmpty())){
                     long lostTime_start = System.nanoTime();
@@ -840,7 +841,7 @@ public class Main {
                             JOptionPane.WARNING_MESSAGE);
                     if(dialogResult == JOptionPane.YES_OPTION){//still want to apply filters
 
-                        ApplyFilters(schedules, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
+                        threadApplyFilter = ApplyFilters(schedules, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
 
                     }else{//skip applying filters
                         lstAddedClassFiltersListModel.removeAllElements();
@@ -850,8 +851,16 @@ public class Main {
                     lostTime = lostTime_end - lostTime_start;
                 }else{//if filters can be applied automatically, no need to ask to user, just apply them.
 
-                    ApplyFilters(schedules, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
+                    threadApplyFilter = ApplyFilters(schedules, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
 
+                }
+
+                if(threadApplyFilter != null) {
+                    try {
+                        threadApplyFilter.join();
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                 }
 
                 long algorithm_endTime = System.nanoTime();
@@ -1203,31 +1212,38 @@ public class Main {
         lblProgressBar.paintImmediately(lblProgressBar.getVisibleRect());
     }
 
-    private static void ApplyFilters(List<Schedule> schedules, JLabel lblProgressBar, DefaultListModel lstFiltersModel, DefaultListModel lstAddedClassFiltersListModel) {
+    private static Thread ApplyFilters(List<Schedule> schedules, JLabel lblProgressBar, DefaultListModel lstFiltersModel, DefaultListModel lstAddedClassFiltersListModel) {
 
-        if (!lstFiltersModel.isEmpty()) {//Apply Time & Day Exclusion Filter
-            List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
-            for (int i = 0; i < lstFiltersModel.size();i++) {
-                DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
-                dayTimeFramePairs.add(curDayTimeFramePair);
-            }
-            Schedule.FilterOutSchedulesFrom(schedules,
-                                            dayTimeFramePairs,
-                                            lblProgressBar);
-        }
+        Thread threadApplyFilters = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (!lstFiltersModel.isEmpty()) {//Apply Time & Day Exclusion Filter
+                    List<DayTimeFramePair> dayTimeFramePairs = new ArrayList<>();
+                    for (int i = 0; i < lstFiltersModel.size();i++) {
+                        DayTimeFramePair curDayTimeFramePair = (DayTimeFramePair) lstFiltersModel.getElementAt(i);
+                        dayTimeFramePairs.add(curDayTimeFramePair);
+                    }
+                    Schedule.FilterOutSchedulesFrom(schedules,
+                            dayTimeFramePairs,
+                            lblProgressBar);
+                }
 
-        if (!lstAddedClassFiltersListModel.isEmpty()) {//Apply INCLUDE CLASSES filter
-            List<Class> activeClassFilterElementClassList = new ArrayList<>();
-            for (int i = 0; i < lstAddedClassFiltersListModel.size(); i++) {
-                Class curActiveClassFilterElementClass = ((ActiveClassFilterElement) lstAddedClassFiltersListModel
-                        .getElementAt(i))
-                        .getClassForActiveClassFilterElement();
-                activeClassFilterElementClassList.add(curActiveClassFilterElementClass);
+                if (!lstAddedClassFiltersListModel.isEmpty()) {//Apply INCLUDE CLASSES filter
+                    List<Class> activeClassFilterElementClassList = new ArrayList<>();
+                    for (int i = 0; i < lstAddedClassFiltersListModel.size(); i++) {
+                        Class curActiveClassFilterElementClass = ((ActiveClassFilterElement) lstAddedClassFiltersListModel
+                                .getElementAt(i))
+                                .getClassForActiveClassFilterElement();
+                        activeClassFilterElementClassList.add(curActiveClassFilterElementClass);
+                    }
+                    Schedule.ClassFilterSchedulesIncluding_ClassLists(schedules,
+                            activeClassFilterElementClassList,
+                            lblProgressBar);
+                }
             }
-            Schedule.ClassFilterSchedulesIncluding_ClassLists(schedules,
-                                                            activeClassFilterElementClassList,
-                                                            lblProgressBar);
-        }
+        });
+        threadApplyFilters.start();
+        return threadApplyFilters;
     }
 
     private static void ReFillClassFilterList(String courseSubject,
