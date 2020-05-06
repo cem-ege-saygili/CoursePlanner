@@ -67,14 +67,24 @@ public class DayTimeFramePair implements Serializable {
 
     public DayTimeFramePair(boolean monFlag, boolean tuesFlag, boolean wedFlag, boolean thursFlag, boolean friFlag,
                             String startTime, String endTime){
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.dayBooleans = new ArrayList<>();
+        if(
+                !monFlag && !tuesFlag && !wedFlag
+                && !thursFlag && !friFlag
+        ){//if no day is selected, then it means all-days => completely fill dayBooleans with true
+
+            for(int i=0;i<5;i++)
+                dayBooleans.add(true);
+            return;
+
+        }
         dayBooleans.add(monFlag);
         dayBooleans.add(tuesFlag);
         dayBooleans.add(wedFlag);
         dayBooleans.add(thursFlag);
         dayBooleans.add(friFlag);
-        this.startTime = startTime;
-        this.endTime = endTime;
     }
 
     public boolean getMonFlag(){
@@ -106,17 +116,8 @@ public class DayTimeFramePair implements Serializable {
 
         String filterDaysStr = (
 
-                ((!getMonFlag() &&
-                !getTuesFlag() && !getWedFlag() &&
-                !getThursFlag() && !getFriFlag())
-
-                        ||
-
-                        (
-                                getMonFlag() && getTuesFlag() &&
-                                        getThursFlag() &&getFriFlag()
-
-                                ))
+                (getMonFlag() && getTuesFlag() && getWedFlag()
+                && getThursFlag() && getFriFlag())
 
                 ?
 
@@ -128,15 +129,27 @@ public class DayTimeFramePair implements Serializable {
                         getTuesFlag(),
                         getWedFlag(),
                         getThursFlag(),
-                        getFriFlag()).toString()
-                );
+                        getFriFlag()
+                ).toString());
 
-        return ("Filter: " +
+        return ("<html>"
+
+                + "Filter: "
                 //"is for the following days: " +
-                filterDaysStr +
-                ", from \"" + startTime +
-                " - to " + endTime +
-                "\".");
+                    + "<font face=\"verdana\" color=\"green\"><b><i>"
+                + filterDaysStr
+                    + "</i></b></font>"
+                + "<br>from \""
+                    + "<font face=\"verdana\" color=\"red\"><b><i>"
+                + startTime
+                    + "</i></b></font>"
+                + " to "
+                    + "<font face=\"verdana\" color=\"red\"><b><i>"
+                + endTime
+                    + "</i></b></font>"
+                + "\"." +
+
+                "</html>");
 
     }
 

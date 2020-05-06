@@ -62,8 +62,17 @@ public class CourseSubject_Catalog_Priority_Tuple implements Serializable {
     @Override
     public String toString(){
 
-        return "Subject: " + subject +
-                ", Catalog: " + catalog;
+        return "<html>"
+                + "Subject: "
+                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
+                + subject
+                    + "</i></b></font>"
+                + ", Catalog: "
+                    + "<font face=\"verdana\" color=\"blue\"><b><i>"
+                + catalog
+                    + "</i></b></font>"
+                + "</html>" ;
+
                // + ", Priority: " + priority;
     }
 

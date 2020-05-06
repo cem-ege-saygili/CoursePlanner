@@ -312,6 +312,7 @@ public class Main {
 
         DefaultListModel lstFiltersModel = new DefaultListModel();
         JList lstFilters = new JList(lstFiltersModel);
+        JScrollPane scrollPaneFilters = new JScrollPane(lstFilters);
 
         InitialFillFilterTimeComboBoxes(filterStartTimeComboBox, filterEndTimeComboBox);
 
@@ -328,6 +329,7 @@ public class Main {
 
         DefaultListModel lstCourses2BePlannedModel = new DefaultListModel();
         JList lstCourse2BePlanned = new JList(lstCourses2BePlannedModel);
+        JScrollPane scrollPaneCourse2BePlanned = new JScrollPane(lstCourse2BePlanned);
 
 
 //        Integer curTimeStart = timeTables.get((String)courseSubjectsComboBox.getSelectedItem())[0];
@@ -717,10 +719,10 @@ public class Main {
         btnClearFilters.setBounds(FILTER_BUTTON_X_MARGIN + FILTER_ADD_BUTTON_WIDTH + FILTER_REMOVE_BUTTON_WIDTH, FILTER_BUTTON_Y_MARGIN, FILTER_CLEAR_BUTTON_WIDTH, FILTER_BUTTON_HEIGHT);
 
         activeFiltersLabel.setBounds(ACTIVE_FILTERS_TEXT_X_MARGIN, ACTIVE_FILTERS_TEXT_Y_MARGIN, ACTIVE_FILTERS_TEXT_WIDTH, ACTIVE_FILTERS_TEXT_HEIGHT);
-        lstFilters.setBounds(ACTIVE_FILTERS_PANE_X_MARGIN, ACTIVE_FILTERS_PANE_Y_MARGIN, ACTIVE_FILTERS_PANE_WIDTH, ACTIVE_FILTERS_PANE_HEIGHT);
+        scrollPaneFilters.setBounds(ACTIVE_FILTERS_PANE_X_MARGIN, ACTIVE_FILTERS_PANE_Y_MARGIN, ACTIVE_FILTERS_PANE_WIDTH, ACTIVE_FILTERS_PANE_HEIGHT);
 
         courses2BePlannedLabel.setBounds(COURSES_TO_BE_PLANNED_TEXT_X_MARGIN, COURSES_TO_BE_PLANNED_TEXT_Y_MARGIN, COURSES_TO_BE_PLANNED_TEXT_WIDTH, COURSES_TO_BE_PLANNED_TEXT_HEIGHT);
-        lstCourse2BePlanned.setBounds(COURSES_TO_BE_PLANNED_PANE_X_MARGIN, COURSES_TO_BE_PLANNED_PANE_Y_MARGIN, COURSES_TO_BE_PLANNED_PANE_WIDTH, COURSES_TO_BE_PLANNED_PANE_HEIGHT);
+        scrollPaneCourse2BePlanned.setBounds(COURSES_TO_BE_PLANNED_PANE_X_MARGIN, COURSES_TO_BE_PLANNED_PANE_Y_MARGIN, COURSES_TO_BE_PLANNED_PANE_WIDTH, COURSES_TO_BE_PLANNED_PANE_HEIGHT);
 
         btnGenerateNonOverlappingSchedules.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, SCHEDULE_MANAGEMENT_Y_MARGIN, SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);
         scheduleListComboBox.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, (SCHEDULE_MANAGEMENT_Y_MARGIN + SCHEDULE_MANAGEMENT_Y_HEIGHT), SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);;
@@ -756,7 +758,7 @@ public class Main {
         frame.add(btnAddFilter);
         frame.add(btnRemoveFilter);
         frame.add(btnClearFilters);
-        frame.add(lstFilters);
+        frame.add(scrollPaneFilters);
         frame.add(btnGenerateNonOverlappingSchedules);
         frame.add(btnImport);
         frame.add(btnExport);
@@ -774,7 +776,7 @@ public class Main {
         frame.add(courses2BePlannedLabel);
         frame.add(btnViewWeeklySchedule);
         frame.add(lblCourseFaculty);
-        frame.add(lstCourse2BePlanned);
+        frame.add(scrollPaneCourse2BePlanned);
         frame.setLayout(null);
         frame.setVisible(true);
 
