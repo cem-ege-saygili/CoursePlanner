@@ -289,10 +289,12 @@ public class Main {
         JButton btnGenerateNonOverlappingSchedules = new JButton("Generate non-overlapping Schedule(s)");
         JButton btnClearPlanningList = new JButton("Clear the Planning List");
 
-        JButton btnImport = new JButton("<html>Import<br>Schedules</html>");
-        JButton btnExport = new JButton("<html>Export<br>Schedules</html>");
-        JButton btnClearAll = new JButton("<html>Clear<br>All</html>");
-        JButton btnApplyFilters = new JButton("<html>Apply<br>Filters</html>");
+        JButton btnImportAsJson = new JButton("<html><p style=\"text-align:center;\">Import<br>As<br>.json</p></html>");
+        JButton btnExportAsJson = new JButton("<html><p style=\"text-align:center;\">Export<br>As<br>.json</p></html>");
+        JButton btnExportAsJpeg = new JButton("<html><p style=\"text-align:center;\">Export<br>As<br>.jpeg</p></html>");
+        JButton btnExportAsHtml = new JButton("<html><p style=\"text-align:center;\">Export<br>As<br>.html</p></html>");
+        JButton btnClearAll = new JButton("<html><p style=\"text-align:center;\">Clear<br>All</p></html>");
+        JButton btnApplyFilters = new JButton("<html><p style=\"text-align:center;\">Apply<br>Filter(s)</p></html>");
 
         JCheckBox checkBox_Exclude_Mon = new JCheckBox("Monday");
         JCheckBox checkBox_Exclude_Tues = new JCheckBox("Tuesday");
@@ -729,11 +731,13 @@ public class Main {
         scheduleListComboBox.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, (SCHEDULE_MANAGEMENT_Y_MARGIN + SCHEDULE_MANAGEMENT_Y_HEIGHT), SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);;
         btnViewWeeklySchedule.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, (SCHEDULE_MANAGEMENT_Y_MARGIN + 2 * SCHEDULE_MANAGEMENT_Y_HEIGHT), SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);
 
-        btnImport.setBounds(IMPORT_BUTTON_X_MARGIN, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnImportAsJson.setBounds(IMPORT_BUTTON_X_MARGIN, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnExportAsJson.setBounds(IMPORT_BUTTON_X_MARGIN+100, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnExportAsHtml.setBounds(IMPORT_BUTTON_X_MARGIN+200, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
 
-        btnExport.setBounds(IMPORT_BUTTON_X_MARGIN + 100, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
-        btnClearAll.setBounds(IMPORT_BUTTON_X_MARGIN + 200, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
-        btnApplyFilters.setBounds(IMPORT_BUTTON_X_MARGIN + 300, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnExportAsJpeg.setBounds(IMPORT_BUTTON_X_MARGIN + 300, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnClearAll.setBounds(IMPORT_BUTTON_X_MARGIN + 400, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnApplyFilters.setBounds(IMPORT_BUTTON_X_MARGIN + 500, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
 
         frame.add(lblProgressBar);
         frame.add(lblCourseSubject);
@@ -762,8 +766,10 @@ public class Main {
         frame.add(btnClearFilters);
         frame.add(scrollPaneFilters);
         frame.add(btnGenerateNonOverlappingSchedules);
-        frame.add(btnImport);
-        frame.add(btnExport);
+        frame.add(btnImportAsJson);
+        frame.add(btnExportAsJson);
+        frame.add(btnExportAsJpeg);
+        frame.add(btnExportAsHtml);
         frame.add(btnClearAll);
         frame.add(btnApplyFilters);
         frame.add(scheduleListComboBox);
@@ -964,7 +970,7 @@ public class Main {
 
         });
 
-        btnImport.addActionListener(new ActionListener() {
+        btnImportAsJson.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -1044,7 +1050,7 @@ public class Main {
             }
         });
 
-        btnExport.addActionListener(new ActionListener() {
+        btnExportAsJpeg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Thread threadExportSchedulesAsImages = new Thread(new Runnable() {
@@ -1078,6 +1084,20 @@ public class Main {
                     });
                 threadExportSchedulesAsImages.start();
                 }
+        });
+
+        btnExportAsJson.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        btnExportAsHtml.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
         });
 
         btnClearAll.addActionListener(new ActionListener() {
