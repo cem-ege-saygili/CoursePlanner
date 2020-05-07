@@ -5,6 +5,9 @@ import DB_Utilities.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -192,9 +195,10 @@ public class Main {
 
         //run only once ################################################################### BEGIN ################################################################### //////////////////////
 
-        File dbFile = new File(csvFilePath);
-        boolean dbExists = dbFile.exists();
-        if(!dbExists)
+//        File dbFile = new File(csvFilePath);
+        Path dbFilePath = Paths.get("outputs/" + dbName + ".db");
+        boolean dbNotExists = Files.notExists(dbFilePath);
+        if(dbNotExists)
             PrepareNormalizedTablesFromCSV(classInfoList,
                                         csvFilePath,
                                         sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
