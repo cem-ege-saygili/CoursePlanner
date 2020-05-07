@@ -12,13 +12,33 @@ import javax.swing.filechooser.FileSystemView;
 
 public class Main {
     final static int upperLimit = 500000;//SET # of max. result set size of the core scheduling algorithm. (500K)
-    final static String HelpMeText = "THIS" +
-                                    "\nIS" +
-                                    "\nA" +
-                                    "\nRead" +
-                                    "\nMe" +
-                                    "\nFile" +
-                                    "\n!";
+    final static String HelpMeText = "WELCOME TO THE COURSE PLANNER!\n"
+    +"SELECTING COURSES:\n"
+    + "Please first select the courses you want to enroll in this semester by selecting them from the top right,\n"
+    +"and then pressing the Add Course to the Planning List Button. Previously selected courses can be seen in the\n"
+    +" Courses to be planned window. You can remove any previously selected courses by clicking a course in the Courses\n"
+    +"to be planned window and pressing Remove Selected from the Planning List, or you can remove all previously\n"
+    +"selected courses by pressing the Clear the Planning List button\n"
+    +"ADDING FILTERS:\n"
+    +"You can exclude any schedules which have courses in a selected timeframe by selecting a day and time zone from the \n"
+    +"center left, and then pressing the Add filter button. The previously added filters can be removed by clicking on\n"
+    +"them and pressing the Remove filter button, or you can clear all the previously selected  filters by pressing the\n"
+    +"Clear filters button. You can also force the course planner to include a specific lecture in the generated schedules.\n"
+    +"First select a course from the Courses to be planned window by double clicking it, then select the type of the \n"
+    +"course from the dropbox under the Course Class Filter, then select the section you want in the generated schedule\n"
+    +"and press the Add Class Filter Button. You can remove class filter(s) by using Remove Class Filter or Clear Class \n"
+    +"Filters buttons.\n"
+    +"GENERATING SCHEDULES:\n"
+    +"After selecting the courses you want to enroll, and the filter you want, press the Generate non-overlapping Schedule(s)\n"
+    +"button. The appropriate schedules will be generated, then a Weekly Schedule Window showing the first possible schedule \n"
+    +"will be shown. You can cycle between different schedules using the arrows at the bottom, or by selecting them from\n"
+    +"the bottom left of the Course Planner's main window and pressing the View Weekly Schedule button.\n"
+    +"EXPORTING AND IMPORTING:\n"
+    +"To export the generated the schedules in a list view in an html file, as jpeg images of the weekly schedule view,\n"
+    +"or as an json file, press the appropriate import button at the bottom of the program. To import a previously exported \n"
+    +"json file, press the Export as .json button, and to update course list from an external csv file,  press the Import as \n"
+    +".csv file button.\n"
+    +"If you need to read this prompt again, just press the Help me button. :)\n";
 
     static final int MAIN_FRAME_WIDTH = 1350;
     static final int  MAIN_FRAME_HEIGHT = 805;
