@@ -55,19 +55,20 @@ public class Main {
     static final int COURSE_SELECTION_HEIGHT = 25;
 
     static final int FILTER_CLASS_X_MARGIN = 420;
-    static final int FILTER_CLASS_TEXT_Y_MARGIN = 50;
-    static final int FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN = 350;
-    static final int FILTER_CLASS_TEXT_WIDTH = 130;
+    static final int FILTER_CLASS_TEXT_Y_MARGIN = 45;
+    static final int FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN = 410;
+    static final int FILTER_CLASS_TEXT_WIDTH = 125;
+    static final int FILTER_CLASS_TEXT_LONG_WIDTH = 900;
     static final int FILTER_CLASS_TEXT_HEIGHT = 25;
     static final int FILTER_CLASS_COMBO_WIDTH = 100;
     static final int FILTER_CLASS_COMBO_HEIGHT = 25;
     static final int FILTER_CLASS_BUTTON_WIDTH = 150;
     static final int FILTER_CLASS_BUTTON_HEIGHT = 25;
-    static final int FILTER_CLASS_SCROLLABLE_PANE_1_Y_MARGIN = 130;
-    static final int FILTER_CLASS_SCROLLABLE_PANE_2_Y_MARGIN = 375;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_1_Y_MARGIN = 120;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_2_Y_MARGIN = 435;
     static final int FILTER_CLASS_SCROLLABLE_PANE_WIDTH = 900;
-    static final int FILTER_CLASS_SCROLLABLE_PANE_1_HEIGHT = 200;
-    static final int FILTER_CLASS_SCROLLABLE_PANE_2_HEIGHT = 295;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_1_HEIGHT = 280;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_2_HEIGHT = 235;
 
 
     static final int COURSE_INFO_X_MARGIN = 15;
@@ -75,27 +76,27 @@ public class Main {
     static final int COURSE_INFO_WIDTH = 400;
     static final int COURSE_INFO_HEIGHT = 25;
 
-    static final int COURSE_MANAGEMENT_X_MARGIN = 60;
+    static final int COURSE_MANAGEMENT_X_MARGIN = 15;
     static final int COURSE_MANAGEMENT_Y_MARGIN = 250;
     static final int COURSE_MANAGEMENT_WIDTH = 300;
     static final int COURSE_MANAGEMENT_HEIGHT = 25;
 
-    static final int FILTER_DAY_X_MARGIN = 60;
+    static final int FILTER_DAY_X_MARGIN = 15;
     static final int FILTER_DAY_Y_MARGIN = 325;
     static final int FILTER_DAY_WIDTH = 70;
     static final int FILTER_DAY_HEIGHT = 25;
 
-    static final int FILTER_FROM_TEXT_X_MARGIN = 60;
+    static final int FILTER_FROM_TEXT_X_MARGIN = 15;
     static final int FILTER_FROM_AND_TO_TEXT_Y_MARGIN = 350;
     static final int FILTER_FROM_TEXT_WIDTH = 50;
     static final int FILTER_TO_TEXT_WIDTH = 30;
     static final int FILTER_TEXT_HEIGHT = 25;
 
-    static final int FILTER_TIME_X_MARGIN = 35;
+    static final int FILTER_TIME_X_MARGIN = 15;
     static final int FILTER_TIME_Y_MARGIN = 350;
     static final int FILTER_TIME_WIDTH = 125;
     static final int FILTER_TIME_HEIGHT = 25;
-    static final int FILTER_BUTTON_X_MARGIN = 50;
+    static final int FILTER_BUTTON_X_MARGIN = 15;
     static final int FILTER_BUTTON_Y_MARGIN = 380;
     static final int FILTER_ADD_BUTTON_WIDTH = 100;
     static final int FILTER_REMOVE_BUTTON_WIDTH = 120;
@@ -190,14 +191,14 @@ public class Main {
         //######################## - Help Me - END ########################
 
         //run only once ################################################################### BEGIN ################################################################### //////////////////////
-
+        /*
         PrepareNormalizedTablesFromCSV(classInfoList,
                                         csvFilePath,
                                         sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
                                         sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
                                         sqlQueryLocationList2Create_NormalizedTables,
                                         sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
-
+        */
         //run only once ################################################################### END ################################################################### //////////////////////
 
 
@@ -710,7 +711,7 @@ public class Main {
         priorityValuesComboBox.setBounds(COURSE_SELECTION_COMBO_X_MARGIN, (COURSE_SELECTION_Y_MARGIN + 2 * COURSE_SELECTION_HEIGHT), COURSE_SELECTION_WIDTH, COURSE_SELECTION_HEIGHT);
 
         lblCourseClassFilter.setBounds(FILTER_CLASS_X_MARGIN, FILTER_CLASS_TEXT_Y_MARGIN, FILTER_CLASS_TEXT_WIDTH, FILTER_CLASS_TEXT_HEIGHT);
-        lblCourseSubjectAndCatalog.setBounds(FILTER_CLASS_X_MARGIN, (FILTER_CLASS_TEXT_Y_MARGIN + FILTER_CLASS_TEXT_HEIGHT), (3 * FILTER_CLASS_TEXT_WIDTH), FILTER_CLASS_TEXT_HEIGHT);
+        lblCourseSubjectAndCatalog.setBounds(FILTER_CLASS_X_MARGIN, (FILTER_CLASS_TEXT_Y_MARGIN + FILTER_CLASS_TEXT_HEIGHT), FILTER_CLASS_TEXT_LONG_WIDTH, FILTER_CLASS_TEXT_HEIGHT);
 
         distinctClassComponents_GivenCourse_ComboBox.setBounds(FILTER_CLASS_X_MARGIN, (FILTER_CLASS_TEXT_Y_MARGIN + 2 * FILTER_CLASS_TEXT_HEIGHT), FILTER_CLASS_COMBO_WIDTH, FILTER_CLASS_COMBO_HEIGHT);
         btnAddClassFilter.setBounds((FILTER_CLASS_X_MARGIN + FILTER_CLASS_COMBO_WIDTH), (FILTER_CLASS_TEXT_Y_MARGIN + 2 * FILTER_CLASS_TEXT_HEIGHT), FILTER_CLASS_BUTTON_WIDTH, FILTER_CLASS_BUTTON_HEIGHT);
