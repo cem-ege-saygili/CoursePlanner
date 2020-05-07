@@ -126,9 +126,9 @@ public class Main {
 
 //        String fPath = System.getProperty("user.dir") + "/src/main/java/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
 
-        String fPath = "inputs/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
-        String sqlQuery_Create_Location = "inputs/sqlQuery_Create.sql";
-        String sqlQuery_Insert_Location = "inputs/sqlQuery_Insert.sql";
+        String csvFilePath = "inputs/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
+        String sqlQuery_Create_Table_CoursePlannerBIGGEST_Location = "inputs/sqlQuery_Create_Table_CoursePlannerBIGGEST.sql";
+        String sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location = "inputs/sqlQuery_Insert2Table_CoursePlannerBIGGEST.sql";
         String sqlQuery_SelectDistinctCourseSubjects_Location = "inputs/sqlQuery_selectDistinctCourseSubjects.sql";
         String sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location = "inputs/sqlQuery_selectCourseCatalogsOfChosenCourseSubject.sql";
         String sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location = "inputs/sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog.sql";
@@ -157,20 +157,16 @@ public class Main {
                         "inputs/Insert2Table_Class_Course_Infos.sql")
         );
 
-        //run only once BEGIN //////////////////////
+        //run only once ################################################################### BEGIN ################################################################### //////////////////////
 
-        /*
+        PrepareNormalizedTablesFromCSV(classInfoList,
+                                        csvFilePath,
+                                        sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
+                                        sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
+                                        sqlQueryLocationList2Create_NormalizedTables,
+                                        sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
 
-                CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
-
-                CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
-
-                CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
-
-        */
-
-
-        //run only once END ////////////////////////
+        //run only once ################################################################### END ################################################################### //////////////////////
 
 
         //System.out.println("after CleanStartAndFill_NormalizedTables");
@@ -1180,6 +1176,14 @@ public class Main {
             }
         });
 
+    }
+
+    private static void PrepareNormalizedTablesFromCSV(List<ClassInfo> classInfoList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, List<String> sqlQueryLocationList2Create_NormalizedTables, List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables) {
+        CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
+
+        CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
+
+        CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
     }
 
     private static void ViewWeeklyScheduleAtIndex(int selectedIndex, List<JButton> btnList) {
