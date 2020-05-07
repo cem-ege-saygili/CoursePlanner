@@ -288,6 +288,7 @@ public class Main {
         JButton btnClearAll = new JButton("<html><p style=\"text-align:center;\">Clear<br>All</p></html>");
         JButton btnApplyFilters = new JButton("<html><p style=\"text-align:center;\">Apply<br>Filter(s)</p></html>");
         JButton btnImport_DB_fromCSV = new JButton("<html><p style=\"text-align:center;\">Import<br>DB from<br>.csv</p></html>");
+        JButton btnHelpMe = new JButton("<html><p style=\"text-align:center;\">Help<br>Me</p></html>");
 
         JCheckBox checkBox_Exclude_Mon = new JCheckBox("Monday");
         JCheckBox checkBox_Exclude_Tues = new JCheckBox("Tuesday");
@@ -732,6 +733,7 @@ public class Main {
         btnClearAll.setBounds(IMPORT_BUTTON_X_MARGIN + 400, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
         btnApplyFilters.setBounds(IMPORT_BUTTON_X_MARGIN + 500, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
         btnImport_DB_fromCSV.setBounds(IMPORT_BUTTON_X_MARGIN + 600, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnHelpMe.setBounds(IMPORT_BUTTON_X_MARGIN + 700, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
 
         frame.add(lblProgressBar);
         frame.add(lblCourseSubject);
@@ -767,6 +769,7 @@ public class Main {
         frame.add(btnClearAll);
         frame.add(btnApplyFilters);
         frame.add(btnImport_DB_fromCSV);
+        frame.add(btnHelpMe);
         frame.add(scheduleListComboBox);
         frame.add(btnClearPlanningList);
         frame.add(checkBox_Exclude_Mon);
@@ -1143,6 +1146,13 @@ public class Main {
                         tupleList,
                         classesList,
                         lblProgressBar);
+            }
+        });
+
+        btnHelpMe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
 
