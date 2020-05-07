@@ -919,9 +919,16 @@ public class Main {
 //                            Serializer.SerializeIn(finalRecordName, schedulesIn, lblProgressBar);//Restore the saved schedules (i.e. import schedules)
 //                            ExportSchedulesAsImages(savePath, btnList, schedules, lblProgressBar);//Save the resulting schedules as .jpeg files.
                             ExportAsHTML(finalRecordName, lblProgressBar);
-//                            JEditorPane ep = new JEditorPane();
-//                            ep.setContentType("text/html");
-                            File htmlFile = new File(savePath + finalRecordName + ".html");
+
+                            int selectedIndex = 0;
+                            ViewWeeklyScheduleAtIndex(selectedIndex, btnList);//prompt the first generated schedule to user
+
+//                            File htmlFile = new File(savePath + finalRecordName + ".html");
+//                            OpenHTML(htmlFile);
+
+
+
+
 //                            try {
 //                                ep.setPage(htmlFile.toURI().toURL());
 //                            } catch (IOException e1) {
@@ -933,7 +940,7 @@ public class Main {
 //                            scrollPane.setPreferredSize(new Dimension(1000,500));
 
 
-                            OpenHTML(htmlFile);
+//                            OpenHTML(htmlFile);
 
 
 //                            JOptionPane.showMessageDialog(null, //Prompt user .html file.
@@ -1114,6 +1121,8 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ApplyFilters(scheduleListToView, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
+                int selectedIndex = 0;
+                ViewWeeklyScheduleAtIndex(selectedIndex, btnList);//prompt the first generated schedule to user
             }
         });
 
@@ -1138,9 +1147,6 @@ public class Main {
 
 
                     ViewWeeklySchedule(scheduleToView, btnList);
-
-
-
                 }
             }
         });
@@ -1174,6 +1180,12 @@ public class Main {
             }
         });
 
+    }
+
+    private static void ViewWeeklyScheduleAtIndex(int selectedIndex, List<JButton> btnList) {
+        scheduleListComboBox.setSelectedIndex(selectedIndex);
+        Schedule scheduleToView = scheduleListToView.get(selectedIndex);
+        ViewWeeklySchedule(scheduleToView, btnList);
     }
 
     private static boolean CheckNotDoable() {

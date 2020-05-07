@@ -252,7 +252,7 @@ public class Schedule implements Serializable{
     }
 
     public static void PrintOutSchedulesToUser(List<Schedule> schedules, String fName, JLabel lblProgressBar) throws IOException {
-        File file = new File("outputs/ScheduleExports/"+fName + "/" + fName + ".html");
+        File file = new File("outputs/ScheduleExports/"+fName + "/Plans for " + fName + ".html");
         file.delete();
         FileWriter fr = new FileWriter(file, true);
 
