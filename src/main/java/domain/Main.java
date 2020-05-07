@@ -287,6 +287,7 @@ public class Main {
         JButton btnExportAsHtml = new JButton("<html><p style=\"text-align:center;\">Export<br>As<br>.html</p></html>");
         JButton btnClearAll = new JButton("<html><p style=\"text-align:center;\">Clear<br>All</p></html>");
         JButton btnApplyFilters = new JButton("<html><p style=\"text-align:center;\">Apply<br>Filter(s)</p></html>");
+        JButton btnImport_DB_fromCSV = new JButton("<html><p style=\"text-align:center;\">Import<br>DB from<br>.csv</p></html>");
 
         JCheckBox checkBox_Exclude_Mon = new JCheckBox("Monday");
         JCheckBox checkBox_Exclude_Tues = new JCheckBox("Tuesday");
@@ -730,6 +731,7 @@ public class Main {
         btnExportAsJpeg.setBounds(IMPORT_BUTTON_X_MARGIN + 300, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
         btnClearAll.setBounds(IMPORT_BUTTON_X_MARGIN + 400, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
         btnApplyFilters.setBounds(IMPORT_BUTTON_X_MARGIN + 500, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnImport_DB_fromCSV.setBounds(IMPORT_BUTTON_X_MARGIN + 600, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
 
         frame.add(lblProgressBar);
         frame.add(lblCourseSubject);
@@ -764,6 +766,7 @@ public class Main {
         frame.add(btnExportAsHtml);
         frame.add(btnClearAll);
         frame.add(btnApplyFilters);
+        frame.add(btnImport_DB_fromCSV);
         frame.add(scheduleListComboBox);
         frame.add(btnClearPlanningList);
         frame.add(checkBox_Exclude_Mon);
@@ -1122,6 +1125,27 @@ public class Main {
             }
         });
 
+        btnImport_DB_fromCSV.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PrepareNormalizedTablesFromCSV(new ArrayList<ClassInfo>(), //re-generate DB from csv file provided through a file chooser. (i.e. no static csvFilePath)
+                        sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
+                        sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
+                        sqlQueryLocationList2Create_NormalizedTables,
+                        sqlQueryLocationList2CleanStartAndFill_NormalizedTables,
+                        lstAddedClassFiltersListModel,
+                        lstClassFiltersListModel,
+                        lstFiltersModel,
+                        lstCourses2BePlannedModel,
+                        lblCourseSubjectAndCatalog,
+                        lblCourseClassFilter,
+                        distinctClassComponents_GivenCourse_ComboBox,
+                        tupleList,
+                        classesList,
+                        lblProgressBar);
+            }
+        });
+
 
         btnViewWeeklySchedule.addActionListener(new ActionListener() {
             @Override
@@ -1178,6 +1202,86 @@ public class Main {
 
     }
 
+    private static void PrepareNormalizedTablesFromCSV(List<ClassInfo> classInfoList, //version using a file chooser to pick the .csv file.
+                                                       String sqlQuery_Create_Location,
+                                                       String sqlQuery_Insert_Location,
+                                                       List<String> sqlQueryLocationList2Create_NormalizedTables,
+                                                       List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables,
+                                                       DefaultListModel lstAddedClassFiltersListModel,
+                                                       DefaultListModel lstClassFiltersListModel,
+                                                       DefaultListModel lstFiltersModel,
+                                                       DefaultListModel lstCourses2BePlannedModel,
+                                                       JLabel lblCourseSubjectAndCatalog,
+                                                       JLabel lblCourseClassFilter,
+                                                       JComboBox distinctClassComponents_GivenCourse_ComboBox,
+                                                       List<CourseSubject_Catalog_Priority_Tuple> tupleList,
+                                                       List<List<Class>> classesList,
+                                                       JLabel lblProgressBar) {
+        ShowMessageNow("Please pick a UTF-8 compatible .csv file !\n\n(i.e.\n\t.csv file supporting special characters)", "Be Advised");
+
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+        Thread threadImportDBfromCSV = null;
+
+        int returnValue = jfc.showOpenDialog(null);
+
+        // int returnValue = jfc.showSaveDialog(null);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = jfc.getSelectedFile();
+            String fName = selectedFile.getName();
+            String extension = "";
+
+            int i = fName.lastIndexOf('.');
+            if (i > 0) {
+                extension = fName.substring(i+1);
+            }
+
+            if(extension.equals("csv")){
+
+                threadImportDBfromCSV = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ClearAll(lstAddedClassFiltersListModel,
+                                lblCourseSubjectAndCatalog,
+                                lblCourseClassFilter,
+                                distinctClassComponents_GivenCourse_ComboBox,
+                                lstClassFiltersListModel,
+                                lstFiltersModel,
+                                tupleList,
+                                classesList,
+                                lstCourses2BePlannedModel,
+                                scheduleListComboBox);
+
+                        String selectedFilePath = selectedFile.getPath();
+
+                        SetProgressBarLabelTxt(lblProgressBar, "Importing: ", "<font face=\"verdana\" color=\"red\"><b><i>", "DB from .csv");
+
+                        PrepareNormalizedTablesFromCSV(classInfoList,
+                                selectedFilePath,
+                                sqlQuery_Create_Location,
+                                sqlQuery_Insert_Location,
+                                sqlQueryLocationList2Create_NormalizedTables,
+                                sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
+
+                        SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
+                    }
+                });
+                threadImportDBfromCSV.start();
+
+            }else{
+                JOptionPane.showMessageDialog(frame,
+                        "Please choose a .csv file to import. ",
+                        "Wrong extension !",
+                        JOptionPane.ERROR_MESSAGE);
+                System.out.println("\n\nWrong extension.\n\n");
+            }
+        }
+        if(threadImportDBfromCSV ==null)
+            SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
+
+    }
+
     private static void PrepareNormalizedTablesFromCSV(List<ClassInfo> classInfoList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, List<String> sqlQueryLocationList2Create_NormalizedTables, List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables) {
         CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
@@ -1197,7 +1301,7 @@ public class Main {
 
         if (schedules == null || schedules.isEmpty()) {
             System.out.println("\n\nNothing to do !\n\n");
-            ShowMessage("Schedule list is currently empty !", "There is nothing to do !", JOptionPane.ERROR_MESSAGE);
+            ShowMessageLater("Schedule list is currently empty !", "There is nothing to do !", JOptionPane.ERROR_MESSAGE);
             return true;
         }
         return false;
@@ -1340,7 +1444,7 @@ public class Main {
                         + " schedules are obtained after filtering.";
                 System.out.println("\n\n" + message + "\n\n");
                 SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
-                ShowMessage(message, "Filtering successful !");
+                ShowMessageLater(message, "Filtering successful !");
                 RefreshScheduleListComboBox(schedules);
             }
         });
@@ -1348,11 +1452,22 @@ public class Main {
         return threadApplyFilters;
     }
 
-    private static void ShowMessage(String message, String title) {
-        ShowMessage(message, title, JOptionPane.PLAIN_MESSAGE);
+    private static void ShowMessageNow(String message, String title) {
+        ShowMessageNow(message, title, JOptionPane.PLAIN_MESSAGE);
     }
 
-    private static void ShowMessage(String message, String title, int messageType) {
+    private static void ShowMessageNow(String message, String title, int messageType) {
+        JOptionPane.showMessageDialog(frame,
+                message,
+                title,
+                messageType);
+    }
+
+    private static void ShowMessageLater(String message, String title) {
+        ShowMessageLater(message, title, JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private static void ShowMessageLater(String message, String title, int messageType) {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
