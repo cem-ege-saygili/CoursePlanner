@@ -57,7 +57,7 @@ public class Main {
     static final int FILTER_CLASS_X_MARGIN = 420;
     static final int FILTER_CLASS_TEXT_Y_MARGIN = 45;
     static final int FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN = 410;
-    static final int FILTER_CLASS_TEXT_WIDTH = 125;
+    static final int FILTER_CLASS_TEXT_WIDTH = 140;
     static final int FILTER_CLASS_TEXT_LONG_WIDTH = 900;
     static final int FILTER_CLASS_TEXT_HEIGHT = 25;
     static final int FILTER_CLASS_COMBO_WIDTH = 100;
@@ -92,7 +92,7 @@ public class Main {
     static final int FILTER_TO_TEXT_WIDTH = 30;
     static final int FILTER_TEXT_HEIGHT = 25;
 
-    static final int FILTER_TIME_X_MARGIN = 15;
+    static final int FILTER_TIME_X_MARGIN = 55;
     static final int FILTER_TIME_Y_MARGIN = 350;
     static final int FILTER_TIME_WIDTH = 125;
     static final int FILTER_TIME_HEIGHT = 25;
@@ -191,14 +191,14 @@ public class Main {
         //######################## - Help Me - END ########################
 
         //run only once ################################################################### BEGIN ################################################################### //////////////////////
-
+        /*
         PrepareNormalizedTablesFromCSV(classInfoList,
                                         csvFilePath,
                                         sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
                                         sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
                                         sqlQueryLocationList2Create_NormalizedTables,
                                         sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
-
+        */
         //run only once ################################################################### END ################################################################### //////////////////////
 
 
