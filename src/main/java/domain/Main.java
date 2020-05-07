@@ -192,7 +192,10 @@ public class Main {
 
         //run only once ################################################################### BEGIN ################################################################### //////////////////////
 
-        PrepareNormalizedTablesFromCSV(classInfoList,
+        File dbFile = new File(csvFilePath);
+        boolean dbExists = dbFile.exists();
+        if(!dbExists)
+            PrepareNormalizedTablesFromCSV(classInfoList,
                                         csvFilePath,
                                         sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
                                         sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
@@ -1354,6 +1357,7 @@ public class Main {
     }
 
     private static void PrepareNormalizedTablesFromCSV(List<ClassInfo> classInfoList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, List<String> sqlQueryLocationList2Create_NormalizedTables, List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables) {
+
         CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
         CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
