@@ -771,8 +771,6 @@ public class Main {
         frame.add(lblProgressBar);
         frame.add(lblCourseSubject);
         frame.add(courseSubjectsComboBox);
-        frame.add(lblPriority);
-        frame.add(priorityValuesComboBox);
         frame.add(lblCourseCatalog);
         frame.add(lblCourseClassFilter);/////////////////////////////////////////
         frame.add(lblCourseSubjectAndCatalog);
