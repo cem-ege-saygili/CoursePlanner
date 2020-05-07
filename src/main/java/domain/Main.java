@@ -4,8 +4,7 @@ import DB_Utilities.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -13,6 +12,13 @@ import javax.swing.filechooser.FileSystemView;
 
 public class Main {
     final static int upperLimit = 500000;//SET # of max. result set size of the core scheduling algorithm. (500K)
+    final static String HelpMeText = "THIS" +
+                                    "\nIS" +
+                                    "\nA" +
+                                    "\nRead" +
+                                    "\nMe" +
+                                    "\nFile" +
+                                    "\n!";
 
     static final int MAIN_FRAME_WIDTH = 1350;
     static final int  MAIN_FRAME_HEIGHT = 805;
@@ -116,7 +122,7 @@ public class Main {
 //    static boolean thursExclFlag;
 //    static boolean friExclFlag;
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         System.out.println("\nRunnable\n\n");
 
 
@@ -168,6 +174,15 @@ public class Main {
 
         //run only once ################################################################### END ################################################################### //////////////////////
 
+
+        //######################## - Help Me - BEGIN ########################
+        try {
+            CreateHelpMe(HelpMeText);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        DisplayHelpMe();
+        //######################## - Help Me - END ########################
 
         //System.out.println("after CleanStartAndFill_NormalizedTables");
 
@@ -1153,6 +1168,8 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                DisplayHelpMe();
+
             }
         });
 
@@ -1210,6 +1227,19 @@ public class Main {
             }
         });
 
+    }
+
+    private static void CreateHelpMe(String helpText) throws IOException {
+        File file = new File("Help.txt");
+        BufferedWriter output = new BufferedWriter(new FileWriter(file));
+        output.write(helpText);
+        output.close();
+    }
+
+    private static void DisplayHelpMe() {
+        ReadFile readFile = new ReadFile("Help.txt");
+        String helpStr = readFile.export2String();
+        ShowMessageNow(helpStr, "Reinforcements have arrived !");
     }
 
     private static void PrepareNormalizedTablesFromCSV(List<ClassInfo> classInfoList, //version using a file chooser to pick the .csv file.
