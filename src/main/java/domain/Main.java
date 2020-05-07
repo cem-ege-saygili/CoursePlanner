@@ -191,14 +191,14 @@ public class Main {
         //######################## - Help Me - END ########################
 
         //run only once ################################################################### BEGIN ################################################################### //////////////////////
-        /*
+
         PrepareNormalizedTablesFromCSV(classInfoList,
                                         csvFilePath,
                                         sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
                                         sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
                                         sqlQueryLocationList2Create_NormalizedTables,
                                         sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
-        */
+
         //run only once ################################################################### END ################################################################### //////////////////////
 
 
