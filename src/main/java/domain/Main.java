@@ -45,7 +45,8 @@ public class Main {
     static final int FILTER_CLASS_SCROLLABLE_PANE_1_Y_MARGIN = 130;
     static final int FILTER_CLASS_SCROLLABLE_PANE_2_Y_MARGIN = 375;
     static final int FILTER_CLASS_SCROLLABLE_PANE_WIDTH = 900;
-    static final int FILTER_CLASS_SCROLLABLE_PANE_HEIGHT = 200;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_1_HEIGHT = 200;
+    static final int FILTER_CLASS_SCROLLABLE_PANE_2_HEIGHT = 295;
 
 
     static final int COURSE_INFO_X_MARGIN = 15;
@@ -53,27 +54,27 @@ public class Main {
     static final int COURSE_INFO_WIDTH = 400;
     static final int COURSE_INFO_HEIGHT = 25;
 
-    static final int COURSE_MANAGEMENT_X_MARGIN = 15;
+    static final int COURSE_MANAGEMENT_X_MARGIN = 60;
     static final int COURSE_MANAGEMENT_Y_MARGIN = 250;
     static final int COURSE_MANAGEMENT_WIDTH = 300;
     static final int COURSE_MANAGEMENT_HEIGHT = 25;
 
-    static final int FILTER_DAY_X_MARGIN = 10;
+    static final int FILTER_DAY_X_MARGIN = 60;
     static final int FILTER_DAY_Y_MARGIN = 325;
-    static final int FILTER_DAY_WIDTH = 80;
+    static final int FILTER_DAY_WIDTH = 70;
     static final int FILTER_DAY_HEIGHT = 25;
 
-    static final int FILTER_FROM_TEXT_X_MARGIN = 15;
+    static final int FILTER_FROM_TEXT_X_MARGIN = 60;
     static final int FILTER_FROM_AND_TO_TEXT_Y_MARGIN = 350;
     static final int FILTER_FROM_TEXT_WIDTH = 50;
     static final int FILTER_TO_TEXT_WIDTH = 30;
     static final int FILTER_TEXT_HEIGHT = 25;
 
-    static final int FILTER_TIME_X_MARGIN = 55;
+    static final int FILTER_TIME_X_MARGIN = 35;
     static final int FILTER_TIME_Y_MARGIN = 350;
     static final int FILTER_TIME_WIDTH = 125;
     static final int FILTER_TIME_HEIGHT = 25;
-    static final int FILTER_BUTTON_X_MARGIN = 15;
+    static final int FILTER_BUTTON_X_MARGIN = 50;
     static final int FILTER_BUTTON_Y_MARGIN = 380;
     static final int FILTER_ADD_BUTTON_WIDTH = 100;
     static final int FILTER_REMOVE_BUTTON_WIDTH = 120;
@@ -87,7 +88,7 @@ public class Main {
     static final int ACTIVE_FILTERS_PANE_X_MARGIN = 10;
     static final int ACTIVE_FILTERS_PANE_Y_MARGIN = 435;
     static final int ACTIVE_FILTERS_PANE_WIDTH = 400;
-    static final int ACTIVE_FILTERS_PANE_HEIGHT = 75;
+    static final int ACTIVE_FILTERS_PANE_HEIGHT = 90;
 
     static final int COURSES_TO_BE_PLANNED_TEXT_X_MARGIN = 15;
     static final int COURSES_TO_BE_PLANNED_TEXT_Y_MARGIN = 525;
@@ -98,15 +99,15 @@ public class Main {
     static final int COURSES_TO_BE_PLANNED_PANE_WIDTH = 400;
     static final int COURSES_TO_BE_PLANNED_PANE_HEIGHT = 120;
 
-    static final int SCHEDULE_MANAGEMENT_X_MARGIN = 15;
+    static final int SCHEDULE_MANAGEMENT_X_MARGIN = 60;
     static final int SCHEDULE_MANAGEMENT_Y_MARGIN = 680;
     static final int SCHEDULE_MANAGEMENT_WIDTH = 300;
     static final int SCHEDULE_MANAGEMENT_Y_HEIGHT = 25;
 
-    static final int IMPORT_BUTTON_X_MARGIN = 320;
+    static final int IMPORT_BUTTON_X_MARGIN = 420;
     static final int IMPORT_BUTTON_Y_MARGIN = 680;
-    static final int IMPORT_BUTTON_WIDTH = 100;
-    static final int IMPORT_BUTTON_HEIGHT = 75;
+    static final int IMPORT_BUTTON_WIDTH = 112;
+    static final int IMPORT_BUTTON_HEIGHT = 70;
 
     static List<Schedule> scheduleListToView;
     static JFrame scheduleFrame;
@@ -305,11 +306,11 @@ public class Main {
         JButton btnImport_DB_fromCSV = new JButton("<html><p style=\"text-align:center;\">Import<br>DB from<br>.csv</p></html>");
         JButton btnHelpMe = new JButton("<html><p style=\"text-align:center;\">Help<br>Me</p></html>");
 
-        JCheckBox checkBox_Exclude_Mon = new JCheckBox("Monday");
-        JCheckBox checkBox_Exclude_Tues = new JCheckBox("Tuesday");
-        JCheckBox checkBox_Exclude_Wed = new JCheckBox("Wednesday");
-        JCheckBox checkBox_Exclude_Thurs = new JCheckBox("Thursday");
-        JCheckBox checkBox_Exclude_Fri = new JCheckBox("Friday");
+        JCheckBox checkBox_Exclude_Mon = new JCheckBox("Mon");
+        JCheckBox checkBox_Exclude_Tues = new JCheckBox("Tue");
+        JCheckBox checkBox_Exclude_Wed = new JCheckBox("Wed");
+        JCheckBox checkBox_Exclude_Thurs = new JCheckBox("Thu");
+        JCheckBox checkBox_Exclude_Fri = new JCheckBox("Fri");
 
         JComboBox<String> filterStartTimeComboBox = new JComboBox<>();
         JComboBox<String> filterEndTimeComboBox = new JComboBox<>();
@@ -330,7 +331,7 @@ public class Main {
 
         InitialFillFilterTimeComboBoxes(filterStartTimeComboBox, filterEndTimeComboBox);
 
-        JButton btnViewWeeklySchedule = new JButton("View weekly schedule");
+        JButton btnViewWeeklySchedule = new JButton("View Weekly Time Table");
 
         JButton btnCloseBackgroundPanel = new JButton("CLOSE");
         JButton btnPrevSchedule = new JButton("<-");
@@ -697,12 +698,12 @@ public class Main {
 
         distinctClassComponents_GivenCourse_ComboBox.setBounds(FILTER_CLASS_X_MARGIN, (FILTER_CLASS_TEXT_Y_MARGIN + 2 * FILTER_CLASS_TEXT_HEIGHT), FILTER_CLASS_COMBO_WIDTH, FILTER_CLASS_COMBO_HEIGHT);
         btnAddClassFilter.setBounds((FILTER_CLASS_X_MARGIN + FILTER_CLASS_COMBO_WIDTH), (FILTER_CLASS_TEXT_Y_MARGIN + 2 * FILTER_CLASS_TEXT_HEIGHT), FILTER_CLASS_BUTTON_WIDTH, FILTER_CLASS_BUTTON_HEIGHT);
-        scrollablePane.setBounds(FILTER_CLASS_X_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_1_Y_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_WIDTH, FILTER_CLASS_SCROLLABLE_PANE_HEIGHT);
+        scrollablePane.setBounds(FILTER_CLASS_X_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_1_Y_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_WIDTH, FILTER_CLASS_SCROLLABLE_PANE_1_HEIGHT);
 
         lblAddedClassFilters.setBounds(FILTER_CLASS_X_MARGIN, FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN, FILTER_CLASS_TEXT_WIDTH, FILTER_CLASS_TEXT_HEIGHT);
         btnRemoveClassFilter.setBounds((FILTER_CLASS_X_MARGIN + FILTER_CLASS_TEXT_WIDTH), FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN,FILTER_CLASS_BUTTON_WIDTH,FILTER_CLASS_BUTTON_HEIGHT);
         btnClearClassFilters.setBounds((FILTER_CLASS_X_MARGIN + FILTER_CLASS_TEXT_WIDTH + FILTER_CLASS_BUTTON_WIDTH), FILTER_ACTIVE_CLASS_TEXT_Y_MARGIN,FILTER_CLASS_BUTTON_WIDTH,FILTER_CLASS_BUTTON_HEIGHT);
-        scrollablePaneAddedClassFilters.setBounds(FILTER_CLASS_X_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_2_Y_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_WIDTH, FILTER_CLASS_SCROLLABLE_PANE_HEIGHT);
+        scrollablePaneAddedClassFilters.setBounds(FILTER_CLASS_X_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_2_Y_MARGIN, FILTER_CLASS_SCROLLABLE_PANE_WIDTH, FILTER_CLASS_SCROLLABLE_PANE_2_HEIGHT);
 
         lblCourseFaculty.setBounds(COURSE_INFO_X_MARGIN, COURSE_INFO_Y_MARGIN, COURSE_INFO_WIDTH, COURSE_INFO_HEIGHT);
         lblCourseLevel.setBounds(COURSE_INFO_X_MARGIN, (COURSE_INFO_Y_MARGIN + COURSE_INFO_HEIGHT), COURSE_INFO_WIDTH, COURSE_INFO_HEIGHT);
@@ -716,9 +717,9 @@ public class Main {
 
         checkBox_Exclude_Mon.setBounds(FILTER_DAY_X_MARGIN, FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
         checkBox_Exclude_Tues.setBounds((FILTER_DAY_X_MARGIN + FILTER_DAY_WIDTH), FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
-        checkBox_Exclude_Wed.setBounds((FILTER_DAY_X_MARGIN + 2 * FILTER_DAY_WIDTH), FILTER_DAY_Y_MARGIN, (FILTER_DAY_WIDTH + 10), FILTER_DAY_HEIGHT);
-        checkBox_Exclude_Thurs.setBounds((FILTER_DAY_X_MARGIN + 3 * FILTER_DAY_WIDTH + 10), FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
-        checkBox_Exclude_Fri.setBounds((FILTER_DAY_X_MARGIN + 4 * FILTER_DAY_WIDTH + 10), FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Wed.setBounds((FILTER_DAY_X_MARGIN + 2 * FILTER_DAY_WIDTH), FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Thurs.setBounds((FILTER_DAY_X_MARGIN + 3 * FILTER_DAY_WIDTH), FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
+        checkBox_Exclude_Fri.setBounds((FILTER_DAY_X_MARGIN + 4 * FILTER_DAY_WIDTH), FILTER_DAY_Y_MARGIN, FILTER_DAY_WIDTH, FILTER_DAY_HEIGHT);
 
 
         fromLabel.setBounds(FILTER_FROM_TEXT_X_MARGIN, FILTER_FROM_AND_TO_TEXT_Y_MARGIN, FILTER_FROM_TEXT_WIDTH, FILTER_TEXT_HEIGHT);
@@ -741,14 +742,14 @@ public class Main {
         btnViewWeeklySchedule.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, (SCHEDULE_MANAGEMENT_Y_MARGIN + 2 * SCHEDULE_MANAGEMENT_Y_HEIGHT), SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);
 
         btnImportAsJson.setBounds(IMPORT_BUTTON_X_MARGIN, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
-        btnExportAsJson.setBounds(IMPORT_BUTTON_X_MARGIN+100, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
-        btnExportAsHtml.setBounds(IMPORT_BUTTON_X_MARGIN+200, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnExportAsJson.setBounds((IMPORT_BUTTON_X_MARGIN + IMPORT_BUTTON_WIDTH), IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnExportAsHtml.setBounds((IMPORT_BUTTON_X_MARGIN + 2 * IMPORT_BUTTON_WIDTH), IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
 
-        btnExportAsJpeg.setBounds(IMPORT_BUTTON_X_MARGIN + 300, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
-        btnClearAll.setBounds(IMPORT_BUTTON_X_MARGIN + 400, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
-        btnApplyFilters.setBounds(IMPORT_BUTTON_X_MARGIN + 500, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
-        btnImport_DB_fromCSV.setBounds(IMPORT_BUTTON_X_MARGIN + 600, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
-        btnHelpMe.setBounds(IMPORT_BUTTON_X_MARGIN + 700, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnExportAsJpeg.setBounds((IMPORT_BUTTON_X_MARGIN + 3 * IMPORT_BUTTON_WIDTH), IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnClearAll.setBounds((IMPORT_BUTTON_X_MARGIN + 4 * IMPORT_BUTTON_WIDTH), IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnApplyFilters.setBounds((IMPORT_BUTTON_X_MARGIN + 5 * IMPORT_BUTTON_WIDTH), IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnImport_DB_fromCSV.setBounds((IMPORT_BUTTON_X_MARGIN + 6 * IMPORT_BUTTON_WIDTH), IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
+        btnHelpMe.setBounds((IMPORT_BUTTON_X_MARGIN + 7 * IMPORT_BUTTON_WIDTH), IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
 
         frame.add(lblProgressBar);
         frame.add(lblCourseSubject);
