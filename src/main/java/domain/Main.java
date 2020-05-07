@@ -5,6 +5,9 @@ import DB_Utilities.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -192,7 +195,11 @@ public class Main {
 
         //run only once ################################################################### BEGIN ################################################################### //////////////////////
 
-        PrepareNormalizedTablesFromCSV(classInfoList,
+//        File dbFile = new File(csvFilePath);
+        Path dbFilePath = Paths.get("outputs/" + dbName + ".db");
+        boolean dbNotExists = Files.notExists(dbFilePath);
+        if(dbNotExists)
+            PrepareNormalizedTablesFromCSV(classInfoList,
                                         csvFilePath,
                                         sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
                                         sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
@@ -1354,6 +1361,7 @@ public class Main {
     }
 
     private static void PrepareNormalizedTablesFromCSV(List<ClassInfo> classInfoList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, List<String> sqlQueryLocationList2Create_NormalizedTables, List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables) {
+
         CreateAndFill_DB_from_CSV(classInfoList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
         CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
