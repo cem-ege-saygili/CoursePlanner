@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS Courses(
 
 	CourseId INTEGER(4)         NOT NULL
-                              UNIQUE
+                              --UNIQUE
                               CHECK (CourseId>=0),
     CourseSubject NVARCHAR(4) NOT NULL
                               CHECK (LENGTH(CourseSubject)=3 or LENGTH(CourseSubject)=4),

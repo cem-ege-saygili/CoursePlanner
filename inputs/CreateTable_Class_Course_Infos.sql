@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS Class_Course_Infos(
 
 	Class_Course_Info_Id    INTEGER
 	                        NOT NULL
-													UNIQUE
+													--UNIQUE
 	                        PRIMARY KEY
 	                        AUTOINCREMENT,
 
@@ -14,12 +14,10 @@ CREATE TABLE IF NOT EXISTS Class_Course_Infos(
     FOREIGN KEY (
       				ClassId
       			)
-    REFERENCES Classes(ClassId)     ON DELETE NO ACTION
-      							    ON UPDATE NO ACTION,
+    REFERENCES Classes(ClassId),
     FOREIGN KEY (
           		    CourseId
           	    )
-    REFERENCES Courses(CourseId)     ON DELETE NO ACTION
-          							 ON UPDATE NO ACTION
+    REFERENCES Courses(CourseId)
 
 );
