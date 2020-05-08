@@ -283,7 +283,12 @@ public class WeeklyScheduleTimetable {
                     currentTimeLabel.setBounds(150 + dayIndex * offsetX, yStart + 150, 200, 20);
                     scheduleFrame.add(currentTimeLabel);
 
-                    ClassPanel currentClassPanel = new ClassPanel(100 + dayIndex * offsetX, yStart + 100, 200, yEnd - yStart);
+                    String curClassComponent = currentClass.getComponent();
+                    ClassPanel currentClassPanel = new ClassPanel(100 + dayIndex * offsetX,
+                                                                yStart + 100,
+                                                                200,
+                                                                yEnd - yStart,
+                                                                curClassComponent);
                     currentClassPanel.setVisible(true);
 
                     currentClassPanel.setToolTipText("<html>"
