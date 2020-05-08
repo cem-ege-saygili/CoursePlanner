@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS Instructors(
 
 	InstructorId INTEGER        NOT NULL
-							 								UNIQUE
+							 								--UNIQUE
 	                            PRIMARY KEY
 	                            AUTOINCREMENT,
 

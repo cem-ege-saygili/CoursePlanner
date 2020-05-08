@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS Classes(
 
     ClassId INTEGER             NOT NULL
-                                UNIQUE
+                                --UNIQUE
                                 PRIMARY KEY
                                 AUTOINCREMENT,
 	--ClassNbr INTEGER(4)	        NOT NULL,
