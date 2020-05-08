@@ -145,7 +145,7 @@ public class Main {
     static final int IMPORT_BUTTON_HEIGHT = 70;
 
     static List<Schedule> scheduleListToView;
-    static JFrame scheduleFrame;
+    static JFrame scheduleFrame = WeeklyScheduleTimetable.scheduleFrame;
     private static List<String> distinctClassComponentsList_GivenCourse;
     private static List<Class> classListForClassFilter;
     public static String dbName = "CoursePlannerDB";
@@ -1241,22 +1241,30 @@ public class Main {
         btnNextSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                scheduleFrame.setVisible(false);
+//                scheduleFrame.setVisible(false);
                 int nextScheduleIndex = (scheduleListComboBox.getSelectedIndex() + 1) % scheduleListComboBox.getItemCount();
                 scheduleListComboBox.setSelectedIndex(nextScheduleIndex);
-                btnViewWeeklySchedule.doClick();
+//                btnViewWeeklySchedule.doClick();
+                Schedule nextScheduleToView = scheduleListComboBox.getItemAt(nextScheduleIndex);
+                WeeklyScheduleTimetable wst = new WeeklyScheduleTimetable(btnList);
+//                scheduleFrame = wst.getScheduleFrame();
+                wst.createWeeklySchedule(nextScheduleToView);
+//                scheduleFrame.setVisible(true);
             }
         });
 
         btnPrevSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                scheduleFrame.setVisible(false);
+//                scheduleFrame.setVisible(false);
                 int prevScheduleIndex = (scheduleListComboBox.getSelectedIndex() - 1);
                 if(prevScheduleIndex<0)
                     prevScheduleIndex += scheduleListComboBox.getItemCount();
                 scheduleListComboBox.setSelectedIndex(prevScheduleIndex);
-                btnViewWeeklySchedule.doClick();
+                Schedule prevScheduleToView = scheduleListComboBox.getItemAt(prevScheduleIndex);
+                WeeklyScheduleTimetable wst = new WeeklyScheduleTimetable(btnList);
+//                scheduleFrame = wst.getScheduleFrame();
+                wst.createWeeklySchedule(prevScheduleToView);
             }
         });
 
@@ -1569,7 +1577,7 @@ public class Main {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                JOptionPane.showMessageDialog(frame,
+                JOptionPane.showMessageDialog(null,
                         message,
                         title,
                         messageType);
@@ -1722,11 +1730,11 @@ public class Main {
      */
     private static void ViewWeeklySchedule(Schedule scheduleToView, List<JButton> btnList){
         WeeklyScheduleTimetable weeklyScheduleView= new WeeklyScheduleTimetable(btnList);
-        scheduleFrame=weeklyScheduleView.getScheduleFrame();
+//        scheduleFrame=weeklyScheduleView.getScheduleFrame();
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
         weeklyScheduleView.createWeeklySchedule(scheduleToView);
-        scheduleFrame.setVisible(true);
+//        scheduleFrame.setVisible(true);
         //weeklyScheduleView.createWeeklySchedule2(scheduleToView);
     }
 

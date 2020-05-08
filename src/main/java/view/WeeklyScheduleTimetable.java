@@ -21,7 +21,7 @@ public class WeeklyScheduleTimetable {
             "RIGHT"
     };
 
-    private JFrame scheduleFrame;
+    public static JFrame scheduleFrame = new JFrame("Weekly Schedule");
 
     JButton buttonCloseBackgroundPanel;
     JButton buttonNextSchedule;
@@ -56,10 +56,10 @@ public class WeeklyScheduleTimetable {
             if (command.equals("DOWN")) {
                 buttonCloseBackgroundPanel.doClick();
             }else if (command.equals("RIGHT")) {
-                buttonCloseBackgroundPanel.doClick();
+//                buttonCloseBackgroundPanel.doClick();
                 buttonNextSchedule.doClick();
             }else if (command.equals("LEFT")) {
-                buttonCloseBackgroundPanel.doClick();
+//                buttonCloseBackgroundPanel.doClick();
                 buttonPrevSchedule.doClick();
             }
 
@@ -68,7 +68,7 @@ public class WeeklyScheduleTimetable {
     };
 
     public WeeklyScheduleTimetable(List<JButton> btnList) {
-        scheduleFrame = new JFrame("Weekly Schedule");
+//        scheduleFrame = new JFrame("Weekly Schedule");
         this.panelDivide=14;
         buttonCloseBackgroundPanel = btnList.get(0);
         buttonNextSchedule = btnList.get(1);
@@ -121,6 +121,12 @@ public class WeeklyScheduleTimetable {
     }
 
     public void createWeeklySchedule(Schedule scheduleToView){
+
+        setTitleForScheduleFrame(scheduleToView);
+
+        clearTimetableFromScheduleFrame();//clearing the schedule frame should there be any left-over from the prev. schedule
+                                          //(i.e. clean-start)
+
         scheduleFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         scheduleFrame.setSize(1200, 840);
 
@@ -198,7 +204,28 @@ public class WeeklyScheduleTimetable {
         scheduleFrame.add(buttonNextSchedule);
         scheduleFrame.add(buttonPrevSchedule);
 
-//        scheduleFrame.setVisible(true);
+//        Component[] cps = scheduleFrame.getComponents();
+
+        if(!scheduleFrame.isVisible())
+            scheduleFrame.setVisible(true);
+    }
+
+    private void setTitleForScheduleFrame(Schedule scheduleToView) {
+        String selectedCourses = scheduleToView.getCourseSubjectsAndCatalogsAsString();
+        String curFrameTitle = "Weekly Schedule for " + selectedCourses;
+        scheduleFrame.setTitle(curFrameTitle);
+    }
+
+    private void clearTimetableFromScheduleFrame() {
+        Container c = scheduleFrame.getContentPane();
+        Component[] cps = c.getComponents();
+        for(int i=0;i<cps.length;i++){
+            if(!(cps[i] instanceof JButton)){
+                Component cp2BeRemoved = cps[i];
+                c.remove(cp2BeRemoved);
+            }
+        }
+        scheduleFrame.repaint();
     }
 
     public static void addClassPanels(JFrame scheduleFrame, Class currentClass) {
