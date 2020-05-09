@@ -130,61 +130,69 @@ public class WeeklyScheduleTimetable {
         scheduleFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);//only closes the view weekly schedule pane
                                                                               // instead of terminating the entire program.
         scheduleFrame.setSize(1200, 840);
+        int dayLabelStart_Y = 25;
+        int defaultLabelHeight = 20;
 
         for (ClassBundle currentBundle : scheduleToView.getClassBundleList()) {
 
             Class currentClass = currentBundle.getLecClass();
             if(currentClass !=null)
-                addClassPanels(scheduleFrame, currentClass);
+                addClassPanels(scheduleFrame, currentClass, dayLabelStart_Y);
 
             currentClass = currentBundle.getDisClass();
             if(currentClass !=null)
-                addClassPanels(scheduleFrame, currentClass);
+                addClassPanels(scheduleFrame, currentClass, dayLabelStart_Y);
 
             currentClass = currentBundle.getLabClass();
             if(currentClass !=null)
-                addClassPanels(scheduleFrame, currentClass);
+                addClassPanels(scheduleFrame, currentClass, dayLabelStart_Y);
 
             currentClass = currentBundle.getPrbClass();
             if(currentClass !=null)
-                addClassPanels(scheduleFrame, currentClass);
+                addClassPanels(scheduleFrame, currentClass, dayLabelStart_Y);
 
         }
 
         JLabel mondayLabel = new JLabel("MONDAY");
-        mondayLabel.setBounds(150, 50, 200, 20);
+        mondayLabel.setBounds(150, dayLabelStart_Y, 200, defaultLabelHeight);
         mondayLabel.setFont(mondayLabel.getFont().deriveFont(20.0f));
         scheduleFrame.add(mondayLabel);
 
         JLabel tuesdayLabel = new JLabel("TUESDAY");
-        tuesdayLabel.setBounds(350, 50, 200, 20);
+        tuesdayLabel.setBounds(350, dayLabelStart_Y, 200, defaultLabelHeight);
         tuesdayLabel.setFont(tuesdayLabel.getFont().deriveFont(20.0f));
         scheduleFrame.add(tuesdayLabel);
 
         JLabel wednesdayLabel = new JLabel("WEDNESDAY");
-        wednesdayLabel.setBounds(550, 50, 200, 20);
+        wednesdayLabel.setBounds(550, dayLabelStart_Y, 200, defaultLabelHeight);
         wednesdayLabel.setFont(wednesdayLabel.getFont().deriveFont(20.0f));
         scheduleFrame.add(wednesdayLabel);
 
         JLabel thursdayLabel = new JLabel("THURSDAY");
-        thursdayLabel.setBounds(750, 50, 200, 20);
+        thursdayLabel.setBounds(750, dayLabelStart_Y, 200, defaultLabelHeight);
         thursdayLabel.setFont(thursdayLabel.getFont().deriveFont(20.0f));
         scheduleFrame.add(thursdayLabel);
 
         JLabel fridayLabel = new JLabel("FRIDAY");
-        fridayLabel.setBounds(950, 50, 200, 20);
+        fridayLabel.setBounds(950, dayLabelStart_Y, 200, defaultLabelHeight);
         fridayLabel.setFont(fridayLabel.getFont().deriveFont(20.0f));
         scheduleFrame.add(fridayLabel);
 
 
-        for (int i = 8; i < 19; i++) {
+        int firstTimeStamp_Y = dayLabelStart_Y + 40;
+        int lastTimeStamp_Y = firstTimeStamp_Y;
+
+        for (int i = 8; i <= 19; i++) {
             JLabel timeLabel = new JLabel(Integer.toString(i) + ":00");
-            timeLabel.setBounds(50, (((i - 8) * 600) / 10) + 90, 200, 20);
+            lastTimeStamp_Y = (((i - 8) * 600) / 10) + firstTimeStamp_Y;
+            timeLabel.setBounds(50, lastTimeStamp_Y, 200, 20);
             scheduleFrame.add(timeLabel);
         }
 
+        int bgPanel_startY = firstTimeStamp_Y;
+        int bgPanel_endY = lastTimeStamp_Y + defaultLabelHeight;
 
-        BackgroundPanel bgpanel = new BackgroundPanel();
+        BackgroundPanel bgpanel = new BackgroundPanel(firstTimeStamp_Y, bgPanel_endY);
         for (int i = 0; i < commands.length; i++)
             bgpanel.registerKeyboardAction(panelAction,
                     commands[i],
@@ -198,9 +206,11 @@ public class WeeklyScheduleTimetable {
 
         int scheduleFrameWidth = scheduleFrame.getWidth();
         int scheduleFrameHeight = scheduleFrame.getHeight();
-        buttonCloseBackgroundPanel.setBounds(scheduleFrameWidth-125,scheduleFrameHeight-100,75,25);
-        buttonNextSchedule.setBounds(scheduleFrameWidth-225,scheduleFrameHeight-100,75,25);
-        buttonPrevSchedule.setBounds(scheduleFrameWidth-325,scheduleFrameHeight-100,75,25);
+        int buttonsBottomOffset = 75;
+        int buttonsY = scheduleFrameHeight-buttonsBottomOffset;
+        buttonCloseBackgroundPanel.setBounds(scheduleFrameWidth-125,buttonsY,75,25);
+        buttonNextSchedule.setBounds(scheduleFrameWidth-225,buttonsY,75,25);
+        buttonPrevSchedule.setBounds(scheduleFrameWidth-325,buttonsY,75,25);
         scheduleFrame.add(buttonCloseBackgroundPanel);
         scheduleFrame.add(buttonNextSchedule);
         scheduleFrame.add(buttonPrevSchedule);
@@ -229,9 +239,10 @@ public class WeeklyScheduleTimetable {
         scheduleFrame.repaint();
     }
 
-    public static void addClassPanels(JFrame scheduleFrame, Class currentClass) {
-        int yStart = getStartTime(currentClass);
-        int yEnd = getEndTime(currentClass);
+    public static void addClassPanels(JFrame scheduleFrame, Class currentClass, int dayLabelStart_Y) {
+        int yOffset = (dayLabelStart_Y-50);
+        int yStart = getStartTime(currentClass) + yOffset;
+        int yEnd = getEndTime(currentClass) + yOffset;
         int offsetX = 200;
         for(int dayIndex = 0; dayIndex < 5; dayIndex++) {
             boolean dayFlag = false;
