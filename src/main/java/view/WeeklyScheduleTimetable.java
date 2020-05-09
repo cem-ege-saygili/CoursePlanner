@@ -127,7 +127,8 @@ public class WeeklyScheduleTimetable {
         clearTimetableFromScheduleFrame();//clearing the schedule frame should there be any left-over from the prev. schedule
                                           //(i.e. clean-start)
 
-        scheduleFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        scheduleFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);//only closes the view weekly schedule pane
+                                                                              // instead of terminating the entire program.
         scheduleFrame.setSize(1200, 840);
 
         for (ClassBundle currentBundle : scheduleToView.getClassBundleList()) {
