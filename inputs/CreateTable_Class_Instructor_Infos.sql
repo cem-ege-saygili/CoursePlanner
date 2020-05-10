@@ -14,10 +14,12 @@ CREATE TABLE IF NOT EXISTS Class_Instructor_Infos(
     FOREIGN KEY (
       				ClassId
       			)
-    REFERENCES Classes(ClassId),
+    REFERENCES Classes(ClassId) ON DELETE CASCADE
+                                ON UPDATE CASCADE,
     FOREIGN KEY (
           		    InstructorId
           	    )
-    REFERENCES Instructors(InstructorId)
+    REFERENCES Instructors(InstructorId) ON DELETE CASCADE
+                                         ON UPDATE CASCADE
 
 );

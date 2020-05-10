@@ -14,10 +14,12 @@ CREATE TABLE IF NOT EXISTS Class_Course_Infos(
     FOREIGN KEY (
       				ClassId
       			)
-    REFERENCES Classes(ClassId),
+    REFERENCES Classes(ClassId) ON DELETE CASCADE
+                                ON UPDATE CASCADE,
     FOREIGN KEY (
           		    CourseId
           	    )
-    REFERENCES Courses(CourseId)
+    REFERENCES Courses(CourseId) ON DELETE CASCADE
+                                 ON UPDATE CASCADE
 
 );
