@@ -150,7 +150,7 @@ public class Main {
     private static List<Class> classListForClassFilter;
     public static String dbName = "CoursePlannerDB";
     static JFrame frame = new JFrame("CourseScheduler v.5 - Final");
-    static JComboBox<Schedule> scheduleListComboBox = new JComboBox<>();
+    static JComboBox<ScheduleListComboboxItem> scheduleListComboBox = new JComboBox<>();
 
 //    static boolean monExclFlag;
 //    static boolean tuesExclFlag;
@@ -1062,9 +1062,9 @@ public class Main {
                                             "Successfully imported " + schedules.size() + " schedules.",
                                             "Import Succeeded",
                                             JOptionPane.PLAIN_MESSAGE);
-                                    scheduleListComboBox.removeAllItems();
-                                    for(Schedule s:schedules)
-                                        scheduleListComboBox.addItem(s);
+
+                                    RefreshScheduleListComboBox(schedules);
+
                                     scheduleListToView = schedules;
                                 }
                                 SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
@@ -1245,7 +1245,7 @@ public class Main {
                 int nextScheduleIndex = (scheduleListComboBox.getSelectedIndex() + 1) % scheduleListComboBox.getItemCount();
                 scheduleListComboBox.setSelectedIndex(nextScheduleIndex);
 //                btnViewWeeklySchedule.doClick();
-                Schedule nextScheduleToView = scheduleListComboBox.getItemAt(nextScheduleIndex);
+                Schedule nextScheduleToView = scheduleListComboBox.getItemAt(nextScheduleIndex).getSchedule();
                 WeeklyScheduleTimetable wst = new WeeklyScheduleTimetable(btnList);
 //                scheduleFrame = wst.getScheduleFrame();
                 wst.createWeeklySchedule(nextScheduleToView);
@@ -1261,7 +1261,7 @@ public class Main {
                 if(prevScheduleIndex<0)
                     prevScheduleIndex += scheduleListComboBox.getItemCount();
                 scheduleListComboBox.setSelectedIndex(prevScheduleIndex);
-                Schedule prevScheduleToView = scheduleListComboBox.getItemAt(prevScheduleIndex);
+                Schedule prevScheduleToView = scheduleListComboBox.getItemAt(prevScheduleIndex).getSchedule();
                 WeeklyScheduleTimetable wst = new WeeklyScheduleTimetable(btnList);
 //                scheduleFrame = wst.getScheduleFrame();
                 wst.createWeeklySchedule(prevScheduleToView);
@@ -1453,13 +1453,13 @@ public class Main {
 
 
 
-    private static void ClearAll(DefaultListModel lstAddedClassFiltersListModel, JLabel lblCourseSubjectAndCatalog, JLabel lblCourseClassFilter, JComboBox<String> distinctClassComponents_GivenCourse_ComboBox, DefaultListModel lstClassFiltersListModel, DefaultListModel lstFiltersModel, List<CourseSubject_Catalog_Tuple> tupleList, List<List<Class>> classesList, DefaultListModel lstCourses2BePlannedModel, JComboBox<Schedule> scheduleListComboBox) {
+    private static void ClearAll(DefaultListModel lstAddedClassFiltersListModel, JLabel lblCourseSubjectAndCatalog, JLabel lblCourseClassFilter, JComboBox<String> distinctClassComponents_GivenCourse_ComboBox, DefaultListModel lstClassFiltersListModel, DefaultListModel lstFiltersModel, List<CourseSubject_Catalog_Tuple> tupleList, List<List<Class>> classesList, DefaultListModel lstCourses2BePlannedModel, JComboBox<ScheduleListComboboxItem> scheduleListComboBox) {
         ClearClassFilters(lstAddedClassFiltersListModel,lblCourseSubjectAndCatalog,lblCourseClassFilter,distinctClassComponents_GivenCourse_ComboBox,lstClassFiltersListModel);
         lstFiltersModel.removeAllElements();//clear day & time filters
         ClearPlanningList(tupleList, classesList, lstCourses2BePlannedModel, scheduleListComboBox);
     }
 
-    private static void ClearPlanningList(List<CourseSubject_Catalog_Tuple> tupleList, List<List<Class>> classesList, DefaultListModel lstCourses2BePlannedModel, JComboBox<Schedule> scheduleListComboBox) {
+    private static void ClearPlanningList(List<CourseSubject_Catalog_Tuple> tupleList, List<List<Class>> classesList, DefaultListModel lstCourses2BePlannedModel, JComboBox<ScheduleListComboboxItem> scheduleListComboBox) {
         for (CourseSubject_Catalog_Tuple curTuple : tupleList) {
             System.out.println(curTuple);
         }
@@ -1741,7 +1741,9 @@ public class Main {
     private static void RefreshScheduleListComboBox(List<Schedule> schedules){
         scheduleListComboBox.removeAllItems();
         for(Schedule curSchedule:schedules){
-            scheduleListComboBox.addItem(curSchedule);
+            int curItemCount = scheduleListComboBox.getItemCount();
+            ScheduleListComboboxItem curScheduleListComboboxItem = new ScheduleListComboboxItem(curItemCount, curSchedule);
+            scheduleListComboBox.addItem(curScheduleListComboboxItem);
         }
     }
 
