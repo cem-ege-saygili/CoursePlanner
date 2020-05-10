@@ -88,7 +88,8 @@ public class WeeklyScheduleTimetable {
     public void saveWeeklyScheduleAsImage(Schedule scheduleToView, int planNo, String savePath) throws IOException, AWTException {
 
         scheduleFrame = new JFrame("Weekly Schedule");
-        createWeeklySchedule(scheduleToView);
+        int selectedItemIndex = Main.ScheduleListComboBox.getSelectedIndex();
+        createWeeklySchedule(scheduleToView, selectedItemIndex);
 //        scheduleFrame.setVisible(true);
 //        try {
 //            //TimeUnit.SECONDS.sleep(1);
@@ -120,9 +121,9 @@ public class WeeklyScheduleTimetable {
                 + "</i></b></font> left.</html>");
     }
 
-    public void createWeeklySchedule(Schedule scheduleToView){
+    public void createWeeklySchedule(Schedule scheduleToView, int selectedItemIndex){
 
-        setTitleForScheduleFrame(scheduleToView);
+        setTitleForScheduleFrame(scheduleToView, selectedItemIndex);
 
         clearTimetableFromScheduleFrame();//clearing the schedule frame should there be any left-over from the prev. schedule
                                           //(i.e. clean-start)
@@ -221,10 +222,21 @@ public class WeeklyScheduleTimetable {
             scheduleFrame.setVisible(true);
     }
 
-    private void setTitleForScheduleFrame(Schedule scheduleToView) {
-        String selectedCourses = scheduleToView.getCourseSubjectsAndCatalogsAsString();
-        String curFrameTitle = "Weekly Schedule for " + selectedCourses;
+    private void setTitleForScheduleFrame(Schedule scheduleToView, int insertedElementCount) {
+        int planNo = insertedElementCount +1;
+        String selectedCourses = cleanText(scheduleToView.getCourseSubjectsAndCatalogsAsString());
+
+        String curFrameTitle = "Plan #" + planNo + ": Weekly Schedule for \"" + selectedCourses +"\"";
         scheduleFrame.setTitle(curFrameTitle);
+    }
+
+    private String cleanText(String str2BeCleaned){
+        String str = "";
+        for(char c:str2BeCleaned.toCharArray()){
+            if(c != '\"' && c != '{' && c!= '}')
+                str += c;
+        }
+        return  str;
     }
 
     private void clearTimetableFromScheduleFrame() {

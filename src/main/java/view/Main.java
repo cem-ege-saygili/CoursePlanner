@@ -150,7 +150,7 @@ public class Main {
     private static List<Class> classListForClassFilter;
     public static String dbName = "CoursePlannerDB";
     static JFrame frame = new JFrame("CourseScheduler v.5 - Final");
-    static JComboBox<ScheduleListComboboxItem> scheduleListComboBox = new JComboBox<>();
+    static JComboBox<ScheduleListComboboxItem> ScheduleListComboBox = new JComboBox<>();
 
 //    static boolean monExclFlag;
 //    static boolean tuesExclFlag;
@@ -543,7 +543,7 @@ public class Main {
         btnClearPlanningList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ClearPlanningList(tupleList, classesList, lstCourses2BePlannedModel, scheduleListComboBox);
+                ClearPlanningList(tupleList, classesList, lstCourses2BePlannedModel, ScheduleListComboBox);
             }
         });
 
@@ -772,7 +772,7 @@ public class Main {
         scrollPaneCourse2BePlanned.setBounds(COURSES_TO_BE_PLANNED_PANE_X_MARGIN, COURSES_TO_BE_PLANNED_PANE_Y_MARGIN, COURSES_TO_BE_PLANNED_PANE_WIDTH, COURSES_TO_BE_PLANNED_PANE_HEIGHT);
 
         btnGenerateNonOverlappingSchedules.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, SCHEDULE_MANAGEMENT_Y_MARGIN, SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);
-        scheduleListComboBox.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, (SCHEDULE_MANAGEMENT_Y_MARGIN + SCHEDULE_MANAGEMENT_Y_HEIGHT), SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);;
+        ScheduleListComboBox.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, (SCHEDULE_MANAGEMENT_Y_MARGIN + SCHEDULE_MANAGEMENT_Y_HEIGHT), SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);;
         btnViewWeeklySchedule.setBounds(SCHEDULE_MANAGEMENT_X_MARGIN, (SCHEDULE_MANAGEMENT_Y_MARGIN + 2 * SCHEDULE_MANAGEMENT_Y_HEIGHT), SCHEDULE_MANAGEMENT_WIDTH, SCHEDULE_MANAGEMENT_Y_HEIGHT);
 
         btnImportAsJson.setBounds(IMPORT_BUTTON_X_MARGIN, IMPORT_BUTTON_Y_MARGIN, IMPORT_BUTTON_WIDTH, IMPORT_BUTTON_HEIGHT);
@@ -818,7 +818,7 @@ public class Main {
         frame.add(btnApplyFilters);
         frame.add(btnImport_DB_fromCSV);
         frame.add(btnHelpMe);
-        frame.add(scheduleListComboBox);
+        frame.add(ScheduleListComboBox);
         frame.add(btnClearPlanningList);
         frame.add(checkBox_Exclude_Mon);
         frame.add(checkBox_Exclude_Tues);
@@ -866,7 +866,7 @@ public class Main {
 
                 List<List<ClassBundle>> classBundlesList = new ArrayList<>();
 
-                scheduleListComboBox.removeAllItems();
+                ScheduleListComboBox.removeAllItems();
 
                 scheduleListToView = new ArrayList<>();
 
@@ -1034,7 +1034,7 @@ public class Main {
 
                     if(extension.equals("json")){
 
-                        ClearAll(lstAddedClassFiltersListModel, lblCourseSubjectAndCatalog, lblCourseClassFilter, distinctClassComponents_GivenCourse_ComboBox, lstClassFiltersListModel, lstFiltersModel, tupleList, classesList, lstCourses2BePlannedModel, scheduleListComboBox);
+                        ClearAll(lstAddedClassFiltersListModel, lblCourseSubjectAndCatalog, lblCourseClassFilter, distinctClassComponents_GivenCourse_ComboBox, lstClassFiltersListModel, lstFiltersModel, tupleList, classesList, lstCourses2BePlannedModel, ScheduleListComboBox);
 
                         Thread threadSerializeIn = new Thread(new Runnable() {
 
@@ -1163,16 +1163,23 @@ public class Main {
         btnClearAll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ClearAll(lstAddedClassFiltersListModel, lblCourseSubjectAndCatalog, lblCourseClassFilter, distinctClassComponents_GivenCourse_ComboBox, lstClassFiltersListModel, lstFiltersModel, tupleList, classesList, lstCourses2BePlannedModel, scheduleListComboBox);
+                ClearAll(lstAddedClassFiltersListModel, lblCourseSubjectAndCatalog, lblCourseClassFilter, distinctClassComponents_GivenCourse_ComboBox, lstClassFiltersListModel, lstFiltersModel, tupleList, classesList, lstCourses2BePlannedModel, ScheduleListComboBox);
             }
         });
 
         btnApplyFilters.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ApplyFilters(scheduleListToView, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
+                Thread threadApplyFilters = ApplyFilters(scheduleListToView, lblProgressBar, lstFiltersModel, lstAddedClassFiltersListModel);
                 int selectedIndex = 0;
-                ViewWeeklyScheduleAtIndex(selectedIndex, btnList);//prompt the first generated schedule to user
+                try {
+                    threadApplyFilters.join();
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                int scheduleCount = ScheduleListComboBox.getItemCount();
+                if(scheduleCount!=0)
+                    ViewWeeklyScheduleAtIndex(selectedIndex, btnList);//prompt the first generated schedule to user
             }
         });
 
@@ -1213,8 +1220,8 @@ public class Main {
 
                 if (scheduleListToView != null && !scheduleListToView.isEmpty()) {
                     System.out.println("hi1");
-//                    String selectedItemStr = (String) scheduleListComboBox.getSelectedIndex();
-                    int scheduleIndex2BeDisplayed = scheduleListComboBox.getSelectedIndex();
+//                    String selectedItemStr = (String) ScheduleListComboBox.getSelectedIndex();
+                    int scheduleIndex2BeDisplayed = ScheduleListComboBox.getSelectedIndex();
                     if(scheduleIndex2BeDisplayed == -1){
                         JOptionPane.showMessageDialog(null,
                                 "Please select a schedule first.",
@@ -1242,13 +1249,14 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
 //                scheduleFrame.setVisible(false);
-                int nextScheduleIndex = (scheduleListComboBox.getSelectedIndex() + 1) % scheduleListComboBox.getItemCount();
-                scheduleListComboBox.setSelectedIndex(nextScheduleIndex);
+                int nextScheduleIndex = (ScheduleListComboBox.getSelectedIndex() + 1) % ScheduleListComboBox.getItemCount();
+                ScheduleListComboBox.setSelectedIndex(nextScheduleIndex);
 //                btnViewWeeklySchedule.doClick();
-                Schedule nextScheduleToView = scheduleListComboBox.getItemAt(nextScheduleIndex).getSchedule();
+                Schedule nextScheduleToView = ScheduleListComboBox.getItemAt(nextScheduleIndex).getSchedule();
                 WeeklyScheduleTimetable wst = new WeeklyScheduleTimetable(btnList);
 //                scheduleFrame = wst.getScheduleFrame();
-                wst.createWeeklySchedule(nextScheduleToView);
+                int selectedItemIndex = ScheduleListComboBox.getSelectedIndex();
+                wst.createWeeklySchedule(nextScheduleToView, selectedItemIndex);
 //                scheduleFrame.setVisible(true);
             }
         });
@@ -1257,14 +1265,15 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
 //                scheduleFrame.setVisible(false);
-                int prevScheduleIndex = (scheduleListComboBox.getSelectedIndex() - 1);
+                int prevScheduleIndex = (ScheduleListComboBox.getSelectedIndex() - 1);
                 if(prevScheduleIndex<0)
-                    prevScheduleIndex += scheduleListComboBox.getItemCount();
-                scheduleListComboBox.setSelectedIndex(prevScheduleIndex);
-                Schedule prevScheduleToView = scheduleListComboBox.getItemAt(prevScheduleIndex).getSchedule();
+                    prevScheduleIndex += ScheduleListComboBox.getItemCount();
+                ScheduleListComboBox.setSelectedIndex(prevScheduleIndex);
+                Schedule prevScheduleToView = ScheduleListComboBox.getItemAt(prevScheduleIndex).getSchedule();
                 WeeklyScheduleTimetable wst = new WeeklyScheduleTimetable(btnList);
 //                scheduleFrame = wst.getScheduleFrame();
-                wst.createWeeklySchedule(prevScheduleToView);
+                int selectedItemIndex = ScheduleListComboBox.getSelectedIndex();
+                wst.createWeeklySchedule(prevScheduleToView, selectedItemIndex);
             }
         });
 
@@ -1348,7 +1357,7 @@ public class Main {
                                 tupleList,
                                 classesList,
                                 lstCourses2BePlannedModel,
-                                scheduleListComboBox);
+                                ScheduleListComboBox);
 
                         String selectedFilePath = selectedFile.getPath();
 
@@ -1389,7 +1398,7 @@ public class Main {
     }
 
     private static void ViewWeeklyScheduleAtIndex(int selectedIndex, List<JButton> btnList) {
-        scheduleListComboBox.setSelectedIndex(selectedIndex);
+        ScheduleListComboBox.setSelectedIndex(selectedIndex);
         Schedule scheduleToView = scheduleListToView.get(selectedIndex);
         ViewWeeklySchedule(scheduleToView, btnList);
     }
@@ -1729,21 +1738,22 @@ public class Main {
 
      */
     private static void ViewWeeklySchedule(Schedule scheduleToView, List<JButton> btnList){
-        WeeklyScheduleTimetable weeklyScheduleView= new WeeklyScheduleTimetable(btnList);
+        WeeklyScheduleTimetable wst= new WeeklyScheduleTimetable(btnList);
 //        scheduleFrame=weeklyScheduleView.getScheduleFrame();
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView,btnCloseBackgroundPanel);
         //weeklyScheduleView.createWeeklySchedule1(scheduleToView, scheduleFrame, btnCloseBackgroundPanel);
-        weeklyScheduleView.createWeeklySchedule(scheduleToView);
+        int selectedItemIndex = ScheduleListComboBox.getSelectedIndex();
+        wst.createWeeklySchedule(scheduleToView, selectedItemIndex);
 //        scheduleFrame.setVisible(true);
         //weeklyScheduleView.createWeeklySchedule2(scheduleToView);
     }
 
     private static void RefreshScheduleListComboBox(List<Schedule> schedules){
-        scheduleListComboBox.removeAllItems();
+        ScheduleListComboBox.removeAllItems();
         for(Schedule curSchedule:schedules){
-            int curItemCount = scheduleListComboBox.getItemCount();
+            int curItemCount = ScheduleListComboBox.getItemCount();
             ScheduleListComboboxItem curScheduleListComboboxItem = new ScheduleListComboboxItem(curItemCount, curSchedule);
-            scheduleListComboBox.addItem(curScheduleListComboboxItem);
+            ScheduleListComboBox.addItem(curScheduleListComboboxItem);
         }
     }
 
