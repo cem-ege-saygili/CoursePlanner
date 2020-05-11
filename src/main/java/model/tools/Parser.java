@@ -312,7 +312,7 @@ public class Parser {
         File jpegFile = new File(
                 savePath
                 + "Weekly Schedule Visualizations/Plan #" + planNo
-                        + "_AsIn_Schedule #" + (scheduleIndex + 1)
+               //         + "_AsIn_Schedule #" + (scheduleIndex + 1)
                 + ".jpeg");
         ImageIO.write(image,"jpeg", jpegFile);
     }
