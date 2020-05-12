@@ -91,31 +91,34 @@ public class InsertIntoTableInDB {
         }
     }
 
-    public static void execQueriesFromList(String dbName, List<String> sql_InsertQuery2Execute_LocationList) {
+    public static void ExecQueriesFromList(String dbName, List<String> sql_InsertQuery2Execute_LocationList) {
 
         for(String curQueryLocation : sql_InsertQuery2Execute_LocationList){
-
-            ReadFile sqlQueryFile = new ReadFile(curQueryLocation);
-
-            // SQL statement for creating a new table
-            String sql = sqlQueryFile.export2String();
-
-            String url = "JDBC:sqlite:outputs/" + dbName + ".db";
-
-            try (Connection conn = DriverManager.getConnection(url);
-
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-                pstmt.executeUpdate();
-
-            } catch (SQLException e) {
-                String asd = e.getMessage();
-                System.out.println(e.getMessage());
-            }
-
+            ExecQuery(dbName, curQueryLocation);
         }
 
 
+    }
+
+    public static void ExecQuery(String dbName,
+                                 String sqlQueryLocation){
+        ReadFile sqlQueryFile = new ReadFile(sqlQueryLocation);
+
+        // SQL statement for creating a new table
+        String sql = sqlQueryFile.export2String();
+
+        String url = "JDBC:sqlite:outputs/" + dbName + ".db";
+
+        try (Connection conn = DriverManager.getConnection(url);
+
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            String asd = e.getMessage();
+            System.out.println(e.getMessage());
+        }
     }
 
     /**

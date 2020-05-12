@@ -178,7 +178,7 @@ public class Serializer {
 
                 List<Class> classListForTuple = new ArrayList<>();
 
-                String sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location = "inputs/sqlQuery_selectClassesInfoFromCourseSubject_Catalog.sql";
+                String sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location = "inputs/sqlQuery_SelectClassesInfoFromCourseSubject_Catalog.sql";
 
                 SelectFromTableInDB.PutClassesFromDB2cList(curTuple, classListForTuple, Main.dbName, sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location);
 

@@ -171,13 +171,13 @@ public class Main {
         String csvFilePath = "inputs/KU_STD_ALL_LEC_COURSECODE_NAME_1341695219.csv";
         String sqlQuery_Create_Table_CoursePlannerBIGGEST_Location = "inputs/sqlQuery_Create_Table_CoursePlannerBIGGEST.sql";
         String sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location = "inputs/sqlQuery_Insert2Table_CoursePlannerBIGGEST.sql";
-        String sqlQuery_SelectDistinctCourseSubjects_Location = "inputs/sqlQuery_selectDistinctCourseSubjects.sql";
-        String sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location = "inputs/sqlQuery_selectCourseCatalogsOfChosenCourseSubject.sql";
+        String sqlQuery_SelectDistinctCourseSubjects_Location = "inputs/sqlQuery_SelectDistinctCourseSubjects.sql";
+        String sqlQuery_SelectCourseCatalogsOfChosenCourseSubject_Location = "inputs/sqlQuery_SelectCourseCatalogsOfChosenCourseSubject.sql";
         String sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog_Location = "inputs/sqlQuery_SelectCourse_Career_AcadOrg_Descr_Descr2_with_CourseSubject_Catalog.sql";
         String sqlQuery_SelectDistinctClassComponentsOfGivenCourse_Location = "inputs/sqlQuery_SelectDistinctClassComponentsOfGivenCourse.sql";
         String sqlQuery_sqlQuery_SelectClassesFromCourseSubjectCatalogAndClassComponent_Location = "inputs/sqlQuery_SelectClassesFromCourseSubjectCatalogAndClassComponent.sql";
 
-        String sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location = "inputs/sqlQuery_selectClassesInfoFromCourseSubject_Catalog.sql";
+        String sqlQuery_SelectClassesInfoFromCourseSubject_Catalog_Location = "inputs/sqlQuery_SelectClassesInfoFromCourseSubject_Catalog.sql";
 
 //        String sqlQuery_Insert2Table_Classes_Location = "inputs/Insert2Table_Classes.txt";
 //        String sqlQuery_Insert2Table_Instructors_Location = "inputs/Insert2Table_Instructors.txt";
@@ -199,6 +199,28 @@ public class Main {
                         "inputs/Insert2Table_Class_Course_Infos.sql")
         );
 
+        List<String>  sqlQueryLocationsList2PrepareDBLogTablesAndCreateTriggers = new ArrayList<>(
+                Arrays.asList("inputs/sqlQuery_CreateTable_CoursesLog.sql",
+                              "inputs/sqlQuery_CreateTable_Classes_Log.sql",
+                              "inputs/sqlQuery_CreateTable_Instructors_Log.sql",
+                              "inputs/Create_trg_abort_insert_to_Courses.sql",
+                              "inputs/Create_trg_abort_update_to_Courses.sql",
+                              "inputs/Create_trg_after_delete_classes.sql",
+                              "inputs/Create_trg_after_delete_courses.sql",
+                              "inputs/Create_trg_after_delete_instructors.sql",
+                              "inputs/Create_trg_after_insert_classes.sql",
+                              "inputs/Create_trg_after_insert_courses.sql",
+                              "inputs/Create_trg_after_insert_instructors.sql",
+                              "inputs/Create_trg_after_update_classes.sql",
+                              "inputs/Create_trg_after_update_courses.sql",
+                              "inputs/Create_trg_after_update_instructors.sql",
+                              "inputs/Create_trg_before_delete_class.sql",
+                              "inputs/Create_trg_before_delete_course.sql")
+        );
+
+        String sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course_Location = "inputs/sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course.sql";
+
+
         //######################## - Help Me - BEGIN ########################
         InitializeHelpMe();
         //######################## - Help Me - END ########################
@@ -209,12 +231,15 @@ public class Main {
         Path dbFilePath = Paths.get("outputs/" + dbName + ".db");
         boolean dbNotExists = Files.notExists(dbFilePath);
         if(dbNotExists)
-            PrepareNormalizedTablesFromCSV(coursePlannerBIGGESTEntryList,
-                                        csvFilePath,
-                                        sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
-                                        sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
-                                        sqlQueryLocationList2Create_NormalizedTables,
-                                        sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
+            GenerateDB_from_CSV(coursePlannerBIGGESTEntryList,
+                    csvFilePath,
+                    sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
+                    sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
+                    sqlQueryLocationList2Create_NormalizedTables,
+                    sqlQueryLocationList2CleanStartAndFill_NormalizedTables,
+                    sqlQueryLocationsList2PrepareDBLogTablesAndCreateTriggers,
+                    sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course_Location);
+
 
         //run only once ################################################################### END ################################################################### //////////////////////
 
@@ -490,7 +515,7 @@ public class Main {
 
                     List<model.Class> classListForTuple = new ArrayList<>();
 
-                    SelectFromTableInDB.PutClassesFromDB2cList(courseTuple2BeAdded, classListForTuple, dbName, sqlQuery_selectClassesInfoFromCourseSubject_Catalog_Location);
+                    SelectFromTableInDB.PutClassesFromDB2cList(courseTuple2BeAdded, classListForTuple, dbName, sqlQuery_SelectClassesInfoFromCourseSubject_Catalog_Location);
 
 
                     for (int i = 0; i < classesList.size(); i++) {// CHECKING for ELEC317 vs. COMP317 case. (i.e. courses with same classes)
@@ -1186,7 +1211,7 @@ public class Main {
         btnImport_DB_fromCSV.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PrepareNormalizedTablesFromCSV(new ArrayList<CoursePlannerBIGGEST_Entry>(), //re-generate DB from csv file provided through a file chooser. (i.e. no static csvFilePath)
+                GenerateDB(new ArrayList<CoursePlannerBIGGEST_Entry>(), //re-generate DB from csv file provided through a file chooser. (i.e. no static csvFilePath)
                         sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
                         sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
                         sqlQueryLocationList2Create_NormalizedTables,
@@ -1200,7 +1225,9 @@ public class Main {
                         distinctClassComponents_GivenCourse_ComboBox,
                         tupleList,
                         classesList,
-                        lblProgressBar);
+                        lblProgressBar,
+                        sqlQueryLocationsList2PrepareDBLogTablesAndCreateTriggers,
+                        sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course_Location);
             }
         });
 
@@ -1279,6 +1306,25 @@ public class Main {
 
     }
 
+    private static void GenerateDB_from_CSV(List<CoursePlannerBIGGEST_Entry> coursePlannerBIGGESTEntryList,
+                                            String csvFilePath, String sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
+                                            String sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
+                                            List<String> sqlQueryLocationList2Create_NormalizedTables,
+                                            List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables,
+                                            List<String> sqlQueryLocationsList2PrepareDBLogTablesAndCreateTriggers,
+                                            String sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course_Location) {
+        PrepareNormalizedTablesFromCSV(coursePlannerBIGGESTEntryList,
+                csvFilePath,
+                sqlQuery_Create_Table_CoursePlannerBIGGEST_Location,
+                sqlQuery_Insert2Table_CoursePlannerBIGGEST_Location,
+                sqlQueryLocationList2Create_NormalizedTables,
+                sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
+        PrepareDBLogTablesAndCreateTriggers(sqlQueryLocationsList2PrepareDBLogTablesAndCreateTriggers,
+                                            dbName);
+        Remove_non_UGRD_Courses_and_ISP_Course(sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course_Location,
+                                               dbName);
+    }
+
     private static void InitializeHelpMe() {
         Thread threadHelpMe = new Thread(new Runnable() {
             @Override
@@ -1307,21 +1353,23 @@ public class Main {
         ShowMessageNow(helpStr, "Reinforcements have arrived !",true);
     }
 
-    private static void PrepareNormalizedTablesFromCSV(List<CoursePlannerBIGGEST_Entry> coursePlannerBIGGESTEntryList, //version using a file chooser to pick the .csv file.
-                                                       String sqlQuery_Create_Location,
-                                                       String sqlQuery_Insert_Location,
-                                                       List<String> sqlQueryLocationList2Create_NormalizedTables,
-                                                       List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables,
-                                                       DefaultListModel lstAddedClassFiltersListModel,
-                                                       DefaultListModel lstClassFiltersListModel,
-                                                       DefaultListModel lstFiltersModel,
-                                                       DefaultListModel lstCourses2BePlannedModel,
-                                                       JLabel lblCourseSubjectAndCatalog,
-                                                       JLabel lblCourseClassFilter,
-                                                       JComboBox distinctClassComponents_GivenCourse_ComboBox,
-                                                       List<CourseSubject_Catalog_Tuple> tupleList,
-                                                       List<List<Class>> classesList,
-                                                       JLabel lblProgressBar) {
+    private static void GenerateDB(List<CoursePlannerBIGGEST_Entry> coursePlannerBIGGESTEntryList, //version using a file chooser to pick the .csv file.
+                                   String sqlQuery_Create_Location,
+                                   String sqlQuery_Insert_Location,
+                                   List<String> sqlQueryLocationList2Create_NormalizedTables,
+                                   List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables,
+                                   DefaultListModel lstAddedClassFiltersListModel,
+                                   DefaultListModel lstClassFiltersListModel,
+                                   DefaultListModel lstFiltersModel,
+                                   DefaultListModel lstCourses2BePlannedModel,
+                                   JLabel lblCourseSubjectAndCatalog,
+                                   JLabel lblCourseClassFilter,
+                                   JComboBox distinctClassComponents_GivenCourse_ComboBox,
+                                   List<CourseSubject_Catalog_Tuple> tupleList,
+                                   List<List<Class>> classesList,
+                                   JLabel lblProgressBar,
+                                   List<String> sqlQueryLocationsList2PrepareDBLogTablesAndCreateTriggers,
+                                   String sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course_Location) {
         ShowMessageNow("Please pick a UTF-8 compatible .csv file !\n\n(i.e.\n\t.csv file supporting special characters)",
                 "Be Advised",false);
 
@@ -1363,12 +1411,14 @@ public class Main {
 
                         SetProgressBarLabelTxt(lblProgressBar, "Importing: ", "<font face=\"verdana\" color=\"red\"><b><i>", "DB from .csv");
 
-                        PrepareNormalizedTablesFromCSV(coursePlannerBIGGESTEntryList,
+                        GenerateDB_from_CSV(coursePlannerBIGGESTEntryList,
                                 selectedFilePath,
                                 sqlQuery_Create_Location,
                                 sqlQuery_Insert_Location,
                                 sqlQueryLocationList2Create_NormalizedTables,
-                                sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
+                                sqlQueryLocationList2CleanStartAndFill_NormalizedTables,
+                                sqlQueryLocationsList2PrepareDBLogTablesAndCreateTriggers,
+                                sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course_Location);
 
                         SetProgressBarLabelTxt(lblProgressBar, "Status: ", "<font face=\"verdana\" color=\"green\"><b><i>", "idle");
                     }
@@ -1388,13 +1438,29 @@ public class Main {
 
     }
 
-    private static void PrepareNormalizedTablesFromCSV(List<CoursePlannerBIGGEST_Entry> coursePlannerBIGGESTEntryList, String fPath, String sqlQuery_Create_Location, String sqlQuery_Insert_Location, List<String> sqlQueryLocationList2Create_NormalizedTables, List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables) {
+    private static void PrepareNormalizedTablesFromCSV(List<CoursePlannerBIGGEST_Entry> coursePlannerBIGGESTEntryList,
+                                                       String fPath,
+                                                       String sqlQuery_Create_Location,
+                                                       String sqlQuery_Insert_Location,
+                                                       List<String> sqlQueryLocationList2Create_NormalizedTables,
+                                                       List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables) {
 
         CreateAndFill_DB_from_CSV(coursePlannerBIGGESTEntryList, fPath, sqlQuery_Create_Location, sqlQuery_Insert_Location, dbName);
 
         CreateNormalizedTablesInDB(sqlQueryLocationList2Create_NormalizedTables, dbName);
 
         CleanStartAndFill_NormalizedTables(sqlQueryLocationList2CleanStartAndFill_NormalizedTables, dbName);
+
+    }
+
+    private static void Remove_non_UGRD_Courses_and_ISP_Course(String sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course_Location,
+                                                               String dbName){
+        InsertIntoTableInDB.ExecQuery(dbName, sqlQuery_Remove_non_UGRD_Courses_and_ISP_Course_Location);
+    }
+
+    private static void PrepareDBLogTablesAndCreateTriggers(List<String> queryLocations,
+                                                            String dbName){
+        CreateTableInDB.CreateNewTablesFromList(dbName, queryLocations);
     }
 
     private static void ViewWeeklyScheduleAtIndex(int selectedIndex, List<JButton> btnList) {
@@ -1677,7 +1743,7 @@ public class Main {
 
         CreateDB.createNewDatabase(dbName);
 
-        CreateTableInDB.createNewTable(dbName, sqlQuery_Create_Location);
+        CreateTableInDB.CreateNewTable(dbName, sqlQuery_Create_Location);
 
         InsertIntoTableInDB.insertAll(dbName, sqlQuery_Insert_Location, coursePlannerBIGGESTEntryList);
 
@@ -1685,11 +1751,11 @@ public class Main {
     }
 
     private static void CreateNormalizedTablesInDB(List<String> sqlQuery_Create_NormalizedTables, String dbName) {
-        CreateTableInDB.createNewTablesFromList(dbName, sqlQuery_Create_NormalizedTables);
+        CreateTableInDB.CreateNewTablesFromList(dbName, sqlQuery_Create_NormalizedTables);
     }
 
     private static void CleanStartAndFill_NormalizedTables(List<String> sqlQueryLocationList2CleanStartAndFill_NormalizedTables, String dbName) {
-        InsertIntoTableInDB.execQueriesFromList(dbName, sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
+        InsertIntoTableInDB.ExecQueriesFromList(dbName, sqlQueryLocationList2CleanStartAndFill_NormalizedTables);
     }
 
     private static void UpdateLabelsFromDB(String dbName,
