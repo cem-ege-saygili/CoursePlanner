@@ -253,7 +253,7 @@ public class SelectFromTableInDB {
 
         String url = "JDBC:sqlite:outputs/" + dbName + ".db";
 
-        String sqlQueryLocation = "inputs/sqlQuery_selectInstructorNamesAndRolesFromClassId.sql";
+        String sqlQueryLocation = "inputs/sqlQuery_SelectInstructorNamesAndRolesFromClassId.sql";
 
         ReadFile sqlQueryFile = new ReadFile(sqlQueryLocation);
 
@@ -291,7 +291,7 @@ public class SelectFromTableInDB {
 
         String url = "JDBC:sqlite:outputs/" + dbName + ".db";
 
-        String sqlQueryLocation = "inputs/sqlQuery_selectClassTotEnrlAndCapEnrlFromCourseSubjectCatalogAndClassId.sql";
+        String sqlQueryLocation = "inputs/sqlQuery_SelectClassTotEnrlAndCapEnrlFromCourseSubjectCatalogAndClassId.sql";
 
         ReadFile sqlQueryFile = new ReadFile(sqlQueryLocation);
 

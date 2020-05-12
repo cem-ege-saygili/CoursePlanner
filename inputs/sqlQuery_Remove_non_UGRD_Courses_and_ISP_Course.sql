@@ -1,0 +1,1 @@
+DELETE FROM Courses where CourseCareer <> 'UGRD' or CourseSubject = 'ISP';
