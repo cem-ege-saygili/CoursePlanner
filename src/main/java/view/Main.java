@@ -1632,6 +1632,7 @@ public class Main {
     private static void ShowMessageNow(String message, String title, int messageType, boolean isScrollable) {
         if(isScrollable){
             JTextArea textArea = new JTextArea(message, 50,  70);
+            textArea.setEditable(false);
             JScrollPane sp = new JScrollPane(textArea);
             sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             JOptionPane.showMessageDialog(null, sp, title, messageType);
