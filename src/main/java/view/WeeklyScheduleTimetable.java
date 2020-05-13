@@ -210,9 +210,9 @@ public class WeeklyScheduleTimetable {
         int buttonsBottomOffset = 75;
         int buttonsY = scheduleFrameHeight-buttonsBottomOffset;
         buttonCloseBackgroundPanel.setBounds(scheduleFrameWidth-125,buttonsY,75,25);
-        buttonNextSchedule.setBounds(scheduleFrameWidth-225,buttonsY,75,25);
-        buttonPrevSchedule.setBounds(scheduleFrameWidth-325,buttonsY,75,25);
-        scheduleFrame.add(buttonCloseBackgroundPanel);
+        buttonNextSchedule.setBounds(scheduleFrameWidth-225+40,buttonsY,75,25);
+        buttonPrevSchedule.setBounds(scheduleFrameWidth-325+40,buttonsY,75,25);
+//        scheduleFrame.add(buttonCloseBackgroundPanel);
         scheduleFrame.add(buttonNextSchedule);
         scheduleFrame.add(buttonPrevSchedule);
 
