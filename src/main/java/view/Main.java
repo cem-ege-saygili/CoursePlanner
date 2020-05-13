@@ -118,7 +118,7 @@ public class Main {
 
     static final int ACTIVE_FILTERS_TEXT_X_MARGIN = 15;
     static final int ACTIVE_FILTERS_TEXT_Y_MARGIN = 410;
-    static final int ACTIVE_FILTERS_TEXT_WIDTH = 200;
+    static final int ACTIVE_FILTERS_TEXT_WIDTH = 250;
     static final int ACTIVE_FILTERS_TEXT_HEIGHT = 25;
     static final int ACTIVE_FILTERS_PANE_X_MARGIN = 10;
     static final int ACTIVE_FILTERS_PANE_Y_MARGIN = 435;
@@ -287,7 +287,7 @@ public class Main {
 //        JComboBox<Integer> priorityValuesComboBox = new JComboBox<>(priorityValues);
 
         JLabel lblCourseClassFilter = new JLabel();
-        lblCourseClassFilter.setText("Course Class Filter: ");
+        lblCourseClassFilter.setText("Class Inclusion Filter: ");
 
         JLabel lblCourseSubjectAndCatalog = new JLabel();
         lblCourseSubjectAndCatalog.setText("Please double click to a course in \"Courses to be planned\" pane");
@@ -377,7 +377,7 @@ public class Main {
         JLabel fromLabel = new JLabel("From:");
         JLabel toLabel = new JLabel("To:");
 
-        JLabel activeFiltersLabel = new JLabel("Filters to be applied:");
+        JLabel activeFiltersLabel = new JLabel("Day & Timeframe Exclusion Filter:");
         JLabel courses2BePlannedLabel = new JLabel("Courses to be planned:");
 
         JButton btnAddFilter = new JButton("Add filter");
@@ -1552,7 +1552,7 @@ public class Main {
     private static void ClearClassFilters(DefaultListModel lstAddedClassFiltersListModel, JLabel lblCourseSubjectAndCatalog, JLabel lblCourseClassFilter, JComboBox<String> distinctClassComponents_GivenCourse_ComboBox, DefaultListModel lstClassFiltersListModel) {
         lstAddedClassFiltersListModel.removeAllElements();
         lblCourseSubjectAndCatalog.setText("Please double click to a course in \"Courses to be planned\" pane");
-        lblCourseClassFilter.setText("Course Class Filter: ");
+        lblCourseClassFilter.setText("Class Inclusion Filter: ");
         distinctClassComponents_GivenCourse_ComboBox.removeAllItems();
         lstClassFiltersListModel.removeAllElements();
     }
